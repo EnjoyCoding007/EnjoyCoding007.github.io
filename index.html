@@ -296,6 +296,204 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/07/非对称加密--RSA原理浅析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/07/非对称加密--RSA原理浅析/" class="post-title-link" itemprop="url">非对称加密--RSA原理浅析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-07 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-07T20:49:56+08:00">2019-01-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 20:51:47" itemprop="dateModified" datetime="2019-04-22T20:51:47+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/07/非对称加密--RSA原理浅析/" class="leancloud_visitors" data-flag-title="非对称加密--RSA原理浅析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="来龙去脉"><a href="#来龙去脉" class="headerlink" title="来龙去脉"></a>来龙去脉</h3><p>&emsp;在1976年以前，所有的加密方法都是同一种模式：加密、解密使用同一种算法。在交互数据的时候，彼此通信的双方就必须将规则告诉对方，否则没法解密。这种加密与解密使用同一规则的加密方式被称为<a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">对称加密算法</a>。那么加密和解密的规则（简称密钥）的保护就显得尤其重要，传递密钥的风险也一直是个隐患。<br>&emsp;直到1976年，两位美国计算机学家：迪菲（W.Diffie）、赫尔曼（M.Hellman）提出了一种崭新构思，可以在不直接传递密钥的情况下完成密钥交换，开创了密码学研究的新方向。这就是<a href="https://zh.wikipedia.org/wiki/%E8%BF%AA%E8%8F%B2-%E8%B5%AB%E7%88%BE%E6%9B%BC%E5%AF%86%E9%91%B0%E4%BA%A4%E6%8F%9B" target="_blank" rel="noopener">“迪菲赫尔曼密钥交换”</a>算法，其仍然是一种对称加密算法，只是密钥不再需要传递。交换原理如下图所示：<br><img src="https://user-gold-cdn.xitu.io/2019/1/7/168275fb2e34d666?w=834&amp;h=476&amp;f=png&amp;s=93483" alt="迪菲赫尔曼密钥交换原理"><br>其中a，b是在通信两端本地的随机数，g是模p的一个<a href="https://zh.wikipedia.org/wiki/%E5%8E%9F%E6%A0%B9" target="_blank" rel="noopener">原根</a>，K是交换后产生的密钥，安全性来源于当p非常大时，已知g，p，A，B很难反算出a，b。<a href="https://zh.wikipedia.org/wiki/%E7%A6%BB%E6%95%A3%E5%AF%B9%E6%95%B0" target="_blank" rel="noopener">离散对数问题</a>是该算法的基础。<br>&emsp;1977年，三位麻省理工学院的数学家 罗纳德·李维斯特（Ron Rivest）、阿迪·萨莫尔（Adi Shamir）和伦纳德·阿德曼（Leonard Adleman）一起设计了一种算法，可以实现非对称加密。这就是用他们三个人的名字命名的算法–<a href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">RSA</a>算法。<br>&emsp;要弄清楚RSA的加密原理，先要知道<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%AE%9A%E7%90%86_(%E6%95%B0%E8%AE%BA" target="_blank" rel="noopener">欧拉定理</a>)：  </p>
+<blockquote>
+<p>对于两个互质的正整数m、n，m^φ(n) mod n ≡ 1<br>当m&lt;n时不难推导出：m^(k*φ(n)) mod n ≡ 1<br>进一步得到：m^(k*φ(n)+1) mod n ≡ m </p>
+</blockquote>
+<p>基于此还需要理解一个概念，<a href="https://zh.wikipedia.org/wiki/%E6%A8%A1%E5%8F%8D%E5%85%83%E7%B4%A0" target="_blank" rel="noopener">模反元素</a>：  </p>
+<blockquote>
+<p>如果两个正整数e和x互质，那么一定可以找到整数d，使得 e*d-1 被x整除。那么d就是e对于x的“模反元素”<br>即e<em>d mod x ≡ 1<br>等同于 e\</em>d ≡ k*x + 1，k为正整数  </p>
+</blockquote>
+<p>敲黑板！！！关键来了，上面两个转换的结果一碰撞，Duang！就碰出了我们RSA的核心算法：  </p>
+<blockquote>
+<p>当e与φ(n)互质时，m^(e*d) mod n ≡ m  </p>
+</blockquote>
+<p>鸡不鸡冻，开不开森！还有点迷糊？没关系，来继续：  </p>
+<blockquote>
+<p>假设我们对m进行加密传输<br>加密：m^e mod n = c，<br>解密：c^d mod n = m^(e*d) mod n = m  </p>
+</blockquote>
+<p>上述过程中，<strong>n+e就是RSA中的公钥，n+d就是RSA中的私钥，c是加密后的密文。</strong></p>
+<h3 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h3><ol>
+<li>n会非常大，长度一般为1024个二进制位，现在稳妥一点的长度为2048个二进制位。（目前人类已经分解的最大整数，232个十进制位，768个二进制位）  </li>
+<li>因为需要求出φ(n)，所以根据<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">欧拉函数</a>特点，最简单得到n的方式是由两个质数相乘: 质数：p1、p2<br>Φ(n) = (p1 - 1) * (p2 - 1)</li>
+<li>最终由φ(n)得到 e 和 d   </li>
+</ol>
+<p>总共生成6个数字：p1、p2、n、φ(n)、e、d  </p>
+<h3 id="关于RSA的安全："><a href="#关于RSA的安全：" class="headerlink" title="关于RSA的安全："></a>关于RSA的安全：</h3><p>除了公钥用到了n和e 其余的4个数字是不公开的。<br>目前破解RSA得到私钥d的思路如下：</p>
+<ol>
+<li>由于e*d = φ(n)*k + 1。e是公开的，那必须要知道φ(n)</li>
+<li>要得到φ(n)，必须知道p1 和 p2</li>
+<li>由于 n = p1 * p2，所以只有将n因数分解才能算出p1 p2</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E6%9C%BA" target="_blank" rel="noopener">量子计算机</a>如果成功诞生，现在通行于银行及网络等处的RSA加密算法可以破解，也会瓦解所有基于大质数因式分解算力逆天而衍生出的加密算法。</li>
+</ol>
+<p>后续会对iOS证书签名相关原理进行分析，同时把常见的加密算法做一下梳理和比较，并附上每种算法在iOS中的代码实现。欢迎一起交流学习心得~</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/05/如何成为有效学习的高手/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -434,204 +632,6 @@
 <blockquote>
 <p>愿你有所收获<br> ( ゜- ゜)つロ乾杯🍻</p>
 </blockquote>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  
-  
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/05/非对称加密--RSA原理浅析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小可长江">
-      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小可的编程之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/05/非对称加密--RSA原理浅析/" class="post-title-link" itemprop="url">非对称加密--RSA原理浅析</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-01-05 12:49:34" itemprop="dateCreated datePublished" datetime="2019-01-05T12:49:34+08:00">2019-01-05</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-04-22 20:45:57" itemprop="dateModified" datetime="2019-04-22T20:45:57+08:00">2019-04-22</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2019/01/05/非对称加密--RSA原理浅析/" class="leancloud_visitors" data-flag-title="非对称加密--RSA原理浅析">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Views: </span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="来龙去脉"><a href="#来龙去脉" class="headerlink" title="来龙去脉"></a>来龙去脉</h3><p>&emsp;在1976年以前，所有的加密方法都是同一种模式：加密、解密使用同一种算法。在交互数据的时候，彼此通信的双方就必须将规则告诉对方，否则没法解密。这种加密与解密使用同一规则的加密方式被称为<a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">对称加密算法</a>。那么加密和解密的规则（简称密钥）的保护就显得尤其重要，传递密钥的风险也一直是个隐患。<br>&emsp;直到1976年，两位美国计算机学家：迪菲（W.Diffie）、赫尔曼（M.Hellman）提出了一种崭新构思，可以在不直接传递密钥的情况下完成密钥交换，开创了密码学研究的新方向。这就是<a href="https://zh.wikipedia.org/wiki/%E8%BF%AA%E8%8F%B2-%E8%B5%AB%E7%88%BE%E6%9B%BC%E5%AF%86%E9%91%B0%E4%BA%A4%E6%8F%9B" target="_blank" rel="noopener">“迪菲赫尔曼密钥交换”</a>算法，其仍然是一种对称加密算法，只是密钥不再需要传递。交换原理如下图所示：<br><img src="https://user-gold-cdn.xitu.io/2019/1/7/168275fb2e34d666?w=834&amp;h=476&amp;f=png&amp;s=93483" alt="迪菲赫尔曼密钥交换原理"><br>其中a，b是在通信两端本地的随机数，g是模p的一个<a href="https://zh.wikipedia.org/wiki/%E5%8E%9F%E6%A0%B9" target="_blank" rel="noopener">原根</a>，K是交换后产生的密钥，安全性来源于当p非常大时，已知g，p，A，B很难反算出a，b。<a href="https://zh.wikipedia.org/wiki/%E7%A6%BB%E6%95%A3%E5%AF%B9%E6%95%B0" target="_blank" rel="noopener">离散对数问题</a>是该算法的基础。<br>&emsp;1977年，三位麻省理工学院的数学家 罗纳德·李维斯特（Ron Rivest）、阿迪·萨莫尔（Adi Shamir）和伦纳德·阿德曼（Leonard Adleman）一起设计了一种算法，可以实现非对称加密。这就是用他们三个人的名字命名的算法–<a href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">RSA</a>算法。<br>&emsp;要弄清楚RSA的加密原理，先要知道<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%AE%9A%E7%90%86_(%E6%95%B0%E8%AE%BA" target="_blank" rel="noopener">欧拉定理</a>)：  </p>
-<blockquote>
-<p>对于两个互质的正整数m、n，m^φ(n) mod n ≡ 1<br>当m&lt;n时不难推导出：m^(k*φ(n)) mod n ≡ 1<br>进一步得到：m^(k*φ(n)+1) mod n ≡ m </p>
-</blockquote>
-<p>基于此还需要理解一个概念，<a href="https://zh.wikipedia.org/wiki/%E6%A8%A1%E5%8F%8D%E5%85%83%E7%B4%A0" target="_blank" rel="noopener">模反元素</a>：  </p>
-<blockquote>
-<p>如果两个正整数e和x互质，那么一定可以找到整数d，使得 e*d-1 被x整除。那么d就是e对于x的“模反元素”<br>即e<em>d mod x ≡ 1<br>等同于 e\</em>d ≡ k*x + 1，k为正整数  </p>
-</blockquote>
-<p>敲黑板！！！关键来了，上面两个转换的结果一碰撞，Duang！就碰出了我们RSA的核心算法：  </p>
-<blockquote>
-<p>当e与φ(n)互质时，m^(e*d) mod n ≡ m  </p>
-</blockquote>
-<p>鸡不鸡冻，开不开森！还有点迷糊？没关系，来继续：  </p>
-<blockquote>
-<p>假设我们对m进行加密传输<br>加密：m^e mod n = c，<br>解密：c^d mod n = m^(e*d) mod n = m  </p>
-</blockquote>
-<p>上述过程中，<strong>n+e就是RSA中的公钥，n+d就是RSA中的私钥，c是加密后的密文。</strong></p>
-<h3 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h3><ol>
-<li>n会非常大，长度一般为1024个二进制位，现在稳妥一点的长度为2048个二进制位。（目前人类已经分解的最大整数，232个十进制位，768个二进制位）  </li>
-<li>因为需要求出φ(n)，所以根据<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">欧拉函数</a>特点，最简单得到n的方式是由两个质数相乘: 质数：p1、p2<br>Φ(n) = (p1 - 1) * (p2 - 1)</li>
-<li>最终由φ(n)得到 e 和 d   </li>
-</ol>
-<p>总共生成6个数字：p1、p2、n、φ(n)、e、d  </p>
-<h3 id="关于RSA的安全："><a href="#关于RSA的安全：" class="headerlink" title="关于RSA的安全："></a>关于RSA的安全：</h3><p>除了公钥用到了n和e 其余的4个数字是不公开的。<br>目前破解RSA得到私钥d的思路如下：</p>
-<ol>
-<li>由于e*d = φ(n)*k + 1。e是公开的，那必须要知道φ(n)</li>
-<li>要得到φ(n)，必须知道p1 和 p2</li>
-<li>由于 n = p1 * p2，所以只有将n因数分解才能算出p1 p2</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E6%9C%BA" target="_blank" rel="noopener">量子计算机</a>如果成功诞生，现在通行于银行及网络等处的RSA加密算法可以破解，也会瓦解所有基于大质数因式分解算力逆天而衍生出的加密算法。</li>
-</ol>
-<p>后续会对iOS证书签名相关原理进行分析，同时把常见的加密算法做一下梳理和比较，并附上每种算法在iOS中的代码实现。欢迎一起交流学习心得~</p>
 
           
         
