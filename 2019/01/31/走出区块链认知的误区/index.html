@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="&amp;emsp;新事物往往不是凭空而来，发展和演化也很少一蹴而就。认识新事物，首先要弄清楚它的来龙去脉，知其出身，方能知其所以然。此文章为《区块链技术指南》的读后笔记&amp;amp;摘要。 账本科技的演化&amp;emsp;区块链（Blockchain）的概念首次被人们关注，源于2009年初上线的比特币（Bitcoin）开源项目。从记账科技的演化角度来看，区块链实际上是记账问题发展到分布式场景下的天然结果。账本科技">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="走出区块链认知的误区">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/31/走出区块链认知的误区/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="&amp;emsp;新事物往往不是凭空而来，发展和演化也很少一蹴而就。认识新事物，首先要弄清楚它的来龙去脉，知其出身，方能知其所以然。此文章为《区块链技术指南》的读后笔记&amp;amp;摘要。 账本科技的演化&amp;emsp;区块链（Blockchain）的概念首次被人们关注，源于2009年初上线的比特币（Bitcoin）开源项目。从记账科技的演化角度来看，区块链实际上是记账问题发展到分布式场景下的天然结果。账本科技">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/1/30/1689ede936928ce4?w=3360&h=1976&f=png&s=398386">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/1/30/1689edec41229a91?w=3360&h=1976&f=png&s=400395">
+<meta property="og:updated_time" content="2019-04-22T13:53:39.941Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="走出区块链认知的误区">
+<meta name="twitter:description" content="&amp;emsp;新事物往往不是凭空而来，发展和演化也很少一蹴而就。认识新事物，首先要弄清楚它的来龙去脉，知其出身，方能知其所以然。此文章为《区块链技术指南》的读后笔记&amp;amp;摘要。 账本科技的演化&amp;emsp;区块链（Blockchain）的概念首次被人们关注，源于2009年初上线的比特币（Bitcoin）开源项目。从记账科技的演化角度来看，区块链实际上是记账问题发展到分布式场景下的天然结果。账本科技">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/1/30/1689ede936928ce4?w=3360&h=1976&f=png&s=398386">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/31/走出区块链认知的误区/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>走出区块链认知的误区 | 小可的编程之路</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/31/走出区块链认知的误区/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">走出区块链认知的误区
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-31 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-31T20:49:56+08:00">2019-01-31</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 21:53:39" itemprop="dateModified" datetime="2019-04-22T21:53:39+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/31/走出区块链认知的误区/" class="leancloud_visitors" data-flag-title="走出区块链认知的误区">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             Views:  
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;新事物往往不是凭空而来，发展和演化也很少一蹴而就。认识新事物，首先要弄清楚它的来龙去脉，知其出身，方能知其所以然。此文章为<a href="https://github.com/yeasy/blockchain_guide/blob/master/SUMMARY.md" target="_blank" rel="noopener">《区块链技术指南》</a>的读后笔记&amp;摘要。</p>
+<h3 id="账本科技的演化"><a href="#账本科技的演化" class="headerlink" title="账本科技的演化"></a>账本科技的演化</h3><p>&emsp;区块链（Blockchain）的概念首次被人们关注，源于2009年初上线的比特币（Bitcoin）开源项目。从记账科技的演化角度来看，区块链实际上是记账问题发展到分布式场景下的天然结果。账本科技的演化过程大致可以分为四个阶段：简单账本、复式账本、数字化账本、分布式账本。简单账本很好理解，就是数据没有备份，容易出错且很难发现是否被篡改过。复式账本,简单理解就是，将每笔交易分别在来源方和目标方进行记录，且多方之间的账本总额应该时刻保持相等，这样就解决了单个账本的账本可信问题。数字化账本的记账方法相对于复式账本本身并没有太多创新，但由于数字媒介的出现，使得账本的规模、处理的速度、账本的复杂度都有了天翻地覆的提升，这是现在的电子商务、互联网金融的技术基础。复式账本虽然记录了交易的来龙去脉，不易出错，但本质上仍然是中心化模式，多方交易情况下如果某个或部分账本数据出现不一致，对账十分困难，分布式账本：由交易多方共同维护同一个共享的分布式账本，打通交易在不同阶段的来龙去脉，同时凭借分布式技术进一步提高记账的规模、效率、可靠性以及合规性。但在分布式场景下，如何避免参与方恶意篡改或者破坏记录？该由谁来决定每笔交易记录是否写入到账本中？这些问题一直都还在探索最佳实践。</p>
+<h3 id="分布式账本与区块链"><a href="#分布式账本与区块链" class="headerlink" title="分布式账本与区块链"></a>分布式账本与区块链</h3><p>&emsp;为了防止有参与者对交易记录进行篡改，需要引入一定的验证机制。很自然地，我们想到了数字摘要技术，一个多方参与且都有权限读写的账本，每次当有新的交易记录被追加到账本上时，参与各方可以使用Hash算法对完整的交易历史计算数字摘要，获取当前交易历史的“指纹”。此后任意时刻，每个参与方都可以对交易历史重新计算数字摘要，一旦发现指纹不匹配，则说明交易记录被篡改过。同时，通过追踪指纹改变位置，可以定位到被篡改的交易记录：<br><img src="https://user-gold-cdn.xitu.io/2019/1/30/1689ede936928ce4?w=3360&amp;h=1976&amp;f=png&amp;s=398386" alt><br>&emsp;上述方案，在实际应用中可以解决记录防篡改问题，但仍然存在较大缺陷。由于每次追加新的交易记录时需要从头对所有的历史数据计算数字摘要，当已存在大量交易历史时，数字摘要计算成本将变得很高，随着新交易的放生交易耗费将越来越大，系统扩展性很差。<br>为了解决可扩展性的问题，需要进一步改进为方案二：主要到每次摘要已经确保了从头开始到摘要位置的完整历史，当新的交易发生后，实际上需要进行额外验证的只是新的交易，即增量部分。因此，计算摘要的过程可以改进为对旧的摘要值再加上新的交易内容进行验证。这样既解决了防篡改问题，又解决了可扩展性问题：<br>&emsp;实际上，你可能已经注意到，方案二的账本结构正是一个区块链结构：<br><img src="https://user-gold-cdn.xitu.io/2019/1/30/1689edec41229a91?w=3360&amp;h=1976&amp;f=png&amp;s=400395" alt><br>&emsp;可见，从分布式记账的基本问题出发，可以自然推导出区块链结构，这也说明了在分布式场景下的记账问题中，区块链是一个简洁有效的天然答案。当然，区块链结构也并非解决分布式记账问题的唯一答案，实际上，除了简单的线性队列结构，也有人提出采用树或者图结构。</p>
+<h3 id="比特币的意义和价值"><a href="#比特币的意义和价值" class="headerlink" title="比特币的意义和价值"></a>比特币的意义和价值</h3><p>&emsp;直到今天，关于比特币的话题仍充满了不少争议。但大部分人应该都会认可，比特币是数字货币历史上，甚至整个金融历史上一次了不起的社会学实验。<br>&emsp;比特币首次真正从实践意义上实现了安全可靠的非中心化数字货币机制，这也是它受到无数金融科技从业者热捧的根本原因。作为一种概念货币，比特币主要是希望解决已有货币系统面临的几个核心问题：</p>
+<ol>
+<li>被掌控在单一机构手中，容易被攻击。</li>
+<li>自身的价值无法保证，容易出现波动。</li>
+<li>无法匿名化交易，不够隐私。<br>&emsp;要实现一套数字货币机制，最关键的还是要建立一套完善的交易记录系统，以及形成一套合理的货币发行机制。这个交易记录系统要能准确、公正地记录发生过的每一笔交易，并且无法被恶意篡改。对比已有的银行系统，可以看出，现有的银行机制作为金融交易的第三方中介机构，有代价地提供了交易记录服务。如果参与交易的多方都完全相信银行的记录（数据库），就不存在信任问题。可是如果是更大范围（甚至跨多家银行）进行流通的货币呢？哪家银行的系统能提供完全可靠不中断的服务呢？唯一可能的方案是一套分布式账本。这个账本可以被所有用户自由访问，而且任何个体都无法对所记录的数据进行恶意篡改和控制。为了实现这样一个前所未有的账本系统，比特币网络巧妙地设计了区块链结构，提供了可靠、无法被篡改的数字货币账本功能。<br>&emsp;比特币网络中，货币的发行是通过比特币协议来规定的。货币总量受到控制，发行速度随时间自动进行调整。既然总量一定，那么单个比特币的价值会随着越来越多的经济实体认可比特币而水涨船高。发行速度的自动调整则避免出现通胀或者滞涨的情况。<br>&emsp;另一方面，也要冷静地看到，作为社会学实验，比特币已经获得了某种成功，特别是基于区块链技术，已经出现了许多颇有价值的商业场景和创新技术。但这绝不意味着比特币自身必然能够进入到未来的商业体系中。比特币自身价值的波动十分剧烈；同时由于账目公开可查，通过分析仍有较大概率追踪到实际使用者；另外，比特币系统在不少管理环节上仍然依赖中心化的机制。</li>
+</ol>
+<h3 id="更有价值的区块链技术"><a href="#更有价值的区块链技术" class="headerlink" title="更有价值的区块链技术"></a>更有价值的区块链技术</h3><p>&emsp;如果说比特币是影响力巨大的社会学实验，那么从比特币核心设计中提炼出来的区块链技术，则让大家看到了塑造更高效、更安全的未来商业网络的可能。<br>&emsp;2014 年开始，比特币背后的区块链技术开始逐渐受到大家关注，并进一步引发了分布式记账本（Distributed Ledger）技术的革新浪潮。<br>&emsp;实际上，人们很早就意识到，记账相关的技术，对于资产（包括有形资产和无形资产）的管理（包括所有权和流通）十分关键；而多中心化的分布式记账本技术，对于当前开放、多维的商业模式意义重大。区块链的思想和结构，正是实现这种分布式记账本系统的一种极具可行潜力的技术。<br>&emsp;区块链技术现在已经从比特币项目脱颖而出，在包括金融、贸易、征信、物联网、共享经济等诸多领域崭露头角。现在，除非特别指出是“比特币区块链”，否则当人们提到“区块链技术”时，往往已与比特币没有什么必然联系了。<br>&emsp;商业行为的典型过程为：交易多方通过协商确定商业合约，通过执行合约完成交易。区块链擅长的正是如何在多方之间达成合约，并确保合约的顺利执行。根据类别和应用场景不同，区块链所体现的特点和价值也不同。从技术角度，一般认为，区块链具有如下特点：</p>
+<ol>
+<li>分布式容错性：分布式账本网络极其鲁棒，能够容忍部分节点的异常状态；</li>
+<li>不可篡改性：共识提交后的数据会一直存在，不可被销毁或修改；</li>
+<li>隐私保护性：密码学保证了数据隐私，即便数据泄露，也无法解析。</li>
+</ol>
+<p>随之带来的业务特性将可能包括：</p>
+<ol>
+<li>可信任性：区块链技术可以提供天然可信的分布式账本平台，不需要额外第三方中介机构参与；</li>
+<li>降低成本：跟传统技术相比，区块链技术可能通过自动化合约执行带来更快的交易，同时降低维护成本；</li>
+<li>增强安全：区块链技术将有利于安全、可靠的审计管理和账目清算，减少犯罪风险。</li>
+</ol>
+<p>&emsp;区块链并非凭空诞生的新技术，更是多种技术演化到一定程度后的产物，因此，其商业应用场景也跟促生其出现的环境息息相关。对于基于数字方式的交易行为，区块链技术能潜在地降低交易成本、加快交易速度，同时能提高安全性。我认为，能否最终提高生产力，将是一项技术能否被实践接受的关键。</p>
+<h3 id="区块链的定义与原理"><a href="#区块链的定义与原理" class="headerlink" title="区块链的定义与原理"></a>区块链的定义与原理</h3><p>讨论区块链的定义可以从狭义和广义两个层面来看待。<br>&emsp;狭义上，区块链是一种以区块为基本单位的链式数据结构，区块中利用数字摘要对之前的交易历史进行校验，适合分布式记账场景下防篡改和可扩展性的需求。<br>&emsp;广义上，区块链还指代基于区块链结构实现的分布式记账技术，包括分布式共识、隐私与安全保护、点对点通信技术、网络协议、智能合约等。<br>&emsp;区块链的基本原理理解起来并不复杂。首先来看三个基本概念：</p>
+<ul>
+<li><p>交易（Transaction）：一次对账本的操作，导致账本状态的一次改变，如添加一条转账记录；</p>
+</li>
+<li><p>区块（Block）：记录一段时间内发生的所有交易和状态结果等，是对当前账本状态的一次共识；</p>
+</li>
+<li><p>链（Chain）：由区块按照发生顺序串联而成，是整个账本状态变化的日志记录。</p>
+</li>
+</ul>
+<p>&emsp;如果把区块链系统作为一个状态机，则每次交易意味着一次状态改变；生成的区块，就是参与者对其中交易导致状态改变结果的共识。区块链的目标是实现一个分布的数据记录账本，这个账本只允许添加、不允许删除。账本底层的基本结构是一个线性的链表。链表由一个个“区块”串联组成（如下图所示），后继区块中记录前导区块的哈希（Hash）值。某个区块（以及块里的交易）是否合法，可通过计算哈希值的方式进行快速检验。网络中节点可以提议添加一个新的区块，但必须经过共识机制来对区块达成确认。</p>
+<h3 id="认识上的误区"><a href="#认识上的误区" class="headerlink" title="认识上的误区"></a>认识上的误区</h3><p>目前，区块链自身仍是一种相对年轻的技术，不少人对它的认识还存在一些不足。下面总结了在探讨区块链技术时候一些常见的误区：</p>
+<ul>
+<li><p>区块链核心在于比特币？虽说区块链的基本思想出现在比特币设计中，但发展到今日，加密货币和区块链已经俨然成为了两个不太相关的阵营。前者侧重从金融角度发掘比特币等代币的实验性意义；后者则从技术层面探讨和研究分布式账本科技可能带来的商业价值，试图拓展到更多的场景。</p>
+</li>
+<li><p>区块链是一种数据库技术 虽然区块链也可以用来存储数据，但它要解决的核心问题是多方的互信协作问题。单纯从存储数据角度，区块链效率可能不高，一般也不推荐把大量原始数据直接放到区块链系统上。当然，现有区块链系统中大量使用了数据库技术。也有企业尝试将区块链技术引入到分布式数据库领域，解决非中心化的管理，如 BigchainDB。</p>
+</li>
+<li><p>Token 就是数字货币？ 早在区块链概念出现之前，Token（令牌）就大量应用在计算机系统中，作为带有某种权限的证明，它可以协助系统应用进行快速协作。因此，在区块链系统中使用 Token 可能在某些应用场景（如游戏积分）下提供管理便利。而数字货币则强调经济价值，跟其在系统中的原生功能无必然联系。</p>
+</li>
+<li><p>区块链是万能的，是颠覆性的？ 作为融合多项已有技术而出现的事物，区块链跟现有技术体系是一脉相承的。它在解决多方合作和可信处理上向前多走了一步，但并不意味着它解决了所有问题，更不会快速颠覆大量的商业模式。很长一段时间里，区块链最适用的场景仍需不断摸索，区块链也会跟已有系统共存使用。</p>
+</li>
+<li><p>区块链必然是非中心化的？非中心化的一定优于中心化设计？讨论技术的优劣必须要有场景前提，区块链也是如此。并不存在某种区块链技术能在任意场景下都优于其它方案，这也是为何目前公开链和联盟链在技术选型上存在较大差异。中心化设计具有设计简单，管理完善，性能可控的特点，但往往容错性能比较差；非中心化（多中心化）的设计可以提高容错性能，利用多方共识来降低篡改风险，但意味着设计较复杂，要付出性能代价。实际上，根据实际场景的需求，现有大部分区块链技术都介于绝对的中心化和绝对的非中心化之间，以取得不同指标上的平衡。例如公开链为了提高性能通过选择部分信任的节点来作为代表。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/27/Unix:Linux文件类型与权限管理/" rel="next" title="Unix/Linux文件类型与权限管理">
+                <i class="fa fa-chevron-left"></i> Unix/Linux文件类型与权限管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/" rel="prev" title="非越狱下iOS代码注入&微信登录HOOK">
+                非越狱下iOS代码注入&微信登录HOOK <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#账本科技的演化"><span class="nav-number">1.</span> <span class="nav-text">账本科技的演化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式账本与区块链"><span class="nav-number">2.</span> <span class="nav-text">分布式账本与区块链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#比特币的意义和价值"><span class="nav-number">3.</span> <span class="nav-text">比特币的意义和价值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更有价值的区块链技术"><span class="nav-number">4.</span> <span class="nav-text">更有价值的区块链技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#区块链的定义与原理"><span class="nav-number">5.</span> <span class="nav-text">区块链的定义与原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#认识上的误区"><span class="nav-number">6.</span> <span class="nav-text">认识上的误区</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+</html>
