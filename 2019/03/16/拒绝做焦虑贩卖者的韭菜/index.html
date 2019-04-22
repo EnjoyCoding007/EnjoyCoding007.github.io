@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="多数人的现状&amp;emsp; 无论你出入职场，还是置身亲友，不管你是大龄未婚，还是已为人父母，纵然你已小有成就，亦或名利双收，我依然深信总有那么一群不满现状的人，在各种圈子里、角色下、欲望中，被不同的焦虑环绕着，看看身边年龄相仿的同事、亲友的现状，一切都不言自明。写这篇文章的初衷，是希望我们都能正确的看待焦虑，同时传递给你两个信息：1.不做勤劳的懒惰者；2.你并不孤单，也从未丧失机会。 &amp;emsp;">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拒绝做焦虑贩卖者的韭菜">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/16/拒绝做焦虑贩卖者的韭菜/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="多数人的现状&amp;emsp; 无论你出入职场，还是置身亲友，不管你是大龄未婚，还是已为人父母，纵然你已小有成就，亦或名利双收，我依然深信总有那么一群不满现状的人，在各种圈子里、角色下、欲望中，被不同的焦虑环绕着，看看身边年龄相仿的同事、亲友的现状，一切都不言自明。写这篇文章的初衷，是希望我们都能正确的看待焦虑，同时传递给你两个信息：1.不做勤劳的懒惰者；2.你并不孤单，也从未丧失机会。 &amp;emsp;">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-04-22T14:24:32.704Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="拒绝做焦虑贩卖者的韭菜">
+<meta name="twitter:description" content="多数人的现状&amp;emsp; 无论你出入职场，还是置身亲友，不管你是大龄未婚，还是已为人父母，纵然你已小有成就，亦或名利双收，我依然深信总有那么一群不满现状的人，在各种圈子里、角色下、欲望中，被不同的焦虑环绕着，看看身边年龄相仿的同事、亲友的现状，一切都不言自明。写这篇文章的初衷，是希望我们都能正确的看待焦虑，同时传递给你两个信息：1.不做勤劳的懒惰者；2.你并不孤单，也从未丧失机会。 &amp;emsp;">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/16/拒绝做焦虑贩卖者的韭菜/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>拒绝做焦虑贩卖者的韭菜 | 小可的编程之路</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/16/拒绝做焦虑贩卖者的韭菜/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">拒绝做焦虑贩卖者的韭菜
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-16 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-16T20:49:56+08:00">2019-03-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 22:24:32" itemprop="dateModified" datetime="2019-04-22T22:24:32+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/03/16/拒绝做焦虑贩卖者的韭菜/" class="leancloud_visitors" data-flag-title="拒绝做焦虑贩卖者的韭菜">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             Views:  
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="多数人的现状"><a href="#多数人的现状" class="headerlink" title="多数人的现状"></a>多数人的现状</h3><p>&emsp; 无论你出入职场，还是置身亲友，不管你是大龄未婚，还是已为人父母，纵然你已小有成就，亦或名利双收，我依然深信总有那么一群不满现状的人，在各种圈子里、角色下、欲望中，被不同的焦虑环绕着，看看身边年龄相仿的同事、亲友的现状，一切都不言自明。写这篇文章的初衷，是希望我们都能正确的看待焦虑，同时传递给你两个信息：1.不做勤劳的懒惰者；2.你并不孤单，也从未丧失机会。</p>
+<p>&emsp; 30左右的年龄（中年危机），在一二线城市没房又没成家（无可增长资产，且未来仍有大笔支出），资本市场持续降温（虽然这是短期的转折，但历史进化永远都是在淘汰弱者），新技术、新概念更新速度越来越快（吾生也有涯，而知也无涯。以有涯随无涯，殆已！已而为知者，殆而已矣！）……这是目前互联网从业者（其实远不止）的大部分现状。这一现状无疑让越来越多的人感到焦虑，特别是对自己有更高期望而瓶颈很难突破的人。当然不排除有无论世界怎么变都无知无觉的人，他们不在我们今天讨论的范畴。</p>
+<p>&emsp; 基于上述普遍存在的现状，越来越多的人从中发现了商机：1、知识付费；2、毒鸡汤抢流量。首先声明一点，我是知识付费的拥护者，同时也是受益者。但每当某一领域的需求增长过快时，都难免有一群趁机谋取利益的水军混入其中，良莠不齐，使人们获取有价值信息的成本不断提高。从前几年一度火爆的培训班，到现在线上平台的付费专栏、直播授课，交学费时无不吹破牛皮、信誓旦旦，到最后学无所成的人比比皆是。这究竟是授课的机构和讲师水平的问题，还是学习者自身的学习能力不够或者半途而废造成的呢？我觉得都有问题。毒鸡汤类的公众号、自媒体，更是无处不在的收割着人们的注意力和时间。而被毒鸡汤淹没，只能承认更多是因为个人认知水平决定了识别能力。</p>
+<p>&emsp; 如果你认为贩卖焦虑只限于上述商业从事者，那说明你还未曾就此深入的思考过。在我看来，一切利用人们焦虑情绪去做更利于自己事情的人，都是焦虑贩卖者。更有甚者，先诱导人产生焦虑再加以利用。如果你仔细观察，这样的人其实你身边也大有人在。包括很多亲友甚至都在无意识的为你增加焦虑，然后促使你去做什么什么…这里就不区分主观意识的好坏了。总之，我们自己要有足够强的自我掌控力和辨别能力，才能尽可能避免自己和身边的人成为被别人利用情绪进而操纵行为的人。拒绝做炮灰，主导自己命运的方向。</p>
+<h3 id="我的挣扎历程"><a href="#我的挣扎历程" class="headerlink" title="我的挣扎历程"></a>我的挣扎历程</h3><p>&emsp; 我就此现状分享下我的一点心得吧，同时也很想听到你们对自我成长的见解和当前形势的看法。</p>
+<p>&emsp; 显然我的现状仍属上述之列（没办法，我开窍晚了），所以曾经我也焦虑过，也被收过智商税，但好在已于一年前想清楚了自己该做什么、想要什么，所以现在的状态总体还不错 —— 每一天都能真切的感到比昨天进步了，无论是专业技能上，还是其他领域的知识，都在不断的添砖加瓦，逐渐的自成体系。如果你也有这种感受，我相信你也早跟焦虑彻底说再见了。至于如何彻底走出焦虑的阴影，找到自己的方向和目标，我仔细回想了那段时间自己的心路历程，大致总结如下：</p>
+<h4 id="刨根问底"><a href="#刨根问底" class="headerlink" title="刨根问底"></a>刨根问底</h4><ol>
+<li><p>想明白焦虑是什么？</p>
+<p> 我的理解：<strong>对现状的不满 + 改变现状时的无力/乏力感 + 对未来的不确定 = 焦虑</strong></p>
+</li>
+<li><p>焦虑从何而来？</p>
+<p> 结合前一点，焦虑主要有以下来源：</p>
+<ol>
+<li>职业发展的迷茫与无助</li>
+<li>成长速度过慢甚至停止</li>
+<li>人与人之间横向的对比</li>
+<li>距离自我期望差距太大</li>
+<li>人生大事至今毫无头绪</li>
+<li>科技进步社会变迁加速</li>
+</ol>
+</li>
+<li><p>如何彻底根治焦虑？</p>
+<p> 同样结合上面的分析，对症下药：</p>
+<ol>
+<li>人的精力是有限的，无所不能的天才确实存在，但请相信我，我们都不是。有限的精力一定要花在最有用、长期收益最大的事情上，别想着什么都想学，静下心来分析，找准你所在的领域里，在可以预见的未来某一个不可或缺的方向，花几年时间把它做到极致。（不要抱怨工作太忙没时间想，没时间做，至少你永远都有选择的权利）</li>
+<li>学习一定是有方法可循的，最好的方式就是尽可能找到你能接触到的行业大牛（一定要是能说实话的人），实在没机会就关注他们的动态、博客、心得，他们之所以能走的比你快，一定是有很多可取之处的，思考方式、对新事物的态度、乐于分享和总结的精神等等，找到属于你的标杆（不需要很多，一两个足够），照着做就是了，对了，请忘记“速成”这个词。最好的方法一定来自不断的实践与总结，绝不是简单的模仿。</li>
+<li>你会经常发现，哇，这小子比我小好几岁，却样样比我优秀！这其实是个不值得有任何感叹的事实，《师说》曾说：“生乎吾后，其闻道也亦先乎吾，吾从而师之”、“闻道有先后，术业有专攻”。人生来先天条件各不相同，即使先天条件不如你的后来比你强了，也没什么可比性。因为你不仅要承认努力很重要，运气也很重要。而决定运气的是我们对这个世界的态度。接纳不够好的自己，做好自己该做的，优秀的人是用来学习借鉴的，而不是衬托自己落魄的。</li>
+<li>合理的目标是前提，否则这无异于给自己一个必败的残局和自我否定的恶性循环。人的幸福感很大程度上来源于自恋的感觉被满足，无论是恋爱还是交朋友，都是因为他们认可你，满足了你的自恋情绪，所以他们才能激发你的潜能。同样的，合理的目标是最好的自我鼓励方式，阶段性的达成目标，才能形成自我认可、持续进步、不断缩小与更高期望之间差距的正向循环。</li>
+<li>大龄单身青年随处可见，第一个原因，人所受教育的程度与为繁衍后代（完成任务）而结婚的接受度呈明显负相关，也就是说，不是你一个人不想将就，是都不想将就。第二个原因，社会的高速发展注定了年轻一代的高压状态，而且该状态在可预见的未来会一直持续，这种状态决定了接触到靠谱异性圈子的场景越来越少，这两点也是高等教育普及以来人口生育率一路下滑的真相。第三个原因，你不够主动，其实还是有很多合适的人在等你主动，不要做个玻璃心，不试试怎么知道呢？偷偷告诉你，我就是这么成功的。</li>
+<li>不管科技如何发达，社会如何变革，既然追不上变化那就别追了，倒不如换个角度想想什么是一成不变的。这之前，先区分一下两个词，趋势和潮流。乍一看以为是同义词，其实很多时候是截然相反的两个东西，但它们又互相作用，类似海洋深处的暗流涌动与我们看得到的狂风骇浪的关系。暗流就是趋势，它是由人类共同体决定的大方向，其力量之大往往是不可抗力，且需要较长的时间才能逐渐显现出来。而潮流则瞬息万变，无法捕捉，但它却又是暗流之上的具体体现。这跟我们想说的有什么关系呢？简单来说，如果你一直忙于追随潮流、赶热门、学热点，就像是在玩冲浪一样，即使短时间内你借着几个浪头获得了升迁加薪的机会，多半也是昙花一现，结局都只会被下一个风头无情的拍入海底。如果你深入观察分析行业内的顶尖人士，你会发现他们都不是全能型的，且他们都具有以不变应万变的本领，因为他们抓住了没变的东西，预测到了未来的趋势。那到底什么是不变的，又如何做出预测的呢？通过不断观察、学习和验证，我得出以下两点：<ul>
+<li>一，人的基本需求和本性。根据这一点（前提是你对人性和心理学有一定的研究），对未来的预测也比较简单粗暴：关注新的科学和技术，思考科技如何更好的满足人的基本需求和本性：它们有哪些将要落地或者已经落地但需求远大于供给的场景。</li>
+<li>二，社会的财富分配规律。无论社会财富积累有多丰裕，穷人所占的比例似乎并无变化，即使人均收入不断增加，那也只是富人拉升平均数的假象。这侧面反映出真正不向命运低头，愿意为改变现状付出代价的人并不多。无论是环境影响还是趋利避害的本能反应，动物都是愿意呆在自己舒适区的，所以，如果你能离开自己的舒适区，把人生当做一场马拉松，你一直都大有机会。但，请给自己成长的时间，相信积累的力量。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h4 id="回到现实"><a href="#回到现实" class="headerlink" title="回到现实"></a>回到现实</h4><p>&emsp; 无论道理理解的有多透彻，但人终究还是要活在现实里的，睡觉之前满腔热血，一觉醒来还懒床的人太多了，不差你一个。如何将所学致于实践，这才是拉开人与人之间差距的决定性因素，一提到实干，就不禁想到鸡汤…关于毅力、执行力这一类的书籍和方法论我个人都觉得不值一提，甚至全都是伪命题。我觉得任何一件事能不能做成（别拿与自身不切实际的事钻牛角尖），唯一的决定性因素就是：你到底有多想要。对，任何一件事的失败都可以归结于这一点：你不够想要它。如果这件事对你而言没得选，无可替代，优先级满星，你还需要毅力？还需要想办法提高执行力？怕是不让你做你都要拼命抵抗的吧，所以请为每一个目标赋予其重大到不得不做的意义。而仅次于此的因素，就是做什么，怎么做，关于这一点，前面列出的原因和方案中已经足够详细了。不做懒惰的勤奋者，就是要重视方法和效率，拒绝埋头蛮干。选对方向，用正确的方式，做正确的事，剩下的交给时间。</p>
+<p>&emsp; 以上纯属我个人关于如何摆脱焦虑的一些心得和怎样踏实的做好现在的一些思考，不对任何结论的对错及其结果负责，但也希望能为你提供一些可参考之处，当然我也欣然接受任何不同的价值观和看法，欢迎交流。</p>
+<h3 id="总结下我想说的话"><a href="#总结下我想说的话" class="headerlink" title="总结下我想说的话"></a>总结下我想说的话</h3><ol>
+<li>付费学习是件好事，前提是你并非出于缓解焦虑而付费，而是很清楚你想做什么。</li>
+<li>如果你真的决定要变得优秀，请不要着眼于钱，成长若是成真，钱只是顺便的东西。</li>
+<li>不要急躁，静下来，好好提升自己的学习能力，认知能力，才能更好的筛选有价值的东西。</li>
+<li>别怕你对自己的高要求会让你变得不合群，他们只是害怕你成长的太快而已，你也从未孤单过。</li>
+<li>如果你对自己没要求，就开开心的过好每一天，切莫怨天尤人，抱怨是最要不得的情绪，那只会体现自己的无能。</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/08/fishhook使用场景&源码分析/" rel="next" title="fishhook使用场景&源码分析">
+                <i class="fa fa-chevron-left"></i> fishhook使用场景&源码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/23/LLDB 知多少/" rel="prev" title="LLDB 知多少">
+                LLDB 知多少 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#多数人的现状"><span class="nav-number">1.</span> <span class="nav-text">多数人的现状</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我的挣扎历程"><span class="nav-number">2.</span> <span class="nav-text">我的挣扎历程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#刨根问底"><span class="nav-number">2.1.</span> <span class="nav-text">刨根问底</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#回到现实"><span class="nav-number">2.2.</span> <span class="nav-text">回到现实</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结下我想说的话"><span class="nav-number">3.</span> <span class="nav-text">总结下我想说的话</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+</html>

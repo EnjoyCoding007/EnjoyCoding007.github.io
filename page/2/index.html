@@ -296,6 +296,801 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/27/Unix:Linux文件类型与权限管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/27/Unix:Linux文件类型与权限管理/" class="post-title-link" itemprop="url">Unix/Linux文件类型与权限管理</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-27 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-27T20:49:56+08:00">2019-01-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 21:54:01" itemprop="dateModified" datetime="2019-04-22T21:54:01+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/27/Unix:Linux文件类型与权限管理/" class="leancloud_visitors" data-flag-title="Unix/Linux文件类型与权限管理">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&emsp;在小白与计算机的日常中，经常会碰到文件无（读、写、执行）权限，包括很多刚入门的程序员，也常常在别人的博客里会看到类似 <figure class="highlight plain"><figcaption><span>777 XX.file```、```chmod u+x XX.file```、```chmod g-w XX.file```这些不明觉厉的命令，今天来帮还不清楚的童鞋科普一下，电脑中每个文件的权限 系统究竟是如何管理的，又如何修改文件的权限。  </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">### 看懂文件类型与权限等信息</span><br><span class="line">&amp;emsp;先不慌，打开终端，在任意非空目录下我们输入：</span><br></pre></td></tr></table></figure></p>
+<p>ls -l<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">终端会输出该目录下所有文件的信息：</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/23/16878e2679f7e8f8?w=1210&amp;h=174&amp;f=png&amp;s=49942)</span><br><span class="line">好，我们来对每一列是什么分别介绍：</span><br><span class="line">1. -r-xr-xr-x：文件类型及权限信息  </span><br><span class="line">    我们会发现任意一个文件第一列都是一个由 - d l p s b c D r w x + @ 这些字符组成的字符串，这一串字符究竟是由哪几部分组成又分别代表什么呢？</span><br><span class="line">    * 第一位字符：文件类型信息，-代表这是一个常规文件--Regular file，d代表这是一个文件夹--Directory，l代表文件链接--Symbolic link，更多文件类型（p-Named pipe、s-Socket、b/c-Device file、D-Door）请参考[Unix file types]((https://en.wikipedia.org/wiki/Unix_file_types))</span><br><span class="line">    * 第2-10位，这九位字符每三个为一组，每组的三个字符分别代表读(r)、写(w)、执行(x)权限，三组分别代表不同所有者对该文件的权限，第一组：文件所有者的权限、第二组：这一组其他用户的权限、第三组：非本组用户的权限，总结如下图：</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/23/16878dd01879f1d6?w=2142&amp;h=796&amp;f=png&amp;s=455829)</span><br><span class="line">    * 在MacOS系统中，输入```ls -l``` 发现文件权限格式与Linux稍有不同，部分文件权限信息的末尾有”+“或”@“符号：</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/23/16878df88b3644fa?w=1110&amp;h=266&amp;f=png&amp;s=70168)</span><br><span class="line">我们直接看官方说明：终端输入```man ls```，我们可以看到这一段说明：</span><br></pre></td></tr></table></figure></p>
+<pre><code>If the file or directory has extended attributes, the permissions 
+field printed by the -l option is followed by a &apos;@&apos; character.  
+Otherwise, if the file or directory has extended security 
+information (such as an access control list), the permissions 
+field printed by the -l option is followed by a &apos;+&apos; character.
+</code></pre><p><code>那什么是“extended security”呢？其实就是扩展安全信息  
+执行</code>ls -le<code>查看extended security:
+![](https://user-gold-cdn.xitu.io/2019/1/23/16879719bf49f408?w=1506&amp;h=380&amp;f=png&amp;s=91760)
+你会发现权限末尾有&#39;+&#39;的都会有</code>0: group:everyone deny delete<code>`</code>，意义就很明显啦~  </p>
+<p>那什么又是“extended attributes”呢？继续查看“@”的含义，<br>执行 <code>ls -l@</code>或<code>xattr -l XX.file</code> 查看扩展属性：<br><img src="https://user-gold-cdn.xitu.io/2019/1/23/16879748eb7b298b?w=1464&amp;h=436&amp;f=png&amp;s=113500" alt><br>简单理解@就是表示文件或目录有额外属性，比如在MacOS上 从网上下载个文件有时会提示“此文件来自网络下载不安全”，就是这个属性起的作用。而从MacOS下copy文件到Linux系统上时也会因为这个属性出现打不开的情况。可以手动去除掉：<code>xattr -c XX.file</code>。</p>
+<ol start="2">
+<li>其余每一列对应的信息如下：<br><img src="https://user-gold-cdn.xitu.io/2019/1/23/1687a3e2b0a9533f?w=1008&amp;h=278&amp;f=png&amp;s=79464" alt><br>[类型+权限]—[连接]-[所有者]-[所属组]-[文件大小]-[最后修改日期]-[文件名称]</li>
+</ol>
+<h3 id="文件权限的修改："><a href="#文件权限的修改：" class="headerlink" title="文件权限的修改："></a>文件权限的修改：</h3><p>一张图看懂修改文件权限的命令：<br><img src="https://user-gold-cdn.xitu.io/2019/1/23/1687a446f2bd8e5e?w=2136&amp;h=814&amp;f=png&amp;s=281716" alt><br>通过按位与的设计巧妙的用三个二进制位表示了三种权限产生的8种组合。<br>用符号改变权限时，如：<code>chmod a+r XX.file</code>表示对用户、组、其他 全部添加读取权限。</p>
+<p>以上，有任何疑问欢迎留言~</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/23/撸一个iOS重签名脚本/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/23/撸一个iOS重签名脚本/" class="post-title-link" itemprop="url">撸一个 iOS 重签名脚本</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-23 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-23T20:49:56+08:00">2019-01-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 21:53:09" itemprop="dateModified" datetime="2019-04-22T21:53:09+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/23/撸一个iOS重签名脚本/" class="leancloud_visitors" data-flag-title="撸一个 iOS 重签名脚本">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>上一篇<a href="https://enjoycoding007.github.io/2019/01/21/iOS%20APP%E7%AD%BE%E5%90%8D%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/" target="_blank" rel="noopener">iOS APP签名详解</a>我们了解了iOS签名的机制和原理，这一篇我们一起来动手写一个自动重签名的脚本，懒是程序员乃至人类进步的终极力量，造轮子写工具可以极大的避免重复性工作，为我们节省更多的时间放在思考上，话不多说撸起袖子开始干：  </p>
+<h3 id="第一步：获取脱壳的ipa包"><a href="#第一步：获取脱壳的ipa包" class="headerlink" title="第一步：获取脱壳的ipa包"></a>第一步：获取脱壳的ipa包</h3><ol>
+<li>从iTunes 12.6.3及以前的版本上直接下载 （macOS Mojave Doesn’t Support），这样获取到的是正版ipa，需要用Clutch、dumdecrypted等工具先脱壳，否则别人的加密验证不通过无法安装</li>
+<li>各类助手上下载越狱版ipa包</li>
+<li>越狱手机导出</li>
+<li>Xcode打包 等等</li>
+</ol>
+<p>这里我下载了微信的越狱版ipa包用来演示。</p>
+<h3 id="第二步：命令行实现重签名"><a href="#第二步：命令行实现重签名" class="headerlink" title="第二步：命令行实现重签名"></a>第二步：命令行实现重签名</h3><ol>
+<li><p>将ipa解压缩后前往.app所在目录，输入  </p>
+ <figure class="highlight plain"><figcaption><span>-d -vv WeChat.app```  </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">	查看可执行文件的签名信息：</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/22/1687194244bf3be8?w=1424&amp;h=376&amp;f=png&amp;s=245630)</span><br><span class="line">可以看到签名信息现在还是腾讯的  </span><br><span class="line"></span><br><span class="line">2. 输入：  </span><br><span class="line">	```security find-identity -v -p codesigning```  </span><br><span class="line">	查看Mac本地的证书列表:</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/22/16871950dcd0e283?w=1592&amp;h=272&amp;f=png&amp;s=114415)</span><br><span class="line">	记下你要用来签名的证书双引号（包括双引号）中的字符串，一会儿会用到  </span><br><span class="line">	</span><br><span class="line">3. 确认ipa包是否已经脱壳，输入：  </span><br><span class="line">	```cd WeChat.app```  </span><br><span class="line">	```otool -l WeChat | grep crypt```  </span><br><span class="line">	会输出：![](https://user-gold-cdn.xitu.io/2019/1/22/16871958f396421c?w=988&amp;h=244&amp;f=png&amp;s=94527)</span><br><span class="line">	cryptid为0即为已脱壳，为1为加密状态。这里有两组数据是因为这是个支持两种CPU架构的可执行文件，可输入```file WeChat```查看可执行文件支持的架构：</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/22/16871961777d44a5?w=1396&amp;h=142&amp;f=png&amp;s=108757)</span><br><span class="line">4. 删除无法签名的插件文件：PlugIns文件夹、Watch文件夹  </span><br><span class="line">5. 对.app文件夹内的Frameworks文件夹中的每一个framework强制重签名：</span><br><span class="line">	```codesign -fs 步骤2中记下的证书信息 要签名的.framework```  </span><br><span class="line">	注意不要遗漏，每一个framework都要用自己的证书重签一下</span><br><span class="line">6. 将自己的描述文件名改为embedded.mobileprovision，并拖入到.app中，再将.app中info.plist文件里的Bundle identifier改成我们自己的BundleID</span><br><span class="line">7. 在.app同级目录下新建一个entitlements.plist文件，查看描述文件内容：  </span><br><span class="line">    ```security cms -D -i embedded.mobileprovision```将Entitlements节点下的</span><br></pre></td></tr></table></figure>
+<p> <dict></dict></p>
+<pre><code>...
+...
+</code></pre><p>   </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">    复制粘贴到刚刚新建的entitlements.plist文件中</span><br><span class="line">8. 最后一步，对整个包签名，回到.app所在目录，输入：</span><br><span class="line">    ```codesign -fs 步骤2中记下的证书信息 --no-strict --entitlements=entitlements.plist WeChat.app```  </span><br><span class="line">    签名成功！</span><br><span class="line">9. 打包：```zip -ry WeiChat.ipa Payload</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>以上，就是通过命令行一步步的实现应用重签名。</p>
+<h3 id="最后：撸自动重签名的脚本"><a href="#最后：撸自动重签名的脚本" class="headerlink" title="最后：撸自动重签名的脚本"></a>最后：撸自动重签名的脚本</h3><p>现在我就按照这个思路写脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">#$&#123;SRCROOT&#125; 它是工程文件所在的目录</span><br><span class="line">TEMP_PATH=&quot;$&#123;SRCROOT&#125;/Temp&quot;</span><br><span class="line">#资源文件夹，我们提前在工程目录下新建一个APP文件夹，里面放ipa包</span><br><span class="line">ASSETS_PATH=&quot;$&#123;SRCROOT&#125;/APP&quot;</span><br><span class="line">#目标ipa包路径</span><br><span class="line">TARGET_IPA_PATH=&quot;$&#123;ASSETS_PATH&#125;/*.ipa&quot;</span><br><span class="line">#清空Temp文件夹</span><br><span class="line">rm -rf &quot;$&#123;SRCROOT&#125;/Temp&quot;</span><br><span class="line">mkdir -p &quot;$&#123;SRCROOT&#125;/Temp&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 1. 解压IPA到Temp下</span><br><span class="line">unzip -oqq &quot;$TARGET_IPA_PATH&quot; -d &quot;$TEMP_PATH&quot;</span><br><span class="line"># 拿到解压的临时的APP的路径</span><br><span class="line">TEMP_APP_PATH=$(set -- &quot;$TEMP_PATH/Payload/&quot;*.app;echo &quot;$1&quot;)</span><br><span class="line"># echo &quot;路径是:$TEMP_APP_PATH&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 2. 将解压出来的.app拷贝进入工程下</span><br><span class="line"># BUILT_PRODUCTS_DIR 工程生成的APP包的路径</span><br><span class="line"># TARGET_NAME target名称</span><br><span class="line">TARGET_APP_PATH=&quot;$BUILT_PRODUCTS_DIR/$TARGET_NAME.app&quot;</span><br><span class="line">echo &quot;app路径:$TARGET_APP_PATH&quot;</span><br><span class="line"></span><br><span class="line">rm -rf &quot;$TARGET_APP_PATH&quot;</span><br><span class="line">mkdir -p &quot;$TARGET_APP_PATH&quot;</span><br><span class="line">cp -rf &quot;$TEMP_APP_PATH/&quot; &quot;$TARGET_APP_PATH&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 3. 删除extension和WatchAPP.个人证书没法签名Extention</span><br><span class="line">rm -rf &quot;$TARGET_APP_PATH/PlugIns&quot;</span><br><span class="line">rm -rf &quot;$TARGET_APP_PATH/Watch&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 4. 更新info.plist文件 CFBundleIdentifier</span><br><span class="line">#  设置:&quot;Set : KEY Value&quot; &quot;目标文件路径&quot;</span><br><span class="line">/usr/libexec/PlistBuddy -c &quot;Set :CFBundleIdentifier $PRODUCT_BUNDLE_IDENTIFIER&quot; &quot;$TARGET_APP_PATH/Info.plist&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 5. 给MachO文件上执行权限</span><br><span class="line"># 拿到MachO文件的路径</span><br><span class="line">APP_BINARY=`plutil -convert xml1 -o - $TARGET_APP_PATH/Info.plist|grep -A1 Exec|tail -n1|cut -f2 -d\&gt;|cut -f1 -d\&lt;`</span><br><span class="line">#上可执行权限</span><br><span class="line">chmod +x &quot;$TARGET_APP_PATH/$APP_BINARY&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 6. 重签名第三方 FrameWorks</span><br><span class="line">TARGET_APP_FRAMEWORKS_PATH=&quot;$TARGET_APP_PATH/Frameworks&quot;</span><br><span class="line">if [ -d &quot;$TARGET_APP_FRAMEWORKS_PATH&quot; ];</span><br><span class="line">then</span><br><span class="line">for FRAMEWORK in &quot;$TARGET_APP_FRAMEWORKS_PATH/&quot;*</span><br><span class="line">do</span><br><span class="line"></span><br><span class="line">#签名</span><br><span class="line">/usr/bin/codesign --force --sign &quot;$EXPANDED_CODE_SIGN_IDENTITY&quot; &quot;$FRAMEWORK&quot;</span><br><span class="line">done</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>将写好的脚本直接丢到.xcodeproj同级目录中</li>
+<li>Xcode –&gt; Build Phases –&gt; New Run Script Phase:<br><img src="https://user-gold-cdn.xitu.io/2019/1/22/16871b154fd4fd26?w=1114&amp;h=590&amp;f=png&amp;s=68151" alt></li>
+<li>现在，将你要重签名的ipa包丢到在工程目录下新建的文件夹APP中（这个文件夹跟你写的脚本中的目标文件夹同名即可），直接Run！任何应用都会在你的真机上跑起来了！这也是后面讲逆向的准备工作。</li>
+</ul>
+<h4 id="了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰-如果你在实践中遇到任何问题，欢迎留言交流"><a href="#了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰-如果你在实践中遇到任何问题，欢迎留言交流" class="headerlink" title="了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰~如果你在实践中遇到任何问题，欢迎留言交流~"></a>了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰~如果你在实践中遇到任何问题，欢迎留言交流~</h4>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/18/iOS APP签名机制详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/18/iOS APP签名机制详解/" class="post-title-link" itemprop="url">iOS APP签名机制详解</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-18 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-18T20:49:56+08:00">2019-01-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 21:28:04" itemprop="dateModified" datetime="2019-04-22T21:28:04+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/18/iOS APP签名机制详解/" class="leancloud_visitors" data-flag-title="iOS APP签名机制详解">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="苹果的需求"><a href="#苹果的需求" class="headerlink" title="苹果的需求"></a>苹果的需求</h3><ol>
+<li>为了保证系统的安全性，所有iPhone上安装的应用必须是经过苹果授权的</li>
+<li>安装包不需要上传到App Store也能被安装 （开发调试 企业灰度）</li>
+<li>防止证书权限滥用：设备限制、指定APP、iCloud/PUSH/后台运行等附加权限控制</li>
+</ol>
+<p>苹果的解决方案：<strong>双层代码签名+描述文件:</strong></p>
+<p>这里画一张图附上：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/1/21/16870efe0c1b7b07?w=2112&amp;h=1138&amp;f=png&amp;s=444176" alt><br>&emsp;在iOS出来之前，主流的操作系统（MacOS/Windows）软件随便从哪里下载都能运行，系统安全存在隐患，盗版软件、病毒入侵、静默安装等等，苹果希望解决类似的问题，保证在iPhone iOS上的APP都是经过苹果官方允许的，怎样保证呢？就是通过<strong>代码签名</strong>。  </p>
+<p>&emsp;如果要实现验证，最简单的方式就是苹果官方生成一对RSA公私钥，在iOS系统中内置一个公钥，私钥由苹果后台保存，我们上传APP到App Store时苹果后台用私钥对APP数据进行加密，iPhone下载APP后用公钥验证这个签名就可以确认APP是否经过允许或被三方篡改过。但是，我们安装APP并不仅仅只有App Store这一个方式，比如真机调试、企业包等，所以只靠这个简单的数字签名方式是不够的。  </p>
+<p>&emsp;于是苹果设计了双层签名的机制，我们都知道iOS的应用开发必须在Mac系统下进行，正是由于这个依赖关系，双层签名才有了基础：  </p>
+<ol>
+<li>在Mac系统中生成一对非对称加密算法的公私钥M（Xcode会帮你做好）  </li>
+<li>苹果自己有固定的一对公私钥，正如上述最简单的代码签名中提到的：私钥A在苹果后台，公钥A在每个iOS系统的手机中  </li>
+<li>把公钥M以及一些开发者信息（也就是CSR文件）发送给苹果后台，用苹果后台的私钥A对公钥M签名，得到一份包含公钥M以及其签名结果的数据就是证书（.p12）。  </li>
+<li>在开发时，当我们打包时会用本地的私钥M（也就是可导出给小伙伴的开发者证书）对这个APP进行签名，同时把第三步得到的证书一起打包进APP里，然后安装到手机上（真机联调）或者提交App Store审核  </li>
+<li>安装时，iOS系统取得内置公钥A去验证公钥M的数字签名证书是否正确  </li>
+<li>验证公钥M是苹果认证过的后，再用公钥M去验证APP的签名，这样就间接验证了这个APP的安装是经过苹果允许的了（注意这里只验证安装行为，不验证APP是否被改动，因为开发阶段APP内容总是不断变化的）</li>
+</ol>
+<p>&emsp;有了上面的过程已经可以保证开发者的认证和程序的安全了，但是如果只有上述的过程，那岂不是只要申请了一个证书就可以安装到所有的iOS设备了？所以，苹果又增加了授权文件（Provisioning profile）的验证，Provisioning profile一般包括三样东西：证书、APP ID、设备。  </p>
+<p>&emsp;描述文件是在AppleDevelop网站创建的(在Xcode中填上AppleID它会代办创建)，Xcode运行时会打包进入APP内。在开发时，编译完一个 APP 后，用本地的私钥M对这个APP进行签名，同时把从苹果服务器得到的 Provisioning Profile 文件打包进APP里，文件名为embedded.mobileprovision，当把APP安装到手机上时，iOS系统会进行验证。  </p>
+<p>&emsp;以上就是iOS应用签名的原理，下一篇基于这个原理我会手撸一个自动重签名的脚本。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/12/浅谈iOS中常用加密算法的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/12/浅谈iOS中常用加密算法的使用/" class="post-title-link" itemprop="url">浅谈iOS中常用加密算法的使用</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-12 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-12T20:49:56+08:00">2019-01-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 21:11:48" itemprop="dateModified" datetime="2019-04-22T21:11:48+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/12/浅谈iOS中常用加密算法的使用/" class="leancloud_visitors" data-flag-title="浅谈iOS中常用加密算法的使用">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&emsp;以前如果我们忘记了登录密码，通常可以通过“找回密码”这样的方式拿回密码，那说明你的隐私数据在他们的数据库中是明文保存的，现在请切记：如果哪个平台还有这样的方式请立刻马上注销你的账号，并避免在任何其他平台使用这个平台使用过的密码。请坚信：在网络世界中，只要是明文存在或可逆的东西，都是不安全的。没有哪家公司会告诉你他们的数据库被拖库过，你更无法想象现在的黑色产业早已让你毫无隐私。 </p>
+<p>&emsp;千万别一个密码走天下，一定要定期改密码！ </p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/1/12/16842539835b86d2" alt><br>&emsp;道高一尺魔高一丈，对用户隐私及一些敏感数据的保护越来越重要，在iOS中，苹果封装了Security.framework、CommonCrypto.framework这两个保护信息安全的库，为我们提供了安全相关的通用API：  </p>
+<ul>
+<li>RSA：公私钥的生成、公钥加密、私钥解密、私钥签名、公钥验签功能，证书信息的读取，以及密钥在KeyChain中存储，查找，删除等功能  </li>
+<li>哈希：SHA1、SHA224、SHA256、SHA384、SHA512<br>MD2、MD4、MD5   </li>
+<li>对称加密：DES、3DES、AES  </li>
+</ul>
+<p>&emsp;这一篇文章，我们就以“用户输入密码，登录，服务端验证用户信息，用户上传隐私数据”这个常见场景为例，分享一些密码学常识和加密时常用的防破解技巧，至于上述算法相关API的使用，文末我会附上iOS中所有常用加密API使用的demo，这里就不浪费篇幅贴代码了。先说两个保护用户隐私的原则： </p>
+<ul>
+<li>网络上不允许明文传递用户隐私信息</li>
+<li>本地不允许明文保存用户隐私信息</li>
+</ul>
+<p>&emsp;再了解下几种算法的特点：</p>
+<h4 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h4><ul>
+<li>加密解密共用一个密钥</li>
+<li>DES 数据加密标准，安全强度不够已经很少用了</li>
+<li>3DES 使用三个密钥对相同的数据执行三次加密 强度略高，但密钥的保护一直是个隐患所以也不常用</li>
+<li>AES 高级密码标准 用得最多</li>
+<li>两种常用加密模式：<ul>
+<li>ECB：<br>&emsp;最基本的加密方式，无初始向量，相同的明文永远生成不变的密文，容易受到密码本重放攻击，很少用</li>
+<li>CBC：<br>&emsp;明文被加密前要与前面的密文进行异或运算后再加密，因此只要选择不同的初始向量，相同的密文加密后会形成不同的密文，这是目前应用最广泛的模式。CBC加密后的密文是上下文相关的，但明文的错误不会传递到后续分组，但如果一个分组丢失，后面的分组将全部作废(同步错误)。<br>&emsp;可以有效的保证密文的完整性，如果一个数据块在传递是丢失或改变，后面的数据将无法正常解密。  <h4 id="RSA"><a href="#RSA" class="headerlink" title="RSA"></a>RSA</h4>关于RSA相关知识请参考：<br><a href="https://juejin.im/post/5c335cd5f265da615304ee98">非对称加密–RSA原理浅析</a><br><a href="https://juejin.im/post/5c34a71af265da6130750d60">RSA的主场-证书签名之OpenSSL演示</a>  </li>
+</ul>
+</li>
+</ul>
+<p>这里不再赘述。</p>
+<h4 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h4><p>也就是常说的散列函数，严格意义上它并不是一种加密算法，但它常常与加密算法一起出现，作为一种组合方式。哈希具有以下特点：  </p>
+<ul>
+<li>算法是公开的</li>
+<li>对相同的数据运算，得到的结果是一样的</li>
+<li>同一算法对不同的数据运算，得到的结果长度是固定的，如MD5的结果一定是128bit，32个字符(16进制表示)，所以散列碰撞是必然的偶然</li>
+<li>不可逆，但是可以通过<a href="https://zh.wikipedia.org/wiki/%E5%BD%A9%E8%99%B9%E8%A1%A8" target="_blank" rel="noopener">彩虹表</a>去<a href="https://www.cmd5.com/" target="_blank" rel="noopener">反查询</a></li>
+<li><p>通常作为信息“指纹”–信息摘要，用来做数据识别（版权、搜索引擎、数字签名等）。</p>
+<h4 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h4><p>&emsp;知道了每种算法的特点，回到应用场景：用户输完密码点击登录时，我们如何保证用户信息是足够安全的呢？</p>
+</li>
+<li><p>对称加密：密钥传输有隐患，且在客户端加密前和服务端解密后会出现明文，不安全。</p>
+</li>
+<li>RSA：安全性高，网络劫持很难破解，但是服务端拿到客户端加密后的密文怎么办呢？用私钥解密，解密之后拿到明文信息？大忌，没有哪个服务端是安全的，更没法保证数据库人员的个人泄露用户信息。不可取。</li>
+<li>哈希：  <ul>
+<li>直接MD5？用户输入常规组合概率很大，暴力破解风险很高，不可取。本地加盐，很变态的盐？安全性有一定保障，缺点是盐写死在程序里了，写代码的人也有泄露的可能性，一旦泄漏结果是毁灭性的，不可取。</li>
+<li><a href="https://baike.baidu.com/item/hmac" target="_blank" rel="noopener">HMAC</a>：Keyed-Hashing for Message Authentication，这是一种使用单向散列函数来构造消息认证码的方案，而不是算法。<br>&emsp; 在第一次注册时，服务端下发一个随机密钥 n，这个密钥会在客户端和服务端都保存一份（支持服务端更新），客户端的 n 用作以后每次登录时的“盐”参与第一次散列运算，并将第一次散列运算的结果 s 发给服务端作为用户密码信息保存到数据库中，这样用户的真实密码无论是客户端还是服务端都不知道，也不存在数据库被拖库泄露的问题。服务端保存的 n 用于当用户换设备登录或卸载重新装时验证通过后再次将 n 下发给客户端保存。<br>&emsp;用户每次登录时，服务器会再动态下发一个随机值作为密钥，并在会话中记下这个随机值 r，客户端先用本地保存的 n 对用户密码做散列运算得到 s ，再用 r 对 s 做一次<a href="https://baike.baidu.com/item/MAC%E7%AE%97%E6%B3%95/2264362" target="_blank" rel="noopener">MAC</a>（Message Authentication Codes）运算并将运算结果发送给服务端，服务端也从数据库中取出用户的密码散列值做同样的运算，并将结果与客户端进行对比。为了防止网络中间人攻击，还需将时间戳（服务器时间，一般精确到分钟）参与校验，黑客就很难破解了。这是目前最主流的安全方案。</li>
+</ul>
+</li>
+</ul>
+<p>&emsp;现在用户登录成功，现在要上传一份敏感数据，我们如何保证数据的完整性呢？结合上面的分析，推荐AES的CBC加密方式，安全性高，还能保证完整性，数字签名同样也可以验证数据完整性，用RSA对数据的hash值进行加密，服务端接收完数据后，用私钥解密得到hash值，与接收数据的hash值作比对。  </p>
+<h4 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h4><p>iOS中常见加密算法的使用：<a href="https://github.com/EnjoyInCodingAlways/EncryptDemo.git" target="_blank" rel="noopener">EncryptDemo</a><br>在Demo中，对称加密AES的加密解密函数：  </p>
+<pre><code>CCCryptorStatus CCCrypt(
+    CCOperation op,         /* kCCEncrypt, etc. */
+    CCAlgorithm alg,        /* kCCAlgorithmAES128, etc. */
+    CCOptions options,      /* kCCOptionPKCS7Padding, etc. */
+    const void *key,
+    size_t keyLength,
+    const void *iv,         /* optional initialization vector */
+    const void *dataIn,     /* optional per op and alg */
+    size_t dataInLength,
+    void *dataOut,          /* data RETURNED here */
+    size_t dataOutAvailable,
+    size_t *dataOutMoved)
+    API_AVAILABLE(macos(10.4), ios(2.0));  
+</code></pre><p>调用CCCrypt时，用户敏感数据不要直接作为参数传递，否则逆向很容易hook到，通常的做法是对敏感数据做异或、加盐等处理，具体根据需要自己设计。  </p>
+<p>iOS app签名机制详解 推荐阅读：<br><a href="https://www.jianshu.com/p/02034d1a91b5" target="_blank" rel="noopener">iOS应用签名(上)</a><br><a href="https://www.jianshu.com/p/3c9e2055ae5b" target="_blank" rel="noopener">iOS应用签名(下)</a></p>
+<p>iOS中对钥匙串的操作推荐：<a href="https://github.com/samsoffes/sskeychain" target="_blank" rel="noopener">SSKeyChain</a>  </p>
+<h4 id="实践出真知，下篇再会"><a href="#实践出真知，下篇再会" class="headerlink" title="实践出真知，下篇再会~"></a>实践出真知，下篇再会~</h4><p>老规矩，有错误请积极指正，有问题请踊跃留言。</p>
+<p>更多一手好文更新，请关注我的个人微信公众号：面向未来编程  </p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/09/RSA的主场-证书签名&OpenSSL演示/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -931,7 +1726,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-count">17</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

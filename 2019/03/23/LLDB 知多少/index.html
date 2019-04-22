@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="重识 LLDBLLDB 是什么？&amp;emsp;“如果调试是删除 bug 的过程，那么编程就是引入 bug 的过程。”（Edsger W. Dijkstra） &amp;emsp;对于苹果开发者而言，LLDB 是无人不知的调试工具，然而此知非彼知，相信有相当规模的开发者对 LLDB 的了解仍然停留于几个基础命令的使用，今天让我们来重新认识一下既熟悉又陌生的 LLDB，看看它那些你不曾用过的强大功能，以及如何提">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLDB 知多少">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/23/LLDB 知多少/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="重识 LLDBLLDB 是什么？&amp;emsp;“如果调试是删除 bug 的过程，那么编程就是引入 bug 的过程。”（Edsger W. Dijkstra） &amp;emsp;对于苹果开发者而言，LLDB 是无人不知的调试工具，然而此知非彼知，相信有相当规模的开发者对 LLDB 的了解仍然停留于几个基础命令的使用，今天让我们来重新认识一下既熟悉又陌生的 LLDB，看看它那些你不曾用过的强大功能，以及如何提">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/23/169a926c79ac2fad?w=970&h=205&f=png&s=55903">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/23/169a95fec62b6dc5?w=677&h=67&f=png&s=14387">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/23/169a9a93fb2e4469?w=992&h=276&f=png&s=72149">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/23/169a9c232e8133fd?w=838&h=65&f=png&s=17763">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/23/169a9c1cf046cc81?w=712&h=53&f=png&s=13168">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/23/169aa02fe152b579?w=967&h=697&f=png&s=160330">
+<meta property="og:updated_time" content="2019-04-22T14:25:26.474Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LLDB 知多少">
+<meta name="twitter:description" content="重识 LLDBLLDB 是什么？&amp;emsp;“如果调试是删除 bug 的过程，那么编程就是引入 bug 的过程。”（Edsger W. Dijkstra） &amp;emsp;对于苹果开发者而言，LLDB 是无人不知的调试工具，然而此知非彼知，相信有相当规模的开发者对 LLDB 的了解仍然停留于几个基础命令的使用，今天让我们来重新认识一下既熟悉又陌生的 LLDB，看看它那些你不曾用过的强大功能，以及如何提">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/3/23/169a926c79ac2fad?w=970&h=205&f=png&s=55903">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/23/LLDB 知多少/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>LLDB 知多少 | 小可的编程之路</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/23/LLDB 知多少/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LLDB 知多少
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-23 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-23T20:49:56+08:00">2019-03-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 22:25:26" itemprop="dateModified" datetime="2019-04-22T22:25:26+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/03/23/LLDB 知多少/" class="leancloud_visitors" data-flag-title="LLDB 知多少">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             Views:  
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="重识-LLDB"><a href="#重识-LLDB" class="headerlink" title="重识 LLDB"></a>重识 LLDB</h2><h3 id="LLDB-是什么？"><a href="#LLDB-是什么？" class="headerlink" title="LLDB 是什么？"></a>LLDB 是什么？</h3><p>&emsp;“如果调试是删除 bug 的过程，那么编程就是引入 bug 的过程。”（Edsger W. Dijkstra）</p>
+<p>&emsp;对于苹果开发者而言，LLDB 是无人不知的调试工具，然而此知非彼知，相信有相当规模的开发者对 LLDB 的了解仍然停留于几个基础命令的使用，今天让我们来重新认识一下既熟悉又陌生的 LLDB，看看它那些你不曾用过的强大功能，以及如何提高我们的开发效率。  </p>
+<p>&emsp;开始把玩其功能之前，先搞清楚 LLDB 是什么，简言之，LLDB 是一个有着 REPL 的特性和 C++ 、Python 插件的开源调试器。</p>
+<p>&emsp;LLDB is a next generation, high-performance debugger. It is built as a set of reusable components which highly leverage existing libraries in the larger LLVM Project, such as the Clang expression parser and <a href="http://llvm.org/" target="_blank" rel="noopener">LLVM</a> disassembler.<br>&emsp;LLDB is the default debugger in Xcode on Mac OS X and supports debugging C, Objective-C and C++ on the desktop and iOS devices and simulator.  </p>
+<p>&emsp;以上摘自官方文档中的一段简短的介绍，更多相关信息请参阅 LLDB <a href="http://lldb.llvm.org/index.html" target="_blank" rel="noopener">官方文档</a>。</p>
+<h3 id="LLDB-命令结构"><a href="#LLDB-命令结构" class="headerlink" title="LLDB 命令结构"></a>LLDB 命令结构</h3><p>&emsp;知道了 LLDB 是什么，还要了解其命令结构及语法，这样才能告别死记命令，开启压榨 LLDB 之路了。LLDB 通用结构的形式如下：  </p>
+<p><code>&lt;command&gt; [&lt;subcommand&gt; [&lt;subcommand&gt;...]] &lt;action&gt; [-options [option-value]] [argument [argument...]]</code>  </p>
+<p>其中：</p>
+<ul>
+<li>command、subcommand：LLDB调试命令的名称。命令和子命令按层级结构来排列：一个命令对象为跟随其的子命令对象创建一个上下文，子命令又为其子命令创建一个上下文，依此类推。</li>
+<li>action：命令操作，想在前面的命令序列的上下文中执行的一些操作。</li>
+<li>options：命令选项，行为修改器(action modifiers)。通常带有一些值。</li>
+<li>argument：命令参数，根据使用的命令的上下文来表示各种不同的东西。</li>
+<li>[]：表示命令是可选的，可以有也可以没有。  </li>
+</ul>
+<p>举个例子：</p>
+<p>命令：<code>breakpoint set -n main</code> 对应到上面的语法就是：</p>
+<ul>
+<li>command：breakpoint 断点命令</li>
+<li>action：set 设置断点</li>
+<li>option：-n 表根据方法 name 设置断点</li>
+<li>arguement：mian 表示方法名为 mian</li>
+</ul>
+<p>关于<strong>原始命令</strong>：</p>
+<p>&emsp;LLDB支持不带命令选项的原始命令，原始命令会将命令后面的所有东西当做参数(arguement)处理。但很多原始命令也可以带命令选项，当你使用命令选项的时候，需要在命令选项后面加 <code>--</code> 区分命令选项和参数。<br>&emsp;如：<code>expression</code> （就是 <code>p</code>/<code>print</code>/<code>call</code>）、<code>expression -o</code>（就是 <code>po</code>），打印一个<code>UIView</code>对象地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a926c79ac2fad?w=970&amp;h=205&amp;f=png&amp;s=55903" alt><br>&emsp;前者是计算其地址的值，后者调用了对象的 description 方法，其中体现了唯一匹配原则：假如根据前n个字母已经能唯一匹配到某个命令，则只写前n个字母等效于写下完整的命令。再用设置断点的命令举例，下面两条命令等效：<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a95fec62b6dc5?w=677&amp;h=67&amp;f=png&amp;s=14387" alt><br>&emsp;更多命令结构的介绍及用法，请参考 <a href="http://lldb.llvm.org/tutorial.html" target="_blank" rel="noopener">LLDB 入门</a>。接下来介绍点 LLDB 最实用又最容易被忽略的用法。</p>
+<hr>
+<h2 id="LLDB-常用命令总结"><a href="#LLDB-常用命令总结" class="headerlink" title="LLDB 常用命令总结"></a>LLDB 常用命令总结</h2><h3 id="辅助记忆：apropos"><a href="#辅助记忆：apropos" class="headerlink" title="辅助记忆：apropos"></a>辅助记忆：apropos</h3><p>&emsp;当我们并不能完全记得某个命令的时候，使用 <strong>apropos</strong> 通过命令中的某个关键字就可以找到所有相关的命令信息。<br>比如: 我们想使用stop-hook的命令，但是已经不记得stop-hook命令是啥样了：<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a9a93fb2e4469?w=992&amp;h=276&amp;f=png&amp;s=72149" alt><br>实在记不起来也不要慌，这里有 <a href="https://lldb.llvm.org/lldb-gdb.html" target="_blank" rel="noopener">命令list</a>。</p>
+<h3 id="一-断点设置"><a href="#一-断点设置" class="headerlink" title="一.断点设置"></a>一.断点设置</h3><p>&emsp;关于断点设置，多数人都习惯用图形界面去做，但在调试中有些场景仅仅靠图形界面还是不够的，比如：如何通过断点实现类似 KVO 那样对成员变量变化的监听呢？（别跟我说你要加代码重写set方法…即使这样也不靠谱）。下面一一罗列那些好用的断点命令：</p>
+<ol>
+<li>breakpoint list：查看所有断点列表</li>
+<li>breakpoint delete：删除所有断点（可跟组号删除指定组）</li>
+<li>breakpoint disable/enable：禁用 启用指定断点</li>
+<li>breakpoint set -r some：遍历整个项目中包含 some 这个字符的所有方法并设置断点</li>
+<li>breakpoint 支持按文件名、函数名、行数、正则等各种条件筛选设置断点，请结合语法并参考官方文档</li>
+<li>watchpoint set expression 0x10cc64d50：在内存中为地址为0x10cc64d50的对象设置内存断点</li>
+<li>watchpoint set variable xxoo：为当前对象的变量 xxoo 设置内存断点</li>
+<li>target stop-hook add -o “frame variable”：添加每次程序 stop 时都希望执行的命令：frame variable（打印当前栈内的所有变量）</li>
+<li>target stop-hook、watchpoint 的增删改查命令与 breakpoint 的基本相同</li>
+<li>更多变态断点玩法需自定义插件支持，迫不及待的你请快进此文 》》》</li>
+</ol>
+<h3 id="二-流程控制"><a href="#二-流程控制" class="headerlink" title="二.流程控制"></a>二.流程控制</h3><p>这两幅图你一定不陌生：</p>
+<ol>
+<li>图一<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a9c232e8133fd?w=838&amp;h=65&amp;f=png&amp;s=17763" alt></li>
+<li>图二<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a9c1cf046cc81?w=712&amp;h=53&amp;f=png&amp;s=13168" alt></li>
+</ol>
+<ul>
+<li>第一个按钮：continue/c 继续执行</li>
+<li>第二个按钮：<ul>
+<li>图一： thread step-over/next/n 当前线程下一步（以一个完整子函数为一步）</li>
+<li>图二：  thread step-inst-over/ni 当前线程下一步（以一个汇编函数为一步）</li>
+</ul>
+</li>
+<li>第三个按钮：<ul>
+<li>图一： thread step-in/step/s 当前线程下一步（遇到子函数就进入并且继续单步执行）</li>
+<li>图二： thread step-inst-over/si 当前线程下一步（遇到汇编函数就进入并且继续单步执行汇编指令）</li>
+</ul>
+</li>
+<li>第四个按钮：thread step-out/finish 退出当前帧栈</li>
+</ul>
+<p>其他命令：  </p>
+<ul>
+<li>thread return：它有一个可选参数，在执行时它会把可选参数加载进返回寄存器里，然后立刻执行返回命令，跳出当前栈帧。这意味这函数剩余的部分不会被执行。这会给 ARC 的引用计数造成一些问题，或者会使函数内的清理部分失效。但是在函数的开头执行这个命令，是个非常好的隔离次函数、伪造返回值的方式。</li>
+</ul>
+<h3 id="三-可执行文件-amp-共享库查询命令"><a href="#三-可执行文件-amp-共享库查询命令" class="headerlink" title="三.可执行文件&amp;共享库查询命令"></a>三.可执行文件&amp;共享库查询命令</h3><p>这些命令在逆向及定位错误时使用频率非常高。</p>
+<ol>
+<li>image list：列出主要的可执行文件和所有依赖的共享库。</li>
+<li>image lookup –address 0x1ec4：在可执行文件或任何共享库中查找原始地址信息。</li>
+<li>image lookup -v –address 0x1ec4：查找完整的源代码行信息。</li>
+<li>image lookup –type NSString：根据名称查找对应（NSString）类型的信息。</li>
+</ol>
+<h3 id="四-其他常用命令模板"><a href="#四-其他常用命令模板" class="headerlink" title="四.其他常用命令模板"></a>四.其他常用命令模板</h3><ol>
+<li>register read：显示当前线程的通用寄存器。</li>
+<li>register write rax 123：将一个新的十进制值“123”写入当前线程寄存器“rax”。</li>
+<li>memory read –size 4 –format x –count 4 0xbffff3c0：从地址0xbffff3c0读取内存，并显示4个十六进制uint32_t值。</li>
+</ol>
+<h2 id="加强版-LLDB-——-修改-lldbinit-文件-amp-插件安装"><a href="#加强版-LLDB-——-修改-lldbinit-文件-amp-插件安装" class="headerlink" title="加强版 LLDB —— 修改 .lldbinit 文件 &amp; 插件安装"></a>加强版 LLDB —— 修改 <code>.lldbinit</code> 文件 &amp; 插件安装</h2><p>&emsp;前面所列的命令在 <a href="https://lldb.llvm.org/lldb-gdb.html" target="_blank" rel="noopener">这里</a> 都能找到官方说明，更多命令用法有兴趣的建议自己去细细探索，接下来我们将站在巨人的肩膀上，用高手们专门为 LLDB 写的插件去深入挖掘它的潜力。  </p>
+<ol>
+<li><p><strong>推荐插件一</strong>： facebook 开源的 LLDB 插件 <a href="https://github.com/facebook/chisel" target="_blank" rel="noopener">chisel</a></p>
+<p> <code>brew install chisel</code> 的安装过程这里就不赘述了，安装成功后，在~/目录下的 <code>.lldbinit</code> 文件中引入对应文件路径，增加一行：<code>command script import /usr/local/opt/chisel/libexec/fblldb.py</code> 后保存， 重启 Xcode即可使用。它提供的快捷 <a href="https://github.com/facebook/chisel/wiki" target="_blank" rel="noopener">命令清单及说明</a> 这里也不赘述了。截个图感受下它的强大吧：<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169aa02fe152b579?w=967&amp;h=697&amp;f=png&amp;s=160330" alt></p>
+</li>
+<li><p><strong>推荐插件二</strong>：<a href="https://github.com/DerekSelander/LLDB" target="_blank" rel="noopener">DerekSelander/LLDB</a></p>
+<p> 该插件与 chisel 都是用 Python 写的，其安装需要手动下载仓库，然后将仓库中 <code>dslldb.py</code> 文件的路径用与上述同样的方式添加到  <code>.lldbinit</code> 中，具体用法也很简单粗暴，就不在这粘贴了，请至 <a href="https://github.com/DerekSelander/LLDB/blob/master/README.md" target="_blank" rel="noopener">README</a> 领略。</p>
+</li>
+</ol>
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>&emsp;看到这，你收获的只有暂时记忆，其实等于毫无所获…而且还浪费了宝贵的几分钟，这也是我极不希望看到的，而避免其成为事实的唯一方式就是，请你打开 Xcode，运行一个项目，参照着文中涉及到的说明文档，试着敲一敲每个命令，体会一下它们的用法与区别。最后，为你的 LLDB 配好插件，去感受它的蜕变，相信我，你的开发效率提升的可不止一点点。学习是一种能力，拒绝操作手册式灌输，分享者多半是在总结学习收获时为读者提供一些思路或方向，这也是我为你保留一丝探索余地的初衷，愿你有所收获。</p>
+<p>&emsp;水平有限，请大神多多指正。下篇再会~</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/16/拒绝做焦虑贩卖者的韭菜/" rel="next" title="拒绝做焦虑贩卖者的韭菜">
+                <i class="fa fa-chevron-left"></i> 拒绝做焦虑贩卖者的韭菜
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/14/iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装/" rel="prev" title="iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装">
+                iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#重识-LLDB"><span class="nav-number">1.</span> <span class="nav-text">重识 LLDB</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LLDB-是什么？"><span class="nav-number">1.1.</span> <span class="nav-text">LLDB 是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LLDB-命令结构"><span class="nav-number">1.2.</span> <span class="nav-text">LLDB 命令结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LLDB-常用命令总结"><span class="nav-number">2.</span> <span class="nav-text">LLDB 常用命令总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#辅助记忆：apropos"><span class="nav-number">2.1.</span> <span class="nav-text">辅助记忆：apropos</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一-断点设置"><span class="nav-number">2.2.</span> <span class="nav-text">一.断点设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二-流程控制"><span class="nav-number">2.3.</span> <span class="nav-text">二.流程控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三-可执行文件-amp-共享库查询命令"><span class="nav-number">2.4.</span> <span class="nav-text">三.可执行文件&amp;共享库查询命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四-其他常用命令模板"><span class="nav-number">2.5.</span> <span class="nav-text">四.其他常用命令模板</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加强版-LLDB-——-修改-lldbinit-文件-amp-插件安装"><span class="nav-number">3.</span> <span class="nav-text">加强版 LLDB —— 修改 .lldbinit 文件 &amp; 插件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结："><span class="nav-number">4.</span> <span class="nav-text">总结：</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+</html>

@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="What is Cycript摘自官方文档：&amp;emsp; Cycript is a hybrid of ECMAScript some-6, Objective-C++, and Java. It is implemented as a Cycript-to-JavaScript compiler and uses (unmodified) JavaScriptCore for its virtu">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 逆向之 Cycript 高级玩法（非越狱） &amp; .cy文件的封装">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/04/14/iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="What is Cycript摘自官方文档：&amp;emsp; Cycript is a hybrid of ECMAScript some-6, Objective-C++, and Java. It is implemented as a Cycript-to-JavaScript compiler and uses (unmodified) JavaScriptCore for its virtu">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/13/16a1550f05e36471?w=1684&h=94&f=png&s=9569">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/14/16a1ad84ee44cac9?w=1460&h=1052&f=png&s=363350">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/14/16a1ad259143bc50?w=1226&h=272&f=png&s=79396">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/14/16a1b038dccefead?w=2916&h=1412&f=png&s=1597261">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/14/16a1b0670779ba82?w=1992&h=614&f=png&s=173940">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/14/16a1b48a742c5b69?w=3356&h=1678&f=png&s=966792">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/14/16a1b4eba297f704?w=2866&h=204&f=png&s=254485">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/14/16a1b542a1bda439?w=2202&h=1872&f=png&s=3738377">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/14/16a1b57a9304020c?w=740&h=188&f=png&s=96506">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/4/14/16a1b766e7f7bedc?w=2934&h=846&f=png&s=900003">
+<meta property="og:updated_time" content="2019-04-22T14:26:44.417Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 逆向之 Cycript 高级玩法（非越狱） &amp; .cy文件的封装">
+<meta name="twitter:description" content="What is Cycript摘自官方文档：&amp;emsp; Cycript is a hybrid of ECMAScript some-6, Objective-C++, and Java. It is implemented as a Cycript-to-JavaScript compiler and uses (unmodified) JavaScriptCore for its virtu">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/4/13/16a1550f05e36471?w=1684&h=94&f=png&s=9569">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/04/14/iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装 | 小可的编程之路</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/04/14/iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-04-14 20:49:56" itemprop="dateCreated datePublished" datetime="2019-04-14T20:49:56+08:00">2019-04-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 22:26:44" itemprop="dateModified" datetime="2019-04-22T22:26:44+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/04/14/iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装/" class="leancloud_visitors" data-flag-title="iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             Views:  
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="What-is-Cycript"><a href="#What-is-Cycript" class="headerlink" title="What is Cycript"></a>What is Cycript</h2><p>摘自<a href="http://www.cycript.org/manual/" target="_blank" rel="noopener">官方文档</a>：<br>&emsp; Cycript is a hybrid of ECMAScript some-6, Objective-C++, and Java. It is implemented as a Cycript-to-JavaScript compiler and uses (unmodified) JavaScriptCore for its virtual machine. It concentrates on providing “fluent FFI” with other languages by adopting aspects of their syntax and semantics as opposed to treating the other language as a second-class citizen.</p>
+<p>&emsp; The primary users of Cycript are currently people who do reverse engineering work on iOS. Cycript features a highly interactive console that features live syntax highlighting and grammar-assisted tab completion, and can even be injected into a running process (similar to a debugger) using Cydia Substrate. This makes it an ideal tool for “spelunking”.</p>
+<p>&emsp; However, Cycript was specifically designed as a programming environment and maintains very little (if any) “baggage” for this use case. Many modules from node.js can be loaded into Cycript, while it also has direct access to libraries written for Objective-C and Java. It thereby works extremely well as a scripting language.   </p>
+<p><strong>简言之</strong>：<br>&emsp; Cycript 是由 Cydia 创始人 Saurik 推出的一款脚本语言，它混合了 ECMAScript 6.0（简称ES6，是JavaScript 语言的下一代标准）、Objective-C ++ 和 Java 的语法<a href="https://zh.wikipedia.org/wiki/%E7%9B%B4%E8%AD%AF%E5%99%A8" target="_blank" rel="noopener">解释器</a>。这意味着我们能够在一个命令中使用 OC 或者 JavaScript，甚至两者并用。Cycript 目前的主要用途是在 iOS 上进行逆向工作，使用 Cydia Substrate 可以注入正在运行的进程（类似于调试器），这使它成为“探险”的理想工具。</p>
+<h2 id="How-to-use"><a href="#How-to-use" class="headerlink" title="How to use"></a>How to use</h2><h3 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h3><p>&emsp; <a href="http://www.cycript.org/" target="_blank" rel="noopener">在这里</a>下载 SDK到本地，为了方便每次直接可以使用，建议将可执行文件 cycript 的路径配置到环境变量中（在 .bash_profile/.zshrc [取决于你用哪个终端] 中 export 一下），打开终端，执行 <code>cycript</code> 命令：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/4/13/16a1550f05e36471?w=1684&amp;h=94&amp;f=png&amp;s=9569" alt></p>
+<p>如上图所示，cy# 提示符表示进入了 JavaScript 控制台。你键入的所有内容都将由 JavaScriptCore 运行，这是 Apple 对 Safari 使用的 JavaScript 语言的实现。且在你键入时，你的命令将使用 Cycript 的词法分析器进行语法突出显，如果出现语法错误，则会出现提示。你可以使用 <code>ctrl+C</code> 取消键入，或 <code>ctrl+D</code> 退出该环境。</p>
+<h3 id="2-使用"><a href="#2-使用" class="headerlink" title="2. 使用"></a>2. 使用</h3><h4 id="预热准备"><a href="#预热准备" class="headerlink" title="预热准备"></a>预热准备</h4><p>&emsp; 关于 Cycript 的用法，这一篇只围绕 iOS 逆向工程来展开讲述，这也是 Cycript 目前用的最广的领域。对比上一篇提到的 <a href="https://juejin.im/post/5c8ca84ce51d456f43189dbd">LLDB</a> ，Cycript 的亮点在于它可以动态注入，在运行时可以随时获取、修改程序中对象的值。而 LLDB 不管是在正向开发还是逆向工程中，它只能进行断点静态调试分析，效率相比 Cycript 有明显的不足。</p>
+<p>&emsp; 用 Cycript 实现动态调试应用的前提，是你的应用为其开好了一个可连接的端口，鉴于越狱机并不是人人都有，此篇我主要为大家介绍<strong>非越狱环境下</strong>如何使用 Cycript 进行调试，让大家都有实操的条件。在开始使用 Cycript 之前，我们还需要准备另一个工具。</p>
+<p>&emsp; 在过去两个多月的系列文章中，我将 iOS 的应用签名原理、自动重签名脚本以及代码注入等知识串讲了一遍，其实这些工作全都有工具帮我们集成好了，相信你也猜到了，没错，这个工具就是 <a href="https://github.com/AloneMonkey/MonkeyDev" target="_blank" rel="noopener">MonkeyDev</a> —- 原有 iOSOpenDev 的升级，非越狱插件开发集成神器！关于 <a href="https://github.com/AloneMonkey/MonkeyDev/wiki" target="_blank" rel="noopener">MonkeyDev 的安装</a> 这里就不展开赘述了，安装成功后，新建一个 MonkeyApp 项目 （MonkeyDevDemo）：<br><img src="https://user-gold-cdn.xitu.io/2019/4/14/16a1ad84ee44cac9?w=1460&amp;h=1052&amp;f=png&amp;s=363350" alt></p>
+<p>打开 MonkeyDevDemo，只需将你要调试的 ipa/app （脱壳还是必要的） 丢到新建项目的这个目录下：<br><img src="https://user-gold-cdn.xitu.io/2019/4/14/16a1ad259143bc50?w=1226&amp;h=272&amp;f=png&amp;s=79396" alt></p>
+<p>运行项目，就可以将应用直接运行到你的真机上了：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/4/14/16a1b038dccefead?w=2916&amp;h=1412&amp;f=png&amp;s=1597261" alt></p>
+<p>上图中，红框标注出的 <code>CYListenServer(6666);</code> 正是我们前面提到的，用 Cycript 实现动态调试应用的前提：一个可远程连接的端口号–6666，在控制台中同样可以找到打印日志：<br><img src="https://user-gold-cdn.xitu.io/2019/4/14/16a1b0670779ba82?w=1992&amp;h=614&amp;f=png&amp;s=173940" alt></p>
+<p>我相信你一定注意到了日志中的这一行：  </p>
+<p><code>Download cycript(https://cydia.saurik.com/api/latest/3) then run: ./cycript -r 192.168.199.236:6666</code>  </p>
+<p>&emsp; 没错，它就是在告诉你，server 端口绑定成功，终端执行 <code>./cycript -r 192.168.199.236:6666</code> 就能连接到运行中的应用了。<code>192.168.199.236</code> 是我当前手机的 ip 地址。<br>&emsp; 其实现原理，简单来讲，就是 hook 了 AppDelegate 里的 <code>application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)</code> 方法，在该方法里开启 Cycript 并绑定到6666端口。</p>
+<h4 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h4><p>在上一篇 <a href="https://juejin.im/post/5c8ca84ce51d456f43189dbd">LLDB</a> 中推荐的插件 chisel 里，很多好用的命令在 MonkeyDev 中也都做了支持<br>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">NSString* pvc(void);</span><br><span class="line"></span><br><span class="line">NSString* pviews(void);</span><br><span class="line"></span><br><span class="line">NSString* pactions(vm_address_t address);</span><br><span class="line"></span><br><span class="line">NSString* pblock(vm_address_t address);</span><br><span class="line"></span><br><span class="line">NSString* methods(const char * classname);</span><br><span class="line"></span><br><span class="line">NSString* ivars(vm_address_t address);</span><br><span class="line"></span><br><span class="line">NSString* choose(const char* classname);</span><br><span class="line"></span><br><span class="line">NSString* vmmap();</span><br></pre></td></tr></table></figure>
+<p><img src="https://user-gold-cdn.xitu.io/2019/4/14/16a1b48a742c5b69?w=3356&amp;h=1678&amp;f=png&amp;s=966792" alt></p>
+<p>赶快来试试手：找到淘宝首页底部 “淘” 按钮并将其隐藏掉：<br><img src="https://user-gold-cdn.xitu.io/2019/4/14/16a1b4eba297f704?w=2866&amp;h=204&amp;f=png&amp;s=254485" alt></p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/4/14/16a1b542a1bda439?w=2202&amp;h=1872&amp;f=png&amp;s=3738377" alt></p>
+<p>是不是突然想拿微信发个 ￥0.01 的红包，然后用新学的这招操作一波：<br><img src="https://user-gold-cdn.xitu.io/2019/4/14/16a1b57a9304020c?w=740&amp;h=188&amp;f=png&amp;s=96506" alt><br>emmmmmm…友情提示，登录破解的微信应用，大概率会被微信封号的，别问我怎么知道的 (&gt;_&lt;) </p>
+<p>&emsp; 言归正传，上面列出的几个命令，基本可以满足你快速摸清一个 app 各个复杂页面的结构，同时也可以精准的定位并修改目标视图的UI。有的同学如果没接触过 Cycript ，建议先看一下 <a href="http://www.cycript.org/manual/" target="_blank" rel="noopener">官方文档</a>，熟悉下支持的语法和数据结构，多找几个小case有目的的练习，很快就能上手玩了，这对于想通过学习大厂优秀 app 的设计与实现思路的同学来说，是个不可错过的好途径。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Tips：  </span><br><span class="line">1. 进入了 cy# JavaScript 控制台之后，相当于处在一个进程中，因此定义的变量在进程生命周期中一直可用。</span><br><span class="line">2. #0x10c144d00 ：#+对象地址=拿到该对象</span><br></pre></td></tr></table></figure>
+<h4 id="高级玩法"><a href="#高级玩法" class="headerlink" title="高级玩法"></a>高级玩法</h4><p>&emsp; 与 <a href="https://juejin.im/post/5c8ca84ce51d456f43189dbd#heading-9">加强版 LLDB —— 修改 .lldbinit 文件 &amp; 插件安装</a> 类似，Cycript 支持加载自定义脚本，这极大的提高了它的调试效率，在前面简单使用中列出的可用快捷命令可不是 Cycript 本来就有的，而是 MonkeyDev 的作者加载了自己写的网络脚本才支持的：<br><img src="https://user-gold-cdn.xitu.io/2019/4/14/16a1b766e7f7bedc?w=2934&amp;h=846&amp;f=png&amp;s=900003" alt><br>我们可以打开该地址查看对应的<a href="https://raw.githubusercontent.com/AloneMonkey/MDCycript/master/md.cy" target="_blank" rel="noopener">.cy文件源码</a>。</p>
+<p>然后呢？然后我们也可以自己搞一份自己调试时常用的脚本，这里推荐一个小码哥写的 <a href="https://github.com/CoderMJLee/mjcript" target="_blank" rel="noopener">mjcript</a> 。 </p>
+<p>加载.cy脚本的方式也为你准备好了：<a href="http://www.alonemonkey.com/2018/04/20/monkeydev-cycript/" target="_blank" rel="noopener">通过MonkeyDev加载网络或者自己的cy脚本</a>。</p>
+<p>来感受一波自定义脚本的效率：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br></pre></td><td class="code"><pre><span class="line">(function(exports) &#123;</span><br><span class="line">	var invalidParamStr = &apos;Invalid parameter&apos;;</span><br><span class="line">	var missingParamStr = &apos;Missing parameter&apos;;</span><br><span class="line"></span><br><span class="line">	// app id</span><br><span class="line">	CJAppId = [NSBundle mainBundle].bundleIdentifier;</span><br><span class="line"></span><br><span class="line">	// mainBundlePath</span><br><span class="line">	CJAppPath = [NSBundle mainBundle].bundlePath;</span><br><span class="line"></span><br><span class="line">	// document path</span><br><span class="line">	CJDocPath = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];</span><br><span class="line"></span><br><span class="line">	// caches path</span><br><span class="line">	CJCachesPath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0];</span><br><span class="line"></span><br><span class="line">	// 加载系统动态库</span><br><span class="line">	CJLoadFramework = function(name) &#123;</span><br><span class="line">		var head = &quot;/System/Library/&quot;;</span><br><span class="line">		var foot = &quot;Frameworks/&quot; + name + &quot;.framework&quot;;</span><br><span class="line">		var bundle = [NSBundle bundleWithPath:head + foot] || [NSBundle bundleWithPath:head + &quot;Private&quot; + foot];</span><br><span class="line">  		[bundle load];</span><br><span class="line">  		return bundle;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// keyWindow</span><br><span class="line">	CJKeyWin = function() &#123;</span><br><span class="line">		return UIApp.keyWindow;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 根控制器</span><br><span class="line">	CJRootVc =  function() &#123;</span><br><span class="line">		return UIApp.keyWindow.rootViewController;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 找到显示在最前面的控制器</span><br><span class="line">	var _CJFrontVc = function(vc) &#123;</span><br><span class="line">		if (vc.presentedViewController) &#123;</span><br><span class="line">        	return _CJFrontVc(vc.presentedViewController);</span><br><span class="line">	    &#125;else if ([vc isKindOfClass:[UITabBarController class]]) &#123;</span><br><span class="line">	        return _CJFrontVc(vc.selectedViewController);</span><br><span class="line">	    &#125; else if ([vc isKindOfClass:[UINavigationController class]]) &#123;</span><br><span class="line">	        return _CJFrontVc(vc.visibleViewController);</span><br><span class="line">	    &#125; else &#123;</span><br><span class="line">	    	var count = vc.childViewControllers.count;</span><br><span class="line">    		for (var i = count - 1; i &gt;= 0; i--) &#123;</span><br><span class="line">    			var childVc = vc.childViewControllers[i];</span><br><span class="line">    			if (childVc &amp;&amp; childVc.view.window) &#123;</span><br><span class="line">    				vc = _CJFrontVc(childVc);</span><br><span class="line">    				break;</span><br><span class="line">    			&#125;</span><br><span class="line">    		&#125;</span><br><span class="line">	        return vc;</span><br><span class="line">    	&#125;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	CJFrontVc = function() &#123;</span><br><span class="line">		return _CJFrontVc(UIApp.keyWindow.rootViewController);</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 递归打印UIViewController view的层级结构</span><br><span class="line">	CJVcSubviews = function(vc) &#123;</span><br><span class="line">		if (![vc isKindOfClass:[UIViewController class]]) throw new Error(invalidParamStr);</span><br><span class="line">		return vc.view.recursiveDescription().toString(); </span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 递归打印最上层UIViewController view的层级结构</span><br><span class="line">	CJFrontVcSubViews = function() &#123;</span><br><span class="line">		return CJVcSubviews(_CJFrontVc(UIApp.keyWindow.rootViewController));</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 获取按钮绑定的所有TouchUpInside事件的方法名</span><br><span class="line">	CJBtnTouchUpEvent = function(btn) &#123;</span><br><span class="line">		var events = [];</span><br><span class="line">		var allTargets = btn.allTargets().allObjects()</span><br><span class="line">		var count = allTargets.count;</span><br><span class="line">    	for (var i = count - 1; i &gt;= 0; i--) &#123; </span><br><span class="line">    		if (btn != allTargets[i]) &#123;</span><br><span class="line">    			var e = [btn actionsForTarget:allTargets[i] forControlEvent:UIControlEventTouchUpInside];</span><br><span class="line">    			events.push(e);</span><br><span class="line">    		&#125;</span><br><span class="line">    	&#125;</span><br><span class="line">	   return events;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// CG函数</span><br><span class="line">	CJPointMake = function(x, y) &#123;</span><br><span class="line">		return &#123;0 : x, 1 : y&#125;; </span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	CJSizeMake = function(w, h) &#123;</span><br><span class="line">		return &#123;0 : w, 1 : h&#125;; </span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	CJRectMake = function(x, y, w, h) &#123;</span><br><span class="line">		return &#123;0 : CJPointMake(x, y), 1 : CJSizeMake(w, h)&#125;;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 递归打印controller的层级结构</span><br><span class="line">	CJChildVcs = function(vc) &#123;</span><br><span class="line">		if (![vc isKindOfClass:[UIViewController class]]) throw new Error(invalidParamStr);</span><br><span class="line">		return [vc _printHierarchy].toString();</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 递归打印view的层级结构</span><br><span class="line">	CJSubviews = function(view) &#123;</span><br><span class="line">		if (![view isKindOfClass:[UIView class]]) throw new Error(invalidParamStr);</span><br><span class="line">		return view.recursiveDescription().toString(); </span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 判断是否为字符串 &quot;str&quot; @&quot;str&quot;</span><br><span class="line">	CJIsString = function(str) &#123;</span><br><span class="line">		return typeof str == &apos;string&apos; || str instanceof String;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 判断是否为数组 []、@[]</span><br><span class="line">	CJIsArray = function(arr) &#123;</span><br><span class="line">		return arr instanceof Array;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 判断num是否为数字</span><br><span class="line">	CJIsNumber = function(num) &#123;</span><br><span class="line">		return typeof num == &apos;number&apos; || num instanceof Number;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	var _CJClass = function(className) &#123;</span><br><span class="line">		if (!className) throw new Error(missingParamStr);</span><br><span class="line">		if (CJIsString(className)) &#123;</span><br><span class="line">			return NSClassFromString(className);</span><br><span class="line">		&#125; </span><br><span class="line">		if (!className) throw new Error(invalidParamStr);</span><br><span class="line">		// 对象或者类</span><br><span class="line">		return className.class();</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 打印所有的子类</span><br><span class="line">	CJSubclasses = function(className, reg) &#123;</span><br><span class="line">		className = _CJClass(className);</span><br><span class="line"></span><br><span class="line">		return [c for each (c in ObjectiveC.classes) </span><br><span class="line">		if (c != className </span><br><span class="line">			&amp;&amp; class_getSuperclass(c) </span><br><span class="line">			&amp;&amp; [c isSubclassOfClass:className] </span><br><span class="line">			&amp;&amp; (!reg || reg.test(c)))</span><br><span class="line">			];</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 打印所有的方法</span><br><span class="line">	var _CJGetMethods = function(className, reg, clazz) &#123;</span><br><span class="line">		className = _CJClass(className);</span><br><span class="line"></span><br><span class="line">		var count = new new Type(&apos;I&apos;);</span><br><span class="line">		var classObj = clazz ? className.constructor : className;</span><br><span class="line">		var methodList = class_copyMethodList(classObj, count);</span><br><span class="line">		var methodsArray = [];</span><br><span class="line">		var methodNamesArray = [];</span><br><span class="line">		for(var i = 0; i &lt; *count; i++) &#123;</span><br><span class="line">			var method = methodList[i];</span><br><span class="line">			var selector = method_getName(method);</span><br><span class="line">			var name = sel_getName(selector);</span><br><span class="line">			if (reg &amp;&amp; !reg.test(name)) continue;</span><br><span class="line">			methodsArray.push(&#123;</span><br><span class="line">				selector : selector, </span><br><span class="line">				type : method_getTypeEncoding(method)</span><br><span class="line">			&#125;);</span><br><span class="line">			methodNamesArray.push(name);</span><br><span class="line">		&#125;</span><br><span class="line">		free(methodList);</span><br><span class="line">		return [methodsArray, methodNamesArray];</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	var _CJMethods = function(className, reg, clazz) &#123;</span><br><span class="line">		return _CJGetMethods(className, reg, clazz)[0];</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 打印所有的方法名字</span><br><span class="line">	var _CJMethodNames = function(className, reg, clazz) &#123;</span><br><span class="line">		return _CJGetMethods(className, reg, clazz)[1];</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 打印所有的对象方法</span><br><span class="line">	CJInstanceMethods = function(className, reg) &#123;</span><br><span class="line">		return _CJMethods(className, reg);</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 打印所有的对象方法名字</span><br><span class="line">	CJInstanceMethodNames = function(className, reg) &#123;</span><br><span class="line">		return _CJMethodNames(className, reg);</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 打印所有的类方法</span><br><span class="line">	CJClassMethods = function(className, reg) &#123;</span><br><span class="line">		return _CJMethods(className, reg, true);</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 打印所有的类方法名字</span><br><span class="line">	CJClassMethodNames = function(className, reg) &#123;</span><br><span class="line">		return _CJMethodNames(className, reg, true);</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 打印所有的成员变量</span><br><span class="line">	CJIvars = function(obj, reg)&#123;</span><br><span class="line">		if (!obj) throw new Error(missingParamStr);</span><br><span class="line">		var x = &#123;&#125;; </span><br><span class="line">		for(var i in *obj) &#123; </span><br><span class="line">			try &#123; </span><br><span class="line">				var value = (*obj)[i];</span><br><span class="line">				if (reg &amp;&amp; !reg.test(i) &amp;&amp; !reg.test(value)) continue;</span><br><span class="line">				x[i] = value; </span><br><span class="line">			&#125; catch(e)&#123;&#125; </span><br><span class="line">		&#125; </span><br><span class="line">		return x; </span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	// 打印所有的成员变量名字</span><br><span class="line">	CJIvarNames = function(obj, reg) &#123;</span><br><span class="line">		if (!obj) throw new Error(missingParamStr);</span><br><span class="line">		var array = [];</span><br><span class="line">		for(var name in *obj) &#123; </span><br><span class="line">			if (reg &amp;&amp; !reg.test(name)) continue;</span><br><span class="line">			array.push(name);</span><br><span class="line">		&#125;</span><br><span class="line">		return array;</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;)(exports);</span><br></pre></td></tr></table></figure>
+<p>只要你想，只要你能，更多姿势，等你解锁。</p>
+<h2 id="summary"><a href="#summary" class="headerlink" title="summary"></a>summary</h2><p>&emsp; 无使用场景的学习多半都是在浪费时间，不经常使用的知识也无法产生价值。Cycript 也不例外，如果仅仅是出于好奇，花了两个小时玩了一下下，然后从此别过，其实意义真的不大。有些同学觉得广泛涉猎，在面试的时候可以夸夸其谈，能增加一点“大佬”感，我个人是不认同的，稍微深入一点的问题你就说不上来或者干脆不懂装懂反而会适得其反。所以个人还是建议，既然学了一个东西，就尽力学的深入一点，并在工作中不断思考，如何利用已学知识去提高效率。Cycript 除了在逆向工程中， 在正向开发和日常学习中，依然非常好用。</p>
+<p>愿你有所收获~</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/23/LLDB 知多少/" rel="next" title="LLDB 知多少">
+                <i class="fa fa-chevron-left"></i> LLDB 知多少
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/22/《iOS 视觉专题》/" rel="prev" title="《iOS 视觉专题》">
+                《iOS 视觉专题》 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Cycript"><span class="nav-number">1.</span> <span class="nav-text">What is Cycript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-use"><span class="nav-number">2.</span> <span class="nav-text">How to use</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-安装"><span class="nav-number">2.1.</span> <span class="nav-text">1. 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用"><span class="nav-number">2.2.</span> <span class="nav-text">2. 使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#预热准备"><span class="nav-number">2.2.1.</span> <span class="nav-text">预热准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简单使用"><span class="nav-number">2.2.2.</span> <span class="nav-text">简单使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高级玩法"><span class="nav-number">2.2.3.</span> <span class="nav-text">高级玩法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#summary"><span class="nav-number">3.</span> <span class="nav-text">summary</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+</html>

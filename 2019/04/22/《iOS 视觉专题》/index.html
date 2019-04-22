@@ -96,20 +96,18 @@
 
 
 
-  <meta name="description" content="来龙去脉&amp;emsp;在1976年以前，所有的加密方法都是同一种模式：加密、解密使用同一种算法。在交互数据的时候，彼此通信的双方就必须将规则告诉对方，否则没法解密。这种加密与解密使用同一规则的加密方式被称为对称加密算法。那么加密和解密的规则（简称密钥）的保护就显得尤其重要，传递密钥的风险也一直是个隐患。&amp;emsp;直到1976年，两位美国计算机学家：迪菲（W.Diffie）、赫尔曼（M.Hellma">
+  <meta name="description" content="前情提要&amp;emsp; 《权力的游戏》第八季已经开播了，作为最受观众喜爱的美剧之一，它大尺度的画面、充满悬念的剧情总是能轻易的俘获你的注意力。 &amp;emsp;  “There are a thousand Hamlets in a thousand people’s eyes.”  &amp;emsp;  追同样的剧，但每个人被吸引的点却千差万别。裸露的肉体，血腥的杀戮，钱权的争夺……它吸引我的，远不止是这些">
 <meta name="keywords" content="iOS OpenGL Metal">
 <meta property="og:type" content="article">
-<meta property="og:title" content="非对称加密--RSA原理浅析">
-<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/07/非对称加密--RSA原理浅析/index.html">
+<meta property="og:title" content="《iOS 视觉专题》">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/04/22/《iOS 视觉专题》/index.html">
 <meta property="og:site_name" content="小可的编程之路">
-<meta property="og:description" content="来龙去脉&amp;emsp;在1976年以前，所有的加密方法都是同一种模式：加密、解密使用同一种算法。在交互数据的时候，彼此通信的双方就必须将规则告诉对方，否则没法解密。这种加密与解密使用同一规则的加密方式被称为对称加密算法。那么加密和解密的规则（简称密钥）的保护就显得尤其重要，传递密钥的风险也一直是个隐患。&amp;emsp;直到1976年，两位美国计算机学家：迪菲（W.Diffie）、赫尔曼（M.Hellma">
+<meta property="og:description" content="前情提要&amp;emsp; 《权力的游戏》第八季已经开播了，作为最受观众喜爱的美剧之一，它大尺度的画面、充满悬念的剧情总是能轻易的俘获你的注意力。 &amp;emsp;  “There are a thousand Hamlets in a thousand people’s eyes.”  &amp;emsp;  追同样的剧，但每个人被吸引的点却千差万别。裸露的肉体，血腥的杀戮，钱权的争夺……它吸引我的，远不止是这些">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/1/7/168275fb2e34d666?w=834&h=476&f=png&s=93483">
-<meta property="og:updated_time" content="2019-04-22T12:51:47.199Z">
+<meta property="og:updated_time" content="2019-04-22T14:27:55.021Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="非对称加密--RSA原理浅析">
-<meta name="twitter:description" content="来龙去脉&amp;emsp;在1976年以前，所有的加密方法都是同一种模式：加密、解密使用同一种算法。在交互数据的时候，彼此通信的双方就必须将规则告诉对方，否则没法解密。这种加密与解密使用同一规则的加密方式被称为对称加密算法。那么加密和解密的规则（简称密钥）的保护就显得尤其重要，传递密钥的风险也一直是个隐患。&amp;emsp;直到1976年，两位美国计算机学家：迪菲（W.Diffie）、赫尔曼（M.Hellma">
-<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/1/7/168275fb2e34d666?w=834&h=476&f=png&s=93483">
+<meta name="twitter:title" content="《iOS 视觉专题》">
+<meta name="twitter:description" content="前情提要&amp;emsp; 《权力的游戏》第八季已经开播了，作为最受观众喜爱的美剧之一，它大尺度的画面、充满悬念的剧情总是能轻易的俘获你的注意力。 &amp;emsp;  “There are a thousand Hamlets in a thousand people’s eyes.”  &amp;emsp;  追同样的剧，但每个人被吸引的点却千差万别。裸露的肉体，血腥的杀戮，钱权的争夺……它吸引我的，远不止是这些">
 
 
 
@@ -117,7 +115,7 @@
 
   
   
-  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/07/非对称加密--RSA原理浅析/">
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/04/22/《iOS 视觉专题》/">
 
 
 
@@ -127,7 +125,7 @@
   };
 </script>
 
-  <title>非对称加密--RSA原理浅析 | 小可的编程之路</title>
+  <title>《iOS 视觉专题》 | 小可的编程之路</title>
   
 
 
@@ -298,7 +296,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/07/非对称加密--RSA原理浅析/">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/04/22/《iOS 视觉专题》/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小可长江">
@@ -315,7 +313,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">非对称加密--RSA原理浅析
+          <h1 class="post-title" itemprop="name headline">《iOS 视觉专题》
 
               
             
@@ -341,24 +339,12 @@
                 
               
 
-              <time title="Created: 2019-01-07 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-07T20:49:56+08:00">2019-01-07</time>
+              <time title="Created: 2019-04-22 20:49:56 / Modified: 22:27:55" itemprop="dateCreated datePublished" datetime="2019-04-22T20:49:56+08:00">2019-04-22</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-04-22 20:51:47" itemprop="dateModified" datetime="2019-04-22T20:51:47+08:00">2019-04-22</time>
               
             
           </span>
@@ -372,7 +358,7 @@
 
           
           
-            <span id="/2019/01/07/非对称加密--RSA原理浅析/" class="leancloud_visitors" data-flag-title="非对称加密--RSA原理浅析">
+            <span id="/2019/04/22/《iOS 视觉专题》/" class="leancloud_visitors" data-flag-title="《iOS 视觉专题》">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -410,37 +396,21 @@
       
 
       
-        <h3 id="来龙去脉"><a href="#来龙去脉" class="headerlink" title="来龙去脉"></a>来龙去脉</h3><p>&emsp;在1976年以前，所有的加密方法都是同一种模式：加密、解密使用同一种算法。在交互数据的时候，彼此通信的双方就必须将规则告诉对方，否则没法解密。这种加密与解密使用同一规则的加密方式被称为<a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">对称加密算法</a>。那么加密和解密的规则（简称密钥）的保护就显得尤其重要，传递密钥的风险也一直是个隐患。<br>&emsp;直到1976年，两位美国计算机学家：迪菲（W.Diffie）、赫尔曼（M.Hellman）提出了一种崭新构思，可以在不直接传递密钥的情况下完成密钥交换，开创了密码学研究的新方向。这就是<a href="https://zh.wikipedia.org/wiki/%E8%BF%AA%E8%8F%B2-%E8%B5%AB%E7%88%BE%E6%9B%BC%E5%AF%86%E9%91%B0%E4%BA%A4%E6%8F%9B" target="_blank" rel="noopener">“迪菲赫尔曼密钥交换”</a>算法，其仍然是一种对称加密算法，只是密钥不再需要传递。交换原理如下图所示：<br><img src="https://user-gold-cdn.xitu.io/2019/1/7/168275fb2e34d666?w=834&amp;h=476&amp;f=png&amp;s=93483" alt="迪菲赫尔曼密钥交换原理"><br>其中a，b是在通信两端本地的随机数，g是模p的一个<a href="https://zh.wikipedia.org/wiki/%E5%8E%9F%E6%A0%B9" target="_blank" rel="noopener">原根</a>，K是交换后产生的密钥，安全性来源于当p非常大时，已知g，p，A，B很难反算出a，b。<a href="https://zh.wikipedia.org/wiki/%E7%A6%BB%E6%95%A3%E5%AF%B9%E6%95%B0" target="_blank" rel="noopener">离散对数问题</a>是该算法的基础。<br>&emsp;1977年，三位麻省理工学院的数学家 罗纳德·李维斯特（Ron Rivest）、阿迪·萨莫尔（Adi Shamir）和伦纳德·阿德曼（Leonard Adleman）一起设计了一种算法，可以实现非对称加密。这就是用他们三个人的名字命名的算法–<a href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">RSA</a>算法。<br>&emsp;要弄清楚RSA的加密原理，先要知道<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%AE%9A%E7%90%86_(%E6%95%B0%E8%AE%BA" target="_blank" rel="noopener">欧拉定理</a>)：  </p>
-<blockquote>
-<p>对于两个互质的正整数m、n，m^φ(n) mod n ≡ 1<br>当m&lt;n时不难推导出：m^(k*φ(n)) mod n ≡ 1<br>进一步得到：m^(k*φ(n)+1) mod n ≡ m </p>
-</blockquote>
-<p>基于此还需要理解一个概念，<a href="https://zh.wikipedia.org/wiki/%E6%A8%A1%E5%8F%8D%E5%85%83%E7%B4%A0" target="_blank" rel="noopener">模反元素</a>：  </p>
-<blockquote>
-<p>如果两个正整数e和x互质，那么一定可以找到整数d，使得 e*d-1 被x整除。那么d就是e对于x的“模反元素”<br>即e<em>d mod x ≡ 1<br>等同于 e\</em>d ≡ k*x + 1，k为正整数  </p>
-</blockquote>
-<p>敲黑板！！！关键来了，上面两个转换的结果一碰撞，Duang！就碰出了我们RSA的核心算法：  </p>
-<blockquote>
-<p>当e与φ(n)互质时，m^(e*d) mod n ≡ m  </p>
-</blockquote>
-<p>鸡不鸡冻，开不开森！还有点迷糊？没关系，来继续：  </p>
-<blockquote>
-<p>假设我们对m进行加密传输<br>加密：m^e mod n = c，<br>解密：c^d mod n = m^(e*d) mod n = m  </p>
-</blockquote>
-<p>上述过程中，<strong>n+e就是RSA中的公钥，n+d就是RSA中的私钥，c是加密后的密文。</strong></p>
-<h3 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h3><ol>
-<li>n会非常大，长度一般为1024个二进制位，现在稳妥一点的长度为2048个二进制位。（目前人类已经分解的最大整数，232个十进制位，768个二进制位）  </li>
-<li>因为需要求出φ(n)，所以根据<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">欧拉函数</a>特点，最简单得到n的方式是由两个质数相乘: 质数：p1、p2<br>Φ(n) = (p1 - 1) * (p2 - 1)</li>
-<li>最终由φ(n)得到 e 和 d   </li>
+        <h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>&emsp; 《<a href="https://www.ttkmj.net/a/6526" target="_blank" rel="noopener">权力的游戏</a>》第八季已经开播了，作为最受观众喜爱的美剧之一，它大尺度的画面、充满悬念的剧情总是能轻易的俘获你的注意力。</p>
+<p>&emsp;  “There are a thousand Hamlets in a thousand people’s eyes.” </p>
+<p>&emsp;  追同样的剧，但每个人被吸引的点却千差万别。裸露的肉体，血腥的杀戮，钱权的争夺……它吸引我的，远不止是这些画面与剧情，而是它能将人性的险恶与光辉都刻画的淋漓尽致。<br>&emsp;  该剧中充满了违背道德与伦理的人设，他们或出于最原始的求生欲，做出不惜一切手段保全自我的选择，或出于对正义与誓言的坚持，无悔的将自己的生命交给历史的巨轮碾压。关于那些选择的对错与否，与我们而言意义并不大。<br>&emsp;  很多时候，我们都已经习惯了用“正派”与“反派”来划分他们。如果你能细细品味他们的人生境遇，以及每个人在各种境遇下的状态和心理历程，再看他们的选择和对环境的判断，很可能会改变你对一个角色的认知，你对人性的理解也会深刻不少。于我来看，其实他们都无绝对的好与坏，这取决于你评判的出发点是某个当事人，还是某个家族的命运，亦或是某个部落的存亡，甚至是全人类的发展……详细的思辨这里就不展开了。  </p>
+<p>&emsp; 咳咳…扯远了，言归正传，今天起新增一个专题：《iOS 视觉》。此前我们一直在围绕着 “iOS 逆向”这个专题在展开，最近出于工作&amp;未来的需要，要着手从0学习 iOS 视觉相关的知识了。当然，逆向相关的更新也会持续。</p>
+<h2 id="目录一览"><a href="#目录一览" class="headerlink" title="目录一览"></a>目录一览</h2><p>&emsp; 为了你有一个系统清晰的整体感，也为有一个统一便捷的入口，我会持续的在此篇更新《iOS 视觉》学习心得的链接至以下目录：</p>
+<h3 id="一：OpenGL-概述"><a href="#一：OpenGL-概述" class="headerlink" title="一：OpenGL 概述"></a>一：OpenGL 概述</h3><ol>
+<li><a href="https://learnopengl-cn.github.io/01%20Getting%20started/01%20OpenGL/" target="_blank" rel="noopener">OpenGL 是什么</a>：来自 <a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">LearnOpenGL教程</a> 的中文翻译系列，推荐给你。</li>
+<li>…</li>
 </ol>
-<p>总共生成6个数字：p1、p2、n、φ(n)、e、d  </p>
-<h3 id="关于RSA的安全："><a href="#关于RSA的安全：" class="headerlink" title="关于RSA的安全："></a>关于RSA的安全：</h3><p>除了公钥用到了n和e 其余的4个数字是不公开的。<br>目前破解RSA得到私钥d的思路如下：</p>
-<ol>
-<li>由于e*d = φ(n)*k + 1。e是公开的，那必须要知道φ(n)</li>
-<li>要得到φ(n)，必须知道p1 和 p2</li>
-<li>由于 n = p1 * p2，所以只有将n因数分解才能算出p1 p2</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E6%9C%BA" target="_blank" rel="noopener">量子计算机</a>如果成功诞生，现在通行于银行及网络等处的RSA加密算法可以破解，也会瓦解所有基于大质数因式分解算力逆天而衍生出的加密算法。</li>
+<h3 id="二：着色器基础"><a href="#二：着色器基础" class="headerlink" title="二：着色器基础"></a>二：着色器基础</h3><ol>
+<li><a href="https://learnopengl-cn.github.io/01%20Getting%20started/05%20Shaders/" target="_blank" rel="noopener">着色器</a></li>
+<li>…</li>
 </ol>
-<p>后续会对iOS证书签名相关原理进行分析，同时把常见的加密算法做一下梳理和比较，并附上每种算法在iOS中的代码实现。欢迎一起交流学习心得~</p>
+<h3 id="三：…"><a href="#三：…" class="headerlink" title="三：…"></a>三：…</h3><p>此目录会随着学习进度实时更新，推荐两本书：<a href="https://item.jd.com/11655699.html" target="_blank" rel="noopener">OpenGL ES 3.0编程指南</a>、<a href="https://item.jd.com/12234196.html" target="_blank" rel="noopener">OpenGL编程指南</a></p>
+<h2 id="有始有终"><a href="#有始有终" class="headerlink" title="有始有终"></a>有始有终</h2><p>&emsp; 可能很多同学看到 OpenGL 会有一丝担忧：苹果不是从 iOS 12 开始已经正式弃用 OpenGL 了吗，现在学 OpenGL 会不会没有直接学苹果自己的 Metal 收益高呢？我觉得完全没有必要。且在《iOS 视觉专题》的学习计划中，也会覆盖到 Metal 框架，但会在 OpenGL 知识学习之后。<br>&emsp; 在学习新知识时并不是“开头难”，难得是如何持续、系统的学成一门新知识。这也是我决定开这个专题的出发点，也希望能帮助更多的人更好的掌握这个技能。<br>&emsp; 友情提示：该领域需要极大的精力投入才能有产出，所以如果你暂时用不到相关知识且没有长期做这块的打算，不建议浪费时间在这里。<br>&emsp; 如果你也有学习这方面的打算，或者已经在研究该领域，欢迎后续多多交流学习心得~</p>
 
       
     </div>
@@ -471,8 +441,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/05/如何成为有效学习的高手/" rel="next" title="如何成为有效学习的高手">
-                <i class="fa fa-chevron-left"></i> 如何成为有效学习的高手
+              <a href="/2019/04/14/iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装/" rel="next" title="iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装">
+                <i class="fa fa-chevron-left"></i> iOS 逆向之 Cycript 高级玩法（非越狱） & .cy文件的封装
               </a>
             
           </div>
@@ -480,10 +450,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/09/RSA的主场-证书签名&OpenSSL演示/" rel="prev" title="RSA的主场-证书签名&OpenSSL演示">
-                RSA的主场-证书签名&OpenSSL演示 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -594,7 +560,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#来龙去脉"><span class="nav-number">1.</span> <span class="nav-text">来龙去脉</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#补充："><span class="nav-number">2.</span> <span class="nav-text">补充：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于RSA的安全："><span class="nav-number">3.</span> <span class="nav-text">关于RSA的安全：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前情提要"><span class="nav-number">1.</span> <span class="nav-text">前情提要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目录一览"><span class="nav-number">2.</span> <span class="nav-text">目录一览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一：OpenGL-概述"><span class="nav-number">2.1.</span> <span class="nav-text">一：OpenGL 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二：着色器基础"><span class="nav-number">2.2.</span> <span class="nav-text">二：着色器基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三：…"><span class="nav-number">2.3.</span> <span class="nav-text">三：…</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#有始有终"><span class="nav-number">3.</span> <span class="nav-text">有始有终</span></a></li></ol></div>
             
 
           </div>
