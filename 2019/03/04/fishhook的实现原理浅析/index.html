@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="打开姿势很重要&amp;emsp;早些时候，iOS中一提到“黑魔法”、HOOK，很多人第一时间想到的就是 AOP RunTime MethodSwizzling 这些不明觉厉的东西，它们的基本用法其实都不难，真正难的是如何在合适的地方用好它们。   &amp;emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fishhook的实现原理浅析">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/04/fishhook的实现原理浅析/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="打开姿势很重要&amp;emsp;早些时候，iOS中一提到“黑魔法”、HOOK，很多人第一时间想到的就是 AOP RunTime MethodSwizzling 这些不明觉厉的东西，它们的基本用法其实都不难，真正难的是如何在合适的地方用好它们。   &amp;emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947b64d99d9f8c?w=2190&h=94&f=png&s=49031">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/3/16942fad623530bf?w=1940&h=76&f=png&s=29877">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947bdfdc4adf78?w=1598&h=358&f=png&s=105901">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947c1c922ccad7?w=2160&h=884&f=png&s=639106">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947c95a6955ec6?w=2166&h=78&f=png&s=50586">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947d3fb8eb1b03?w=2148&h=1440&f=png&s=811608">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947e1e12c3ce60?w=2180&h=972&f=png&s=567653">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947f1ff35ebade?w=2758&h=1580&f=png&s=575055">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947f8a82a1d9a9?w=2304&h=494&f=png&s=226668">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/169482b537e87b2d?w=2806&h=962&f=png&s=555777">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/169482c7f96c4e78?w=2792&h=496&f=png&s=368451">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/1694835612995c46?w=1528&h=1808&f=png&s=375686">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/169485350abfa446?w=2132&h=832&f=png&s=623817">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/13/169773b4e83c6422?w=1072&h=289&f=png&s=93955">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16948517a9d15528?w=2184&h=1232&f=png&s=778503">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/169484c4a38ad17e?w=2156&h=1316&f=png&s=751016">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16948458a00d9911?w=2148&h=1324&f=png&s=1032207">
+<meta property="og:updated_time" content="2019-04-22T14:17:12.439Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fishhook的实现原理浅析">
+<meta name="twitter:description" content="打开姿势很重要&amp;emsp;早些时候，iOS中一提到“黑魔法”、HOOK，很多人第一时间想到的就是 AOP RunTime MethodSwizzling 这些不明觉厉的东西，它们的基本用法其实都不难，真正难的是如何在合适的地方用好它们。   &amp;emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947b64d99d9f8c?w=2190&h=94&f=png&s=49031">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/04/fishhook的实现原理浅析/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>fishhook的实现原理浅析 | 小可的编程之路</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/04/fishhook的实现原理浅析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">fishhook的实现原理浅析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-04 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-04T20:49:56+08:00">2019-03-04</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 22:17:12" itemprop="dateModified" datetime="2019-04-22T22:17:12+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/03/04/fishhook的实现原理浅析/" class="leancloud_visitors" data-flag-title="fishhook的实现原理浅析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             Views:  
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="打开姿势很重要"><a href="#打开姿势很重要" class="headerlink" title="打开姿势很重要"></a>打开姿势很重要</h2><p>&emsp;早些时候，iOS中一提到“黑魔法”、HOOK，很多人第一时间想到的就是 AOP RunTime MethodSwizzling 这些不明觉厉的东西，它们的基本用法其实都不难，真正难的是如何在合适的地方用好它们。  </p>
+<p>&emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很多时候只会适得其反，详细误区请参考<a href="https://juejin.im/entry/5a1fceddf265da43310d9985">iOS界的毒瘤-MethodSwizzling</a>。</p>
+<p>&emsp;关于 MethodSwizzling 的用法在之前的文章中也有过讲解，请参考<a href="https://juejin.im/post/5c616552f265da2dd53fa4e7#heading-3">MethodSwizzling的几种姿势</a>。 该方式更多的用于性能监测、 crash 的兼容和上报、反破解防护等一些工具的开发中，而在逆向中，在面对有相应安全防护措施的应用时，其用武之地比较有限。  </p>
+<p>&emsp;无独有偶，“黑魔法”可不只有 RunTime ，今天我们来聊聊在逆向中常用的另一种HOOK方式：<a href="https://github.com/facebook/fishhook" target="_blank" rel="noopener">fishhook</a>。  </p>
+<h2 id="fishhook-背后的故事"><a href="#fishhook-背后的故事" class="headerlink" title="fishhook 背后的故事"></a>fishhook 背后的故事</h2><h3 id="（一）实现原理"><a href="#（一）实现原理" class="headerlink" title="（一）实现原理"></a>（一）实现原理</h3><p>&emsp;<a href="https://github.com/facebook/fishhook" target="_blank" rel="noopener">fishhook</a> 是 FaceBook 开源的可以动态修改 MachO 符号表的工具。fishhook 的强大之处在于它可以 HOOK 系统的静态 C 函数。  </p>
+<p>&emsp;大家都知道 OC 的方法之所以可以 HOOK 是因为它的运行时特性，OC 的方法调用在底层都是 msg_send（id,SEL）的形式，这为我们提供了交换方法实现（IMP）的机会，但 C 函数在编译链接时就确定了函数指针的地址偏移量（Offset），这个偏移量在编译好的可执行文件中是固定的，而可执行文件每次被重新装载到内存中时被系统分配的起始地址（在 lldb 中用命令<code>image List</code>获取）是不断变化的。运行中的静态函数指针地址其实就等于上述 Offset + Mach0 文件在内存中的首地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947b64d99d9f8c?w=2190&amp;h=94&amp;f=png&amp;s=49031" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/3/16942fad623530bf?w=1940&amp;h=76&amp;f=png&amp;s=29877" alt></p>
+<p>&emsp;既然 C 函数的指针地址是相对固定且不可修改的，那么 fishhook 又是怎么实现 对 C 函数的 HOOK 呢？<strong>其实内部/自定义的 C 函数 fishhook 也 HOOK 不了，它只能HOOK Mach-O 外部（共享缓存库中）的函数</strong>。fishhook 利用了 MachO 的动态绑定机制（不清楚的同学看这里：<a href="https://juejin.im/post/5c67e7efe51d45164c75993b">MachO 文件结构详解</a>、<a href="https://juejin.im/post/5c727262e51d457139116208">dyld背后的故事&amp;源码分析
+</a>）：苹果的共享缓存库不会被编译进我们的 MachO 文件，而是在动态链接时才去重新绑定。苹果采用了<a href="https://en.wikipedia.org/wiki/Position-independent_code" target="_blank" rel="noopener">PIC</a>（Position-independent code）技术成功让 C 的底层也能有动态的表现：</p>
+<ul>
+<li>编译时在 Mach-O 文件 _DATA 段的符号表中为每一个被引用的系统 C 函数建立一个指针（8字节的数据，放的全是0），这个指针用于动态绑定时重定位到共享库中的函数实现。</li>
+<li>在运行时当系统 C 函数被第一次调用时会动态绑定一次，然后将 Mach-O 中的 _DATA 段符号表中对应的指针，指向外部函数（其在共享库中的实际内存地址）。  </li>
+</ul>
+<p>fishhook 正是利用了 PIC 技术做了这么两个操作：</p>
+<ul>
+<li>将指向系统方法（外部函数）的指针重新进行绑定指向内部函数/自定义 C 函数。</li>
+<li>将内部函数的指针在动态链接时指向系统方法的地址。</li>
+</ul>
+<p>这样就把系统方法与自己定义的方法进行了交换，达到 HOOK 系统 C 函数（共享库中的）的目的。</p>
+<h3 id="（二）用汇编解析过程"><a href="#（二）用汇编解析过程" class="headerlink" title="（二）用汇编解析过程"></a>（二）用汇编解析过程</h3><p>&emsp;为了更好的理解 fishhook 是如何 HOOK 系统的 C 函数，我们以 HOOK NSLog 为例，从汇编着手来一步步去分析，为大家扒开 fishhook 实现 HOOK 系统 NSLog 的全过程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">注：对于非懒加载符号表，dyld 会在动态链接时就链接动态库</span><br><span class="line">    对于懒加载符号表，dyld 会在运行时函数第一次被调用时动态绑定一次</span><br><span class="line">    NSLog 在懒加载表中</span><br></pre></td></tr></table></figure></p>
+<h4 id="1-验证系统的动态绑定："><a href="#1-验证系统的动态绑定：" class="headerlink" title="1.验证系统的动态绑定："></a>1.验证系统的动态绑定：</h4><p>&emsp;新建一个空工程，写下这两行代码：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947bdfdc4adf78?w=1598&amp;h=358&amp;f=png&amp;s=105901" alt><br>&emsp;编译一下工程，在目录Products下将 .app内的可执行文件拷出用 MachOView 打开：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947c1c922ccad7?w=2160&amp;h=884&amp;f=png&amp;s=639106" alt><br>记下0x3028这个偏移值，这就是用于重定向到共享库中的那个指针相对于 MachO文件的偏移量。  </p>
+<p>在两个 NSLog 处分别加上断点，将工程 Run 起来，把 Debug -&gt; Debug Workflow -&gt; Always Show Disassembly 勾选上，用于查看汇编信息，断点断住后获取 MachO 在内存中的首地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947c95a6955ec6?w=2166&amp;h=78&amp;f=png&amp;s=50586" alt><br><strong>0x3028+0x000000010b0f7000</strong> 就是用于重定向到共享库中的那个指针的内存地址。此时我们查看该地址是否已经被重定向：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947d3fb8eb1b03?w=2148&amp;h=1440&amp;f=png&amp;s=811608" alt></p>
+<ol>
+<li>拿到该指针当前保存的值，iOS 的 CPU 是小端序，当前机型为 64 位 CPU，所以倒序读 8 个字节就是指针的值：<strong>0x010b0f89a0</strong></li>
+<li>dis -s 是反汇编命令，我们发现此时该指针指向的函数正在调用系统动态绑定的函数</li>
+<li>进一步查看调用函数详细信息：libdyld.dylib`dyld_stub_binder</li>
+</ol>
+<p>这是在干嘛？没错，这就是第一次调用 NSLog 时系统去重新绑定位懒加载符号表中 NSLog 对应的指针所指向的位置。</p>
+<p>接下来我们过掉第一次断点，让断点断在第二个 NSLog 处，再次查看符号表中该指针（依然是 <strong>0x3028+0x000000010b0f7000</strong> 这个地址）所指向的地址，<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947e1e12c3ce60?w=2180&amp;h=972&amp;f=png&amp;s=567653" alt><br>&emsp;我们发现，它指向的地址由之前的 <strong>0x010b0f89a0</strong><br>变为 <strong>0x010b491276</strong> 了，对应的函数也由之前的 dyld_stub_binder 变为 NSLog ，这意味着该函数的动态绑定已经完成。以上，我们验证了 iOS 的动态绑定全过程。</p>
+<h4 id="2-验证-fishhook-的重绑定："><a href="#2-验证-fishhook-的重绑定：" class="headerlink" title="2.验证 fishhook 的重绑定："></a>2.验证 fishhook 的重绑定：</h4><p>&emsp;我们将 fishhook文件拖入工程，并添加一个简单的绑定：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947f1ff35ebade?w=2758&amp;h=1580&amp;f=png&amp;s=575055" alt><br><strong>注意：修改文件后重新编译的 MachO 文件，符号表里的指针偏移值可能会改变，重新运行的程序内存首地址也会发生变化，需要你重新拿到它们计算得出指针新的内存地址。</strong> </p>
+<p>我们运行起来之后点击屏幕进入上图所示断点，查看符号表中原本指向系统 NSLog 的指针指向：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947f8a82a1d9a9?w=2304&amp;h=494&amp;f=png&amp;s=226668" alt><br>此时该指针的指向被修改为我们自定义的函数 myNslog 了，而将系统重定位的外部函数地址保存到了另一个自定义函数指针 sys_nslog 中：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169482b537e87b2d?w=2806&amp;h=962&amp;f=png&amp;s=555777" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169482c7f96c4e78?w=2792&amp;h=496&amp;f=png&amp;s=368451" alt><br>以上，我们通过断点分析汇编信息，验证了 fishhook 实现 HOOK 系统外部函数的思路。接下来我们结合 fishhook 的官方说明看它是如何根据字符串（方法名）找到对应指针在符号表中的偏移值的。</p>
+<h3 id="（三）fishhook-是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？"><a href="#（三）fishhook-是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？" class="headerlink" title="（三）fishhook 是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？"></a>（三）fishhook 是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？</h3><p>fishhook 官方给了这张图：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/1694835612995c46?w=1528&amp;h=1808&amp;f=png&amp;s=375686" alt><br>这张图主要在描述如何由一个字符串（比如 “NSLog”），跟着它在 MachO 文件的懒加载表中对应的指针，一步步的找到该指针指向的函数实现地址，大致步骤如下：</p>
+<ol>
+<li>在 Lazy Symbol Pointers 中该字符串的顺序就是其在 Dynamic Symbols Table -&gt; Indirect Symbols 表中的位置（这里是第一个）<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169485350abfa446?w=2132&amp;h=832&amp;f=png&amp;s=623817" alt><br>在实际计算地址中用到了 Load Commands 中对应头信息的 Reserved1 的 value （section基地址+  偏移量 value = 其在 Indirect Symbols 中对应的 offset）:下篇<a href="https://juejin.im/post/5c810294f265da2db91297f1">源码分析</a>有详细说明。<br><img src="https://user-gold-cdn.xitu.io/2019/3/13/169773b4e83c6422?w=1072&amp;h=289&amp;f=png&amp;s=93955" alt></li>
+<li>Dynamic Symbols Table -&gt; Indirect Symbols 表中的第一个对应的 Data 值（0x7A=122）就是其在Symbols Table -&gt; Symbols 中的索引。<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16948517a9d15528?w=2184&amp;h=1232&amp;f=png&amp;s=778503" alt></li>
+<li>在 Symbols Table -&gt; Symbols 中索引为 122 的位置对应的 Data = 0x9B：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169484c4a38ad17e?w=2156&amp;h=1316&amp;f=png&amp;s=751016" alt></li>
+<li>上表中的 Data（0x9B） + String Table的起始地址（0x4F04）就是目标函数实现的地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16948458a00d9911?w=2148&amp;h=1324&amp;f=png&amp;s=1032207" alt></li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;今天我们结合 iOS 的共享缓存库中采用的 PIC 技术，介绍了 fishhook 对系统外部函数实现 HOOK 基本原理和具体过程，并通过反汇编命令一一验证了 iOS 的动态绑定过程和 fishhook 的重新绑定机制，最后把 fishhook 在符号表中根据符号指针寻找函数实现的步骤做了演示。 愿你有所收获！ 水平有限，请多指教~</p>
+<p>&emsp;鉴于篇幅过长会影响大家的阅读体验，fishhook 的源码分析与应用场景以及安全防护的分享，<a href="https://juejin.im/post/5c810294f265da2db91297f1">我们这里继续</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/25/dyld背后的故事&源码分析/" rel="next" title="dyld背后的故事&源码分析">
+                <i class="fa fa-chevron-left"></i> dyld背后的故事&源码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/08/fishhook使用场景&源码分析/" rel="prev" title="fishhook使用场景&源码分析">
+                fishhook使用场景&源码分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#打开姿势很重要"><span class="nav-number">1.</span> <span class="nav-text">打开姿势很重要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fishhook-背后的故事"><span class="nav-number">2.</span> <span class="nav-text">fishhook 背后的故事</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#（一）实现原理"><span class="nav-number">2.1.</span> <span class="nav-text">（一）实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（二）用汇编解析过程"><span class="nav-number">2.2.</span> <span class="nav-text">（二）用汇编解析过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-验证系统的动态绑定："><span class="nav-number">2.2.1.</span> <span class="nav-text">1.验证系统的动态绑定：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-验证-fishhook-的重绑定："><span class="nav-number">2.2.2.</span> <span class="nav-text">2.验证 fishhook 的重绑定：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#（三）fishhook-是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？"><span class="nav-number">2.3.</span> <span class="nav-text">（三）fishhook 是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+</html>

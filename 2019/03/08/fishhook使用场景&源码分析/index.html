@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="不做伪学习者&amp;emsp;上一篇我们一起分析了 fishhook的实现原理，但很多东西如果我们仅仅知道原理，其实距离真正吸收它并将其转化成自己的生产力还有很长的路。你得弄清楚别人是怎么利用这个原理去解决问题的，还要借鉴别人的设计思想，再结合我们自己的思考不断地实践和总结，才能真正让知识成为自己的生产力。   &amp;emsp;话不多说，进入今天的第一个正题。 fishhook 使用场景&amp;emsp;在 上一">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fishhook使用场景&amp;源码分析">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/08/fishhook使用场景&源码分析/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="不做伪学习者&amp;emsp;上一篇我们一起分析了 fishhook的实现原理，但很多东西如果我们仅仅知道原理，其实距离真正吸收它并将其转化成自己的生产力还有很长的路。你得弄清楚别人是怎么利用这个原理去解决问题的，还要借鉴别人的设计思想，再结合我们自己的思考不断地实践和总结，才能真正让知识成为自己的生产力。   &amp;emsp;话不多说，进入今天的第一个正题。 fishhook 使用场景&amp;emsp;在 上一">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/169590476f100040?w=2164&h=858&f=png&s=667798">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/16959050bcc38a33?w=2422&h=800&f=png&s=683109">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695c73609b92111?w=2838&h=506&f=png&s=258672">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/169591c9339cf9b9?w=1990&h=1922&f=png&s=576134">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695922be53eb4e4?w=1782&h=422&f=png&s=104432">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/169593af27a193ea?w=2262&h=1132&f=png&s=311764">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/169594b4948ff0c2?w=2494&h=1860&f=png&s=694725">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695c850d3d03ff9?w=878&h=198&f=png&s=43808">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695cae0b9629ec3?w=944&h=390&f=png&s=83538">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695cea53a257331?w=2154&h=754&f=png&s=308406">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695d086c82405eb?w=1508&h=292&f=png&s=95376">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695d2a2cc17541c?w=1884&h=1010&f=png&s=486382">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695d6d6e247bfb0?w=2478&h=1006&f=png&s=508797">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695d6eb79d40984?w=1668&h=186&f=png&s=80972">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695d7c4b9fdf0a0?w=2098&h=1194&f=png&s=604072">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/8/1695d7d32860aa77?w=1982&h=1574&f=png&s=813601">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/13/1697768c5f4ae694?w=1314&h=951&f=png&s=300287">
+<meta property="og:updated_time" content="2019-04-22T14:16:08.030Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="fishhook使用场景&amp;源码分析">
+<meta name="twitter:description" content="不做伪学习者&amp;emsp;上一篇我们一起分析了 fishhook的实现原理，但很多东西如果我们仅仅知道原理，其实距离真正吸收它并将其转化成自己的生产力还有很长的路。你得弄清楚别人是怎么利用这个原理去解决问题的，还要借鉴别人的设计思想，再结合我们自己的思考不断地实践和总结，才能真正让知识成为自己的生产力。   &amp;emsp;话不多说，进入今天的第一个正题。 fishhook 使用场景&amp;emsp;在 上一">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/3/8/169590476f100040?w=2164&h=858&f=png&s=667798">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/08/fishhook使用场景&源码分析/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>fishhook使用场景&源码分析 | 小可的编程之路</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/08/fishhook使用场景&源码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">fishhook使用场景&源码分析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-08 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-08T20:49:56+08:00">2019-03-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 22:16:08" itemprop="dateModified" datetime="2019-04-22T22:16:08+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/03/08/fishhook使用场景&源码分析/" class="leancloud_visitors" data-flag-title="fishhook使用场景&源码分析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             Views:  
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="不做伪学习者"><a href="#不做伪学习者" class="headerlink" title="不做伪学习者"></a>不做伪学习者</h2><p>&emsp;上一篇我们一起分析了 <a href="https://juejin.im/post/5c7b43976fb9a04a05406312">fishhook的实现原理</a>，但很多东西如果我们仅仅知道原理，其实距离真正吸收它并将其转化成自己的生产力还有很长的路。你得弄清楚别人是怎么利用这个原理去解决问题的，还要借鉴别人的设计思想，再结合我们自己的思考不断地实践和总结，才能真正让知识成为自己的生产力。  </p>
+<p>&emsp;话不多说，进入今天的第一个正题。</p>
+<h2 id="fishhook-使用场景"><a href="#fishhook-使用场景" class="headerlink" title="fishhook 使用场景"></a>fishhook 使用场景</h2><p>&emsp;在 <a href="https://juejin.im/post/5c7b43976fb9a04a05406312">上一篇</a> 里已经为大家演示了它的基本用法，使用很简单，这里就不展开了。它的使用场景正如其名: fishhook，主要用在安全防护领域。当然，大神级的逆向与安全防护专家咱们先不谈，那个级别的高手我相信也不会看到这篇文章，天下没有绝对的安全，黑与白永远都在博弈，所以希望大家不要钻牛角尖，至少咱们不能写出让菜鸟逆向就能轻松搞定的应用对吧？当然，后面咱们也会学习静态分析和汇编的知识，掌握更高级的逆向和防护技能，那都是打好基础的后话了。今天咱们的重点是源码分析，顺便温习下 c 的数据结构。</p>
+<p>下面先来了解一下用 fishhook 防 HOOK 的基本思路：</p>
+<ol>
+<li>在基础的动态调试逆向中，最常见的就是定位到目标方法后，通过 runtime 中的几种方法交换方式，实现代码注入的目的。为你准备好了相关的文章：<a href="https://juejin.im/post/5c616552f265da2dd53fa4e7">iOS代码注入+HOOK微信登录</a></li>
+<li>既然 fishhook 可以拦截系统外部的 C 函数，那自然就可以 HOOK 到 runtime 库中的所有方法。</li>
+<li>那我们就将所有可能用来篡改我们 OC 方法实现的 runtime API，都用 fishhook 拦截掉，使其无法用代码注入的方式成功 HOOK。</li>
+</ol>
+<p>思路理清了，撸起袖子开始干。</p>
+<ul>
+<li>为了方便演示，这里直接搞了一个分类，将ViewController的 实例方法 <code>viewDidAppear:</code> 用 <code>method_exchangeImplementations(Method _Nonnull m1, Method _Nonnull m2)</code> 的方式与 <code>my_viewDidAppear:</code> 交换了实现，上代码：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/169590476f100040?w=2164&amp;h=858&amp;f=png&amp;s=667798" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/8/16959050bcc38a33?w=2422&amp;h=800&amp;f=png&amp;s=683109" alt><br>这时我们程序跑起来就可以看到如下输出：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695c73609b92111?w=2838&amp;h=506&amp;f=png&amp;s=258672" alt></li>
+<li>为了阻止其完成方法交换，我们要 hook <code>method_exchangeImplementations</code> 方法，拖入 fishhook 源文件，再添加一个分类并写好 hook <code>method_exchangeImplementations</code> 的代码：（如果成功 hook 了 <code>method_exchangeImplementations</code> ，那别人调用该方法时会进入我们的 <code>myExchange</code> ，然后顺便又把 <code>NSLog</code> hook 了一下，不要被这个绕晕了 😜）<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/169591c9339cf9b9?w=1990&amp;h=1922&amp;f=png&amp;s=576134" alt><br>再次 Run 起来，咦？肿么肥四？你会发现 <code>method_exchangeImplementations</code> 并没有 HOOK 成功， <code>viewDidAppear:</code> 依然被篡改了实现，问题出在哪了呢？  </li>
+</ul>
+<p>&emsp;对，聪明的你一定发现了问题所在：<strong>是代码执行顺序的问题</strong></p>
+<p>&emsp;经过实践，我发现项目里参与编译的文件顺序就是其编译后被加载时的载入顺序（暂未找到官方的编译顺序说明，还请有研究的大佬指点），即此时 <code>ViewController+HOOKTest</code> 的 <code>load</code> 方法会早于 <code>ViewController+FishHook</code> 的 <code>load</code> 调用，所以 <code>method_exchangeImplementations</code> 的实现被我们 HOOK 发生在 <code>viewDidAppear:</code> 被别人交换之后，从而导致防护的失败：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695922be53eb4e4?w=1782&amp;h=422&amp;f=png&amp;s=104432" alt><br>验证一下我们的想法：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/169593af27a193ea?w=2262&amp;h=1132&amp;f=png&amp;s=311764" alt></p>
+<p>&emsp;如上图所示，在调整了编译文件的顺序之后成功 HOOK 到了 <code>method_exchangeImplementations</code> 的调用，但实际开发中我们不可能采用这么笨的方法，也不可能通过这种方式决定文件的载入顺序，因此我们要想办法保证 fishhook 的代码必须最先执行才行。  </p>
+<p>&emsp;那如何做到呢？由此前的 <a href="https://juejin.im/post/5c727262e51d457139116208">dyld背后的故事&amp;源码分析</a> 可以得知，本地的Framework中的类一定会早于后注入的库（动态库例外，非越狱设备是没有插入动态库的权限的）和可执行文件中的类进行初始化。所以我们将 fishhook 的 HOOK 操作代码移到自建的 Framework 中即可：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/169594b4948ff0c2?w=2494&amp;h=1860&amp;f=png&amp;s=694725" alt><br>&emsp;至此，我们已经知道了 fishhook 反调试的基本思路，当然，上面的代码只是思路演示，实际开发中，像<code>method_getImplementation</code>、<code>method_setImplementation</code>等函数都需要用同样的方式一一 HOOK，同时，如果自己的项目中已经用到了这些函数，还需要设计相应的白名单方案，并且在检测到是被三方非法 HOOK 时通常直接调用 <code>exit(0)</code> 这类接口终止掉进程。这些细节以后还会详细讲，这里算是抛砖引玉吧。</p>
+<p>&emsp;那咱们进入第二个正题，源码分析。</p>
+<h2 id="fishhook-源码分析"><a href="#fishhook-源码分析" class="headerlink" title="fishhook 源码分析"></a>fishhook 源码分析</h2><p>（一）： 在写 fishhook 的代码时，第一件事就是声明一个 <code>rebinding</code> 类型的结构体变量，其源码如下：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695c850d3d03ff9?w=878&amp;h=198&amp;f=png&amp;s=43808" alt><br>命名很易读，其中第三个成员 <code>void **replaced</code> 是指向指针的指针，可以理解为一个存着另一个指针地址的指针，在上述示例中， <code>*replaced</code> 取出的就是一个指向共享库中 <code>method_exchangeImplementations</code> 函数实现的指针，再对其取值，<code>**replaced</code> 得到的就是共享库中 <code>method_exchangeImplementations</code> 函数实现的首地址，还不清楚的同学要自己去补补基础了😝。  </p>
+<p>（二）： 按结构体成员的类型写好声明和实现之后，一一赋值给结构体对应的成员，再把这些结构体放到一个数组中，然后调用重绑定符号函数 <code>rebind_symbols</code>(如果绑定成功返回 0，否则返回 -1)，并将结构体数组和数组长度作为参数传入：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695cae0b9629ec3?w=944&amp;h=390&amp;f=png&amp;s=83538" alt><br>接下来咱们一步步的分析在这个函数里具体都做了些啥：</p>
+<ol>
+<li>第一件事，调用了这个函数– <code>prepend_rebindings</code>，其具体实现如下：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695cea53a257331?w=2154&amp;h=754&amp;f=png&amp;s=308406" alt><br>&emsp;咦？传入的第一个参数 <code>&amp;_rebindings_head</code> 是个啥东东？<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d086c82405eb?w=1508&amp;h=292&amp;f=png&amp;s=95376" alt><br>&emsp;看源码：<code>_rebindings_head</code> 被声明为一个指向 <code>rebindings_entry</code> 类型结构体的静态指针变量，那 <code>&amp;_rebindings_head</code> 就是取出这个指针的地址，再看该函数的参数声明 <code>struct rebindings_entry **</code> ，没错，这又是一个指向指针的指针。<br>&emsp;结构体 <code>rebindings_entry</code> 的三个成员分别是：指向 <code>rebinding</code> 类型结构体的指针（用来指向传入结构体数组的首元素地址）、<code>rebindings_nel</code>：记录此次要重绑定的数量（用于开辟对应大小的空间）、指向下一个 <code>rebindings_entry</code> 类型的结构体（记录下一次需要重绑定的数据），这就是典型的数据结构——<strong>链表</strong>的一种实现。<code>_rebindings_head</code> 就是指向该链表的指针。</li>
+</ol>
+<p>&emsp;为了加深理解，我为你画了一张 <code>prepend_rebindings</code> 函数的作用示意图：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d2a2cc17541c?w=1884&amp;h=1010&amp;f=png&amp;s=486382" alt><br>&emsp;一句话<strong>总结</strong> <code>prepend_rebindings</code> 函数的目的：<strong>将新加入的 rebindings 数组不断的添加到 _rebindings_head 这个链表的头部成为新的头节点</strong>。  </p>
+<ol start="2">
+<li>第二件事，对已经载入的镜像文件（也就是库）逐一查找目标符号进行 hook。前面我们已经知道 fishhook 的代码执行时间非常早，所以第一次执行时要 hook 的库可能还没完成装载，因此这里如果是第一次调用会通过一个函数对库的装载完成注册监听和回调的方法：<br><code>`</code></li>
+</ol>
+<p>extern void _dyld_register_func_for_add_image(void (<em>func)(const struct mach_header</em> mh, intptr_t vmaddr_slide))    <strong>OSX_AVAILABLE_STARTING(</strong>MAC_10_1, __IPHONE_2_0);<br><code>`</code><br>&emsp;源码注释如下图：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d6d6e247bfb0?w=2478&amp;h=1006&amp;f=png&amp;s=508797" alt><br>&emsp;当回调到 <code>_rebind_symbols_for_image</code> 时，会将存着待绑定函数信息的链表作为参数传入，用于符号查找和函数指针的交换，第二个参数 <code>header</code>是 当前 <code>image</code> 的头信息，第三个参数 <code>slide</code>是 ASLR 的偏移：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d6eb79d40984?w=1668&amp;h=186&amp;f=png&amp;s=80972" alt></p>
+<ol start="3">
+<li><p>第三件事，根据 <a href="https://juejin.im/post/5c7b43976fb9a04a05406312#heading-6">fishhook 是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现</a> 中的几个步骤，去找到目标符号对应指针所指向的函数实现地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d7c4b9fdf0a0?w=2098&amp;h=1194&amp;f=png&amp;s=604072" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d7d32860aa77?w=1982&amp;h=1574&amp;f=png&amp;s=813601" alt><br>&emsp;这个过程比较枯燥，无非就是按照规则计算各种表的地址和指针在表中的偏移量。</p>
+</li>
+<li><p>最后一件事，根据算好的符号表地址和偏移量，找到在符号表中用于指向共享库目标函数的指针，然后将该指针的值（即目标函数的地址）赋值给我们的 <code>*replaced</code>，最后修改该指针的值为我们的 <code>replacement</code>（新的函数地址），<code>perform_rebinding_with_section</code> 的源码实现：<br><img src="https://user-gold-cdn.xitu.io/2019/3/13/1697768c5f4ae694?w=1314&amp;h=951&amp;f=png&amp;s=300287" alt></p>
+</li>
+</ol>
+<h2 id="fishhook-源码之旅，告一段落"><a href="#fishhook-源码之旅，告一段落" class="headerlink" title="fishhook 源码之旅，告一段落"></a>fishhook 源码之旅，告一段落</h2><p>&emsp;如果不算注释，fishhook 的源码实现一共 180+ 行，通过对其源码的分析，如果做到读懂它的每一行，我相信不管是对指针的理解和使用，还是对链表的数据结构和实现方式，你都会有更好的理解。当然，你对 MachO 的文件结构和加载机制，也更加了然于胸，同时还 get 了基本的安全防护技巧。</p>
+<p>愿你不虚此行。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/04/fishhook的实现原理浅析/" rel="next" title="fishhook的实现原理浅析">
+                <i class="fa fa-chevron-left"></i> fishhook的实现原理浅析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#不做伪学习者"><span class="nav-number">1.</span> <span class="nav-text">不做伪学习者</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fishhook-使用场景"><span class="nav-number">2.</span> <span class="nav-text">fishhook 使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fishhook-源码分析"><span class="nav-number">3.</span> <span class="nav-text">fishhook 源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fishhook-源码之旅，告一段落"><span class="nav-number">4.</span> <span class="nav-text">fishhook 源码之旅，告一段落</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+</html>

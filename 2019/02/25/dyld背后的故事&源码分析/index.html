@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="什么是dyld？&amp;emsp;dyld（the dynamic link editor）是苹果的动态链接器，是苹果操作系统的一个重要组成部分，当系统内核做好启动程序的准备工作之后，余下的工作会交给dyld来负责处理。那它存在的意义是什么？它又具体都负责做些什么呢？这一篇我们一起来一探究竟。前方长篇预警~  dyld存在的意义&amp;emsp;存在即合理，但我们要弄清楚其合理性所在。先从可执行文件是如何由源">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dyld背后的故事&amp;源码分析">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/02/25/dyld背后的故事&源码分析/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="什么是dyld？&amp;emsp;dyld（the dynamic link editor）是苹果的动态链接器，是苹果操作系统的一个重要组成部分，当系统内核做好启动程序的准备工作之后，余下的工作会交给dyld来负责处理。那它存在的意义是什么？它又具体都负责做些什么呢？这一篇我们一起来一探究竟。前方长篇预警~  dyld存在的意义&amp;emsp;存在即合理，但我们要弄清楚其合理性所在。先从可执行文件是如何由源">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/16923803aaf75a12?w=1055&h=116&f=png&s=33618">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/16923b9d32a0e4e7?w=1070&h=418&f=png&s=228919">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/16923f6d556eb8ef?w=775&h=908&f=png&s=182757">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/1692435464464110?w=775&h=754&f=png&s=166363">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/1692445911c89b2d?w=832&h=241&f=png&s=65009">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/169246357df619b5?w=783&h=320&f=png&s=75369">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/1692466fbead2ece?w=821&h=121&f=png&s=30037">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/1692481fcc629ace?w=825&h=284&f=png&s=77826">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/169248828b79d71d?w=824&h=505&f=png&s=134011">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/2/25/169248963302cbc4?w=626&h=125&f=png&s=23679">
+<meta property="og:updated_time" content="2019-04-22T14:16:34.754Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="dyld背后的故事&amp;源码分析">
+<meta name="twitter:description" content="什么是dyld？&amp;emsp;dyld（the dynamic link editor）是苹果的动态链接器，是苹果操作系统的一个重要组成部分，当系统内核做好启动程序的准备工作之后，余下的工作会交给dyld来负责处理。那它存在的意义是什么？它又具体都负责做些什么呢？这一篇我们一起来一探究竟。前方长篇预警~  dyld存在的意义&amp;emsp;存在即合理，但我们要弄清楚其合理性所在。先从可执行文件是如何由源">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/2/25/16923803aaf75a12?w=1055&h=116&f=png&s=33618">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/02/25/dyld背后的故事&源码分析/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>dyld背后的故事&源码分析 | 小可的编程之路</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/02/25/dyld背后的故事&源码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">dyld背后的故事&源码分析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-02-25 20:49:56" itemprop="dateCreated datePublished" datetime="2019-02-25T20:49:56+08:00">2019-02-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 22:16:34" itemprop="dateModified" datetime="2019-04-22T22:16:34+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/02/25/dyld背后的故事&源码分析/" class="leancloud_visitors" data-flag-title="dyld背后的故事&源码分析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             Views:  
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="什么是dyld？"><a href="#什么是dyld？" class="headerlink" title="什么是dyld？"></a>什么是dyld？</h2><p>&emsp;dyld（the dynamic link editor）是苹果的动态链接器，是苹果操作系统的一个重要组成部分，当系统内核做好启动程序的准备工作之后，余下的工作会交给dyld来负责处理。那它存在的意义是什么？它又具体都负责做些什么呢？这一篇我们一起来一探究竟。前方长篇预警~</p>
+<hr>
+<h2 id="dyld存在的意义"><a href="#dyld存在的意义" class="headerlink" title="dyld存在的意义"></a>dyld存在的意义</h2><p>&emsp;存在即合理，但我们要弄清楚其合理性所在。先从可执行文件是如何由源码生成的说起。</p>
+<h3 id="1-可执行文件的生成–静态链接。"><a href="#1-可执行文件的生成–静态链接。" class="headerlink" title="1.可执行文件的生成–静态链接。"></a>1.可执行文件的生成–静态链接。</h3><p>先看下面这段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;Hello World\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;假设这段代码源文件为hello.c，我们输入最简单的命令：<code>$gcc hello.c</code> <code>$./a.out</code>，那么终端会输出：Hello World，在这个过程中，事实上经过了四个步骤：预处理、编译、汇编和链接。我们来具体看每一步都做了些什么。  </p>
+<p>&emsp;<strong>预编译</strong>的主要处理规则如下：</p>
+<ol>
+<li>删除所有#define，并将所有宏定义展开 </li>
+<li>将被包含的文件插入到预编译指令(#include)所在位置（这个过程是递归的）</li>
+<li>删除所有注释：// 、/<em> </em>/等</li>
+<li>添加行号和文件名标识，以便于编译时编译器产生调试用的行号信息及编译时能够显示警告和错误的所在行号</li>
+<li>保留所有的#pragma编译器指令，因为编译器须要使用它们</li>
+</ol>
+<p>结合上述规则，当我们无法判断宏定义是否正确或者头文件是否包含时可以查看预编译后的文件来确定问题，预编译的过程相当于如下命令：<br><code>$gcc -E hello.c -o hello.i</code> 或<br><code>$cpp hello.c &gt; hello.i</code>  </p>
+<p>&emsp;<strong>编译</strong>的过程就是把预处理完的文件进行一些列词法分析、语法分析、语义分析及优化后生产相应的汇编代码文件，这个过程往往是我们整个程序构建的核心部分，也是最复杂的部分之一，编译的具体步骤涉及到编译原理等内容，这里就不展开了。我们使用命令：<br><code>$gcc -S hello.c -o hello.s</code><br>可以得到汇编输出文件hello.s。  </p>
+<p>&emsp;对于 C 语言的代码来说，这个预编译和编译的程序是 ccl，但是对于 C++ 来说，对应的程序是 ccplus；Objective-C 的是 ccobjc；Java 是 jcl。所以实际上 gcc 这个命令只是这些后台程序的包装，它会根据不同的参数要求去调用预编译编译程序 ccl、汇编器 as、链接器 ld。</p>
+<p>&emsp;<strong>汇编器</strong>是将汇编代码转变成机器可以执行的指令，每一个汇编语句几乎都对应一条机器指令。所以汇编器的汇编过程相对于编译器来讲比较简单，它没有复杂的语法，也没有语义，也不需要做指令优化，只是根据汇编指令和机器指令的对照表一一翻译就可以了，我们使用命令：<br><code>$as hello.s -o hello.o</code> 或<br><code>$gcc -c hello.s -o hello.o</code><br>来完成汇编，输出<strong>目标文件</strong>（Object File）：hello.o。  </p>
+<p>&emsp;<strong>链接</strong>是让很多人费解的一个过程，为什么汇编器不直接输出可执行文件而是一个目标文件呢？链接过程到底包含了什么内容？为什么要链接？  </p>
+<p>&emsp;这就要扯一下计算机程序开发的历史了，最早的时候程序员是在纸带上用机器语言通过打孔来实现程序的，连汇编语言都没有，每当程序修改的时候，修改的指令后面的位置要相应的发生移动，程序员要人工计算每个子程序或跳转的目标地址，这个过程叫<strong>重定位</strong>。很显然这样修改程序的代价随着程序的增大会变得高不可攀，并且很容易出错，于是有先驱发明了汇编语言，汇编语言使用接近人类的各种符号和标记来帮助记忆，更重要的是，这种符号使得人们从具体的指令地址中逐步解放出来，当人们使用这种符号命名子程序或者跳转目标以后，不管目标指令之前修改了多少指令导致目标指令的地址发生了变化，汇编器在每次汇编程序的时候都会重新计算目标指令的地址，然后把所有引用到该指令的指令修正到正确的地址，这个过程不需要人工参与。  </p>
+<p>&emsp;有了汇编语言，生产力极大地提高了，随之而来的是软件的规模与日俱增，代码量快速膨胀，导致人们开始考虑将不同功能的代码以一定的方式组织起来，使得更加容易阅读和理解，更便于日后修改和复用。自然而然的，我们开始习惯用若干个变量和函数组成一个模块（比如类），然后用目录结构来组织这些源代码文件，在一个程序被多个模块分割以后，这些模块最终如何组合成一个单一的程序是须要解决的问题。这个问题归根结底是模块之间如何通信的问题，也就是访问函数需要知道函数的地址，访问变量需要知道变量的地址，这两个问题都是通过模块间符号的引用的方式来解决。这个模块间符号引用拼接的过程就是<strong>链接</strong>。  </p>
+<p>&emsp;<strong>链接</strong>的主要内容就是把各个模块之间相互引用的部分处理好，使得各个模块之间能够正确地衔接。本质上跟前面描述的“程序员人工调整地址”没什么区别，只不过现代的高级语言的诸多特性和功能，使得编译器、链接器更为复杂，功能更强大。<strong>链接</strong>过程包括了<strong>地址和空间分配</strong>、<strong>符号决议</strong>（也叫“符号/地址绑定”，“决议”更倾向于静态链接，而“绑定”更倾向于动态链接，即适用范围的区别）和<strong>重定位</strong>，链接器将经过汇编器编译成的所有目标文件和<strong>库</strong>进行<strong>链接</strong>形成最终的可执行文件，而最常见的库就是<strong>运行时库（RunTime Library）</strong>，它是支持程序运行的基本函数的集合。<strong>库</strong>其实就是一组最常用的代码编译成目标文件后的打包存放。  </p>
+<p>&emsp;知道了可执行文件是如何生成的，我们再来看看它又是如何被装载进系统中运行起来的。</p>
+<h3 id="2-可执行文件的装载与动态链接。"><a href="#2-可执行文件的装载与动态链接。" class="headerlink" title="2.可执行文件的装载与动态链接。"></a>2.可执行文件的装载与动态链接。</h3><h4 id="装载"><a href="#装载" class="headerlink" title="装载"></a>装载</h4><p>&emsp;装载与动态链接其实内容特别多，很多细节需要对计算机底层有非常扎实的理解，鉴于目前我的能力尚浅，这里只做粗略的介绍，推荐有兴趣的同学购买《程序员的自我修养–链接、装载与库》这本书了解更多细节。  </p>
+<p>&emsp;可执行文件(程序)是一个静态的概念，在运行之前它只是硬盘上的一个文件；而进程是一个动态的概念，它是程序运行时的一个过程，我们知道每个程序被运行起来后，它会拥有自己独立的<strong>虚拟地址空间</strong>，这个地址空间大小的上限是由计算机的硬件（CPU的位数）决定的，比如32位的处理器理论最大虚拟空间地址为0~2^32-1。即0x00000000~0xFFFFFFFF，当然，我们的程序运行在系统上时是不可能任意使用全部的虚拟空间的，操作系统为了达到监控程序运行等一系列目的，进程的虚拟空间都在操作系统的掌握之中，且在操作系统中会同时运行着多个进程，它们彼此之间的虚拟地址空间是隔离的，如果进程访问了操作系统分配给该进程以外的地址空间，会被系统当做非法操作而强制结束进程。  </p>
+<p>&emsp;将硬盘上的可执行文件映射到虚拟内存中的过程就是<strong>装载</strong>，但内存是昂贵且稀有的，所以将程序执行时所需的指令和数据全部装载到内存中显然是行不通的，于是人们研究发现了程序运行时是有<strong>局部性原</strong>理的，可以只将最常用的部分驻留在内存中，而不太常用的数据存放在磁盘里，这也是<strong>动态装载</strong>的基本原理。<strong>覆盖装入</strong>和<strong>页映射</strong>就是利用了局部性原理的两种经典动态装载方法，前者在发明虚拟内存之前使用比较广泛 ，现在基本已经淘汰，主要使用<strong>页映射</strong>。装载的过程也可以理解为进程建立的过程，操作系统只需要做以下三件事情：</p>
+<ol>
+<li>创建一个独立的虚拟地址空间</li>
+<li>读取可执行文件头，并且建立虚拟空间与可执行文件的映射关系</li>
+<li>将CPU的指令寄存器设置成可执行文件的入口地址，启动运行</li>
+</ol>
+<h4 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h4><p>&emsp;前面我们在生成可执行文件时说的链接是静态链接。最后一步是将经过汇编后的所有目标文件与库进行链接形成可执行文件，这里的提到的库，包括了很多<strong>运行时库</strong>。运行时库通常是支持程序运行的基本函数的集合，也就意味着每个进程都会用到它，如果每一个可执行文件都将其打包进自己的可执行文件，都用静态链接的方式，虽然原理上更容易理解，但是这种方式对计算机的内存和磁盘的空间浪费非常严重！在现在的Linux系统中，一个普通的程序会使用到的C语言静态库至少在1M以上，如果系统中有2000个这样的程序在运行，就要浪费将近2G的空间。为了解决这个问题，把运行时库的链接过程推迟到了运行时在进行，这就是<strong>动态链</strong>接（<strong>Dynamic Linking</strong>）的基本思想。动态链接的好处有以下几点：</p>
+<ol>
+<li>解决了共享的目标文件存在多个副本浪费磁盘和内存空间的问题</li>
+<li>减少物理页面的换入换出，还增加了CPU的缓存命中率，因为不同进程间的数据和指令访问都集中在了同一个共享模块上</li>
+<li>系统升级只需要替换掉对应的共享模块，当程序下次启动时新版本的共享模块会被自动装载并链接起来，程序就无感的对接到了新版本。</li>
+<li>更方便程序<strong>插件</strong>（Plug-in）的制作，为程序带来更好的可扩展性和兼容性。</li>
+</ol>
+<p>&emsp;至此，终于说回了我们今天的主角：<strong>dyld</strong>,现在咱们知道了它存在的意义——动态加载的支持。</p>
+<hr>
+<h2 id="动态链接的步骤"><a href="#动态链接的步骤" class="headerlink" title="动态链接的步骤"></a>动态链接的步骤</h2><p>&emsp;现在，我们理解了为什么需要动态链接，dyld作为苹果的动态链接器，但本质上dyld也是一个共享对象：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/16923803aaf75a12?w=1055&amp;h=116&amp;f=png&amp;s=33618" alt>上图是dyld在系统中的路径，在iPhone中只有获取root权限（也就是越狱）的用户才能访问，后面在逆向实战中会给大家演示。<br>&emsp;既然dyld也是一个共享对象，而普通共享对象的重定位工作又是由dyld来完成的，虽然也可以依赖于其他共享对象，但被依赖的共享对象还是要由dyld来负责链接和装载。那么dyld的重定向由谁来完成呢？dyld是否可以依赖其他的共享对象呢？这是一个“鸡生蛋，蛋生鸡”的问题，为了解决这个问题，<strong>动态链接器</strong>需要有些特殊性：</p>
+<ul>
+<li>动态链接器本身不依赖其他任何共享对象</li>
+<li>动态链接器本身所需要的全局和静态变量的重定位工作由它本身完成</li>
+</ul>
+<p>上述第一个条件在编写动态链接器时可以人为的控制，第二个条件要求动态链接器在启动时必须有一段代码可以在获得自身的重定位表和符号表的同时又不能用到全局和静态变量，甚至不能调用函数，这样的启动代码被称为<strong>自举</strong>（<strong>Bootstrap</strong>）。当操作系统将进程控制权交给动态链接器时，自举代码开始执行，它会找到动态链接器本身的重定位入口（具体过程和原理暂未深究），进而完成其自身的重定位，在此之后动态链接器中的代码才可以开始使用自己的全局、静态变量和各种函数了。  </p>
+<p>&emsp;完成基本的自举以后，动态链接器将可执行文件和链接器本身的符号表合并为一个，称为<strong>全局符号表</strong>。然后链接器开始寻找可执行文件所依赖的共享对象，如果我们把依赖关系看作一个图的话，那么这个装载过程就是一个图的便利过程，链接器可能会使用深度优先或者广度优先也可能其他的算法来遍历整个图，比较常见的算法都是广度优先的。  </p>
+<p>&emsp;每当一个新的共享对象被装载进来，它的符号表会被合并到全局符号表中，装载完毕后，链接器开始重新遍历可执行文件和共享对象的重定位表，将每个需要重新定位的位置进行修正，这个过程与静态链接的重定位原理基本相同。重定位完成之后，动态链接器会开始共享对象的初始化过程，但不会开始可执行文件的初始化工作，这将由程序初始化部分的代码负责执行。当完成了重定位和初始化之后，所有的准备工作就宣告完成了，这时动态链接器就如释重负，将进程的控制权交给程序的入口并且开始执行。 </p>
+<hr>
+<h2 id="dyld源码分析"><a href="#dyld源码分析" class="headerlink" title="dyld源码分析"></a>dyld源码分析</h2><p>&emsp;我们来通过分析dyld的源码验证上述过程：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/16923b9d32a0e4e7?w=1070&amp;h=418&amp;f=png&amp;s=228919" alt><br>新建一个Objective-C的iOS项目作为示例，在任意参与编译的类中重写 +load 方法并添加断点，运行起来进入断点即可看到上图所示的dyld调用堆栈信息。  </p>
+<p>&emsp;从图中frame9的汇编信息中，你一定发现了在dyld的入口函数<code>__dyld_start</code>里出现了<code>dyldbootstrap::start(macho_header const*, int, char const**, long, macho_header const*, unsigned long*)</code>的函数调用，那这段代码是干嘛的呢？上源码：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/16923f6d556eb8ef?w=775&amp;h=908&amp;f=png&amp;s=182757" alt>这个函数做了这么几件事：dyld的<strong>自举</strong>（slideOfMainExecutable、rebaseDyld 完成自身的<strong>重定位</strong>）、开放函数使用：mach_init、设置堆栈保护：__guard_setup、开始装载共享对象：dyld::_main。   </p>
+<p>在dyld::_main中主要做了以下几件事</p>
+<ol>
+<li>配置环境：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/1692435464464110?w=775&amp;h=754&amp;f=png&amp;s=166363" alt></li>
+<li>加载动态库(共享缓存)：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/1692445911c89b2d?w=832&amp;h=241&amp;f=png&amp;s=65009" alt></li>
+<li>实例化主程序：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/169246357df619b5?w=783&amp;h=320&amp;f=png&amp;s=75369" alt></li>
+<li>插入动态库：（越狱中编写插件就是修改这个配置让自己写的库被加载，这个配置也只有root用户才有权限修改，本来是苹果给自己预留插入动态库用的）<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/1692466fbead2ece?w=821&amp;h=121&amp;f=png&amp;s=30037" alt></li>
+<li>重定位完所有需要重定位的库，然后初始化主程序：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/1692481fcc629ace?w=825&amp;h=284&amp;f=png&amp;s=77826" alt><ol>
+<li>经过一系列初始化函数的调用，到notifySingle函数<ul>
+<li>通过断点调试发现此函数的回调是load_images这个函数</li>
+<li>load_images里执行call_load_methods函数<ul>
+<li>循环调用各个类的 load 方法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>然后调用了 doModInitFunctions 函数<ul>
+<li>内部会调用全局C++对象的构造函数（带<strong>attribute</strong>((constructor))的c函数）</li>
+</ul>
+</li>
+<li>返回主程序的入口函数，进入主程序的main函数：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/169248828b79d71d?w=824&amp;h=505&amp;f=png&amp;s=134011" alt>历经千辛万苦，我们抵达了最熟悉的main函数：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/169248963302cbc4?w=626&amp;h=125&amp;f=png&amp;s=23679" alt></li>
+</ol>
+</li>
+</ol>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;这一篇我们从dyld出发，将程序从编译到装载的整个过程串了一遍，并结合分析了dyld的源码，这些资源都是开源的，有兴趣一定要自己去自己啃一下，通过看苹果对数据结构的使用和设计，还是有很多启发的。在后续的逆向学习中，这一篇的研究或许能让我不仅知其然，而且知其所以然。</p>
+<p>路过的大神还望多多指教~</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/21/MachO 文件结构详解/" rel="next" title="MachO 文件结构详解">
+                <i class="fa fa-chevron-left"></i> MachO 文件结构详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/04/fishhook的实现原理浅析/" rel="prev" title="fishhook的实现原理浅析">
+                fishhook的实现原理浅析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是dyld？"><span class="nav-number">1.</span> <span class="nav-text">什么是dyld？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dyld存在的意义"><span class="nav-number">2.</span> <span class="nav-text">dyld存在的意义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-可执行文件的生成–静态链接。"><span class="nav-number">2.1.</span> <span class="nav-text">1.可执行文件的生成–静态链接。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-可执行文件的装载与动态链接。"><span class="nav-number">2.2.</span> <span class="nav-text">2.可执行文件的装载与动态链接。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#装载"><span class="nav-number">2.2.1.</span> <span class="nav-text">装载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态链接"><span class="nav-number">2.2.2.</span> <span class="nav-text">动态链接</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态链接的步骤"><span class="nav-number">3.</span> <span class="nav-text">动态链接的步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dyld源码分析"><span class="nav-number">4.</span> <span class="nav-text">dyld源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+</html>

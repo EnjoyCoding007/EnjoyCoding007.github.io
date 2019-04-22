@@ -296,6 +296,895 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/08/fishhook使用场景&源码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/03/08/fishhook使用场景&源码分析/" class="post-title-link" itemprop="url">fishhook使用场景&源码分析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-08 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-08T20:49:56+08:00">2019-03-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 22:16:08" itemprop="dateModified" datetime="2019-04-22T22:16:08+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/03/08/fishhook使用场景&源码分析/" class="leancloud_visitors" data-flag-title="fishhook使用场景&源码分析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="不做伪学习者"><a href="#不做伪学习者" class="headerlink" title="不做伪学习者"></a>不做伪学习者</h2><p>&emsp;上一篇我们一起分析了 <a href="https://juejin.im/post/5c7b43976fb9a04a05406312">fishhook的实现原理</a>，但很多东西如果我们仅仅知道原理，其实距离真正吸收它并将其转化成自己的生产力还有很长的路。你得弄清楚别人是怎么利用这个原理去解决问题的，还要借鉴别人的设计思想，再结合我们自己的思考不断地实践和总结，才能真正让知识成为自己的生产力。  </p>
+<p>&emsp;话不多说，进入今天的第一个正题。</p>
+<h2 id="fishhook-使用场景"><a href="#fishhook-使用场景" class="headerlink" title="fishhook 使用场景"></a>fishhook 使用场景</h2><p>&emsp;在 <a href="https://juejin.im/post/5c7b43976fb9a04a05406312">上一篇</a> 里已经为大家演示了它的基本用法，使用很简单，这里就不展开了。它的使用场景正如其名: fishhook，主要用在安全防护领域。当然，大神级的逆向与安全防护专家咱们先不谈，那个级别的高手我相信也不会看到这篇文章，天下没有绝对的安全，黑与白永远都在博弈，所以希望大家不要钻牛角尖，至少咱们不能写出让菜鸟逆向就能轻松搞定的应用对吧？当然，后面咱们也会学习静态分析和汇编的知识，掌握更高级的逆向和防护技能，那都是打好基础的后话了。今天咱们的重点是源码分析，顺便温习下 c 的数据结构。</p>
+<p>下面先来了解一下用 fishhook 防 HOOK 的基本思路：</p>
+<ol>
+<li>在基础的动态调试逆向中，最常见的就是定位到目标方法后，通过 runtime 中的几种方法交换方式，实现代码注入的目的。为你准备好了相关的文章：<a href="https://juejin.im/post/5c616552f265da2dd53fa4e7">iOS代码注入+HOOK微信登录</a></li>
+<li>既然 fishhook 可以拦截系统外部的 C 函数，那自然就可以 HOOK 到 runtime 库中的所有方法。</li>
+<li>那我们就将所有可能用来篡改我们 OC 方法实现的 runtime API，都用 fishhook 拦截掉，使其无法用代码注入的方式成功 HOOK。</li>
+</ol>
+<p>思路理清了，撸起袖子开始干。</p>
+<ul>
+<li>为了方便演示，这里直接搞了一个分类，将ViewController的 实例方法 <code>viewDidAppear:</code> 用 <code>method_exchangeImplementations(Method _Nonnull m1, Method _Nonnull m2)</code> 的方式与 <code>my_viewDidAppear:</code> 交换了实现，上代码：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/169590476f100040?w=2164&amp;h=858&amp;f=png&amp;s=667798" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/8/16959050bcc38a33?w=2422&amp;h=800&amp;f=png&amp;s=683109" alt><br>这时我们程序跑起来就可以看到如下输出：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695c73609b92111?w=2838&amp;h=506&amp;f=png&amp;s=258672" alt></li>
+<li>为了阻止其完成方法交换，我们要 hook <code>method_exchangeImplementations</code> 方法，拖入 fishhook 源文件，再添加一个分类并写好 hook <code>method_exchangeImplementations</code> 的代码：（如果成功 hook 了 <code>method_exchangeImplementations</code> ，那别人调用该方法时会进入我们的 <code>myExchange</code> ，然后顺便又把 <code>NSLog</code> hook 了一下，不要被这个绕晕了 😜）<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/169591c9339cf9b9?w=1990&amp;h=1922&amp;f=png&amp;s=576134" alt><br>再次 Run 起来，咦？肿么肥四？你会发现 <code>method_exchangeImplementations</code> 并没有 HOOK 成功， <code>viewDidAppear:</code> 依然被篡改了实现，问题出在哪了呢？  </li>
+</ul>
+<p>&emsp;对，聪明的你一定发现了问题所在：<strong>是代码执行顺序的问题</strong></p>
+<p>&emsp;经过实践，我发现项目里参与编译的文件顺序就是其编译后被加载时的载入顺序（暂未找到官方的编译顺序说明，还请有研究的大佬指点），即此时 <code>ViewController+HOOKTest</code> 的 <code>load</code> 方法会早于 <code>ViewController+FishHook</code> 的 <code>load</code> 调用，所以 <code>method_exchangeImplementations</code> 的实现被我们 HOOK 发生在 <code>viewDidAppear:</code> 被别人交换之后，从而导致防护的失败：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695922be53eb4e4?w=1782&amp;h=422&amp;f=png&amp;s=104432" alt><br>验证一下我们的想法：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/169593af27a193ea?w=2262&amp;h=1132&amp;f=png&amp;s=311764" alt></p>
+<p>&emsp;如上图所示，在调整了编译文件的顺序之后成功 HOOK 到了 <code>method_exchangeImplementations</code> 的调用，但实际开发中我们不可能采用这么笨的方法，也不可能通过这种方式决定文件的载入顺序，因此我们要想办法保证 fishhook 的代码必须最先执行才行。  </p>
+<p>&emsp;那如何做到呢？由此前的 <a href="https://juejin.im/post/5c727262e51d457139116208">dyld背后的故事&amp;源码分析</a> 可以得知，本地的Framework中的类一定会早于后注入的库（动态库例外，非越狱设备是没有插入动态库的权限的）和可执行文件中的类进行初始化。所以我们将 fishhook 的 HOOK 操作代码移到自建的 Framework 中即可：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/169594b4948ff0c2?w=2494&amp;h=1860&amp;f=png&amp;s=694725" alt><br>&emsp;至此，我们已经知道了 fishhook 反调试的基本思路，当然，上面的代码只是思路演示，实际开发中，像<code>method_getImplementation</code>、<code>method_setImplementation</code>等函数都需要用同样的方式一一 HOOK，同时，如果自己的项目中已经用到了这些函数，还需要设计相应的白名单方案，并且在检测到是被三方非法 HOOK 时通常直接调用 <code>exit(0)</code> 这类接口终止掉进程。这些细节以后还会详细讲，这里算是抛砖引玉吧。</p>
+<p>&emsp;那咱们进入第二个正题，源码分析。</p>
+<h2 id="fishhook-源码分析"><a href="#fishhook-源码分析" class="headerlink" title="fishhook 源码分析"></a>fishhook 源码分析</h2><p>（一）： 在写 fishhook 的代码时，第一件事就是声明一个 <code>rebinding</code> 类型的结构体变量，其源码如下：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695c850d3d03ff9?w=878&amp;h=198&amp;f=png&amp;s=43808" alt><br>命名很易读，其中第三个成员 <code>void **replaced</code> 是指向指针的指针，可以理解为一个存着另一个指针地址的指针，在上述示例中， <code>*replaced</code> 取出的就是一个指向共享库中 <code>method_exchangeImplementations</code> 函数实现的指针，再对其取值，<code>**replaced</code> 得到的就是共享库中 <code>method_exchangeImplementations</code> 函数实现的首地址，还不清楚的同学要自己去补补基础了😝。  </p>
+<p>（二）： 按结构体成员的类型写好声明和实现之后，一一赋值给结构体对应的成员，再把这些结构体放到一个数组中，然后调用重绑定符号函数 <code>rebind_symbols</code>(如果绑定成功返回 0，否则返回 -1)，并将结构体数组和数组长度作为参数传入：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695cae0b9629ec3?w=944&amp;h=390&amp;f=png&amp;s=83538" alt><br>接下来咱们一步步的分析在这个函数里具体都做了些啥：</p>
+<ol>
+<li>第一件事，调用了这个函数– <code>prepend_rebindings</code>，其具体实现如下：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695cea53a257331?w=2154&amp;h=754&amp;f=png&amp;s=308406" alt><br>&emsp;咦？传入的第一个参数 <code>&amp;_rebindings_head</code> 是个啥东东？<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d086c82405eb?w=1508&amp;h=292&amp;f=png&amp;s=95376" alt><br>&emsp;看源码：<code>_rebindings_head</code> 被声明为一个指向 <code>rebindings_entry</code> 类型结构体的静态指针变量，那 <code>&amp;_rebindings_head</code> 就是取出这个指针的地址，再看该函数的参数声明 <code>struct rebindings_entry **</code> ，没错，这又是一个指向指针的指针。<br>&emsp;结构体 <code>rebindings_entry</code> 的三个成员分别是：指向 <code>rebinding</code> 类型结构体的指针（用来指向传入结构体数组的首元素地址）、<code>rebindings_nel</code>：记录此次要重绑定的数量（用于开辟对应大小的空间）、指向下一个 <code>rebindings_entry</code> 类型的结构体（记录下一次需要重绑定的数据），这就是典型的数据结构——<strong>链表</strong>的一种实现。<code>_rebindings_head</code> 就是指向该链表的指针。</li>
+</ol>
+<p>&emsp;为了加深理解，我为你画了一张 <code>prepend_rebindings</code> 函数的作用示意图：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d2a2cc17541c?w=1884&amp;h=1010&amp;f=png&amp;s=486382" alt><br>&emsp;一句话<strong>总结</strong> <code>prepend_rebindings</code> 函数的目的：<strong>将新加入的 rebindings 数组不断的添加到 _rebindings_head 这个链表的头部成为新的头节点</strong>。  </p>
+<ol start="2">
+<li>第二件事，对已经载入的镜像文件（也就是库）逐一查找目标符号进行 hook。前面我们已经知道 fishhook 的代码执行时间非常早，所以第一次执行时要 hook 的库可能还没完成装载，因此这里如果是第一次调用会通过一个函数对库的装载完成注册监听和回调的方法：<br><code>`</code></li>
+</ol>
+<p>extern void _dyld_register_func_for_add_image(void (<em>func)(const struct mach_header</em> mh, intptr_t vmaddr_slide))    <strong>OSX_AVAILABLE_STARTING(</strong>MAC_10_1, __IPHONE_2_0);<br><code>`</code><br>&emsp;源码注释如下图：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d6d6e247bfb0?w=2478&amp;h=1006&amp;f=png&amp;s=508797" alt><br>&emsp;当回调到 <code>_rebind_symbols_for_image</code> 时，会将存着待绑定函数信息的链表作为参数传入，用于符号查找和函数指针的交换，第二个参数 <code>header</code>是 当前 <code>image</code> 的头信息，第三个参数 <code>slide</code>是 ASLR 的偏移：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d6eb79d40984?w=1668&amp;h=186&amp;f=png&amp;s=80972" alt></p>
+<ol start="3">
+<li><p>第三件事，根据 <a href="https://juejin.im/post/5c7b43976fb9a04a05406312#heading-6">fishhook 是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现</a> 中的几个步骤，去找到目标符号对应指针所指向的函数实现地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d7c4b9fdf0a0?w=2098&amp;h=1194&amp;f=png&amp;s=604072" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/8/1695d7d32860aa77?w=1982&amp;h=1574&amp;f=png&amp;s=813601" alt><br>&emsp;这个过程比较枯燥，无非就是按照规则计算各种表的地址和指针在表中的偏移量。</p>
+</li>
+<li><p>最后一件事，根据算好的符号表地址和偏移量，找到在符号表中用于指向共享库目标函数的指针，然后将该指针的值（即目标函数的地址）赋值给我们的 <code>*replaced</code>，最后修改该指针的值为我们的 <code>replacement</code>（新的函数地址），<code>perform_rebinding_with_section</code> 的源码实现：<br><img src="https://user-gold-cdn.xitu.io/2019/3/13/1697768c5f4ae694?w=1314&amp;h=951&amp;f=png&amp;s=300287" alt></p>
+</li>
+</ol>
+<h2 id="fishhook-源码之旅，告一段落"><a href="#fishhook-源码之旅，告一段落" class="headerlink" title="fishhook 源码之旅，告一段落"></a>fishhook 源码之旅，告一段落</h2><p>&emsp;如果不算注释，fishhook 的源码实现一共 180+ 行，通过对其源码的分析，如果做到读懂它的每一行，我相信不管是对指针的理解和使用，还是对链表的数据结构和实现方式，你都会有更好的理解。当然，你对 MachO 的文件结构和加载机制，也更加了然于胸，同时还 get 了基本的安全防护技巧。</p>
+<p>愿你不虚此行。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/04/fishhook的实现原理浅析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/03/04/fishhook的实现原理浅析/" class="post-title-link" itemprop="url">fishhook的实现原理浅析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-04 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-04T20:49:56+08:00">2019-03-04</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 22:17:12" itemprop="dateModified" datetime="2019-04-22T22:17:12+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/03/04/fishhook的实现原理浅析/" class="leancloud_visitors" data-flag-title="fishhook的实现原理浅析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="打开姿势很重要"><a href="#打开姿势很重要" class="headerlink" title="打开姿势很重要"></a>打开姿势很重要</h2><p>&emsp;早些时候，iOS中一提到“黑魔法”、HOOK，很多人第一时间想到的就是 AOP RunTime MethodSwizzling 这些不明觉厉的东西，它们的基本用法其实都不难，真正难的是如何在合适的地方用好它们。  </p>
+<p>&emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很多时候只会适得其反，详细误区请参考<a href="https://juejin.im/entry/5a1fceddf265da43310d9985">iOS界的毒瘤-MethodSwizzling</a>。</p>
+<p>&emsp;关于 MethodSwizzling 的用法在之前的文章中也有过讲解，请参考<a href="https://juejin.im/post/5c616552f265da2dd53fa4e7#heading-3">MethodSwizzling的几种姿势</a>。 该方式更多的用于性能监测、 crash 的兼容和上报、反破解防护等一些工具的开发中，而在逆向中，在面对有相应安全防护措施的应用时，其用武之地比较有限。  </p>
+<p>&emsp;无独有偶，“黑魔法”可不只有 RunTime ，今天我们来聊聊在逆向中常用的另一种HOOK方式：<a href="https://github.com/facebook/fishhook" target="_blank" rel="noopener">fishhook</a>。  </p>
+<h2 id="fishhook-背后的故事"><a href="#fishhook-背后的故事" class="headerlink" title="fishhook 背后的故事"></a>fishhook 背后的故事</h2><h3 id="（一）实现原理"><a href="#（一）实现原理" class="headerlink" title="（一）实现原理"></a>（一）实现原理</h3><p>&emsp;<a href="https://github.com/facebook/fishhook" target="_blank" rel="noopener">fishhook</a> 是 FaceBook 开源的可以动态修改 MachO 符号表的工具。fishhook 的强大之处在于它可以 HOOK 系统的静态 C 函数。  </p>
+<p>&emsp;大家都知道 OC 的方法之所以可以 HOOK 是因为它的运行时特性，OC 的方法调用在底层都是 msg_send（id,SEL）的形式，这为我们提供了交换方法实现（IMP）的机会，但 C 函数在编译链接时就确定了函数指针的地址偏移量（Offset），这个偏移量在编译好的可执行文件中是固定的，而可执行文件每次被重新装载到内存中时被系统分配的起始地址（在 lldb 中用命令<code>image List</code>获取）是不断变化的。运行中的静态函数指针地址其实就等于上述 Offset + Mach0 文件在内存中的首地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947b64d99d9f8c?w=2190&amp;h=94&amp;f=png&amp;s=49031" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/3/16942fad623530bf?w=1940&amp;h=76&amp;f=png&amp;s=29877" alt></p>
+<p>&emsp;既然 C 函数的指针地址是相对固定且不可修改的，那么 fishhook 又是怎么实现 对 C 函数的 HOOK 呢？<strong>其实内部/自定义的 C 函数 fishhook 也 HOOK 不了，它只能HOOK Mach-O 外部（共享缓存库中）的函数</strong>。fishhook 利用了 MachO 的动态绑定机制（不清楚的同学看这里：<a href="https://juejin.im/post/5c67e7efe51d45164c75993b">MachO 文件结构详解</a>、<a href="https://juejin.im/post/5c727262e51d457139116208">dyld背后的故事&amp;源码分析
+</a>）：苹果的共享缓存库不会被编译进我们的 MachO 文件，而是在动态链接时才去重新绑定。苹果采用了<a href="https://en.wikipedia.org/wiki/Position-independent_code" target="_blank" rel="noopener">PIC</a>（Position-independent code）技术成功让 C 的底层也能有动态的表现：</p>
+<ul>
+<li>编译时在 Mach-O 文件 _DATA 段的符号表中为每一个被引用的系统 C 函数建立一个指针（8字节的数据，放的全是0），这个指针用于动态绑定时重定位到共享库中的函数实现。</li>
+<li>在运行时当系统 C 函数被第一次调用时会动态绑定一次，然后将 Mach-O 中的 _DATA 段符号表中对应的指针，指向外部函数（其在共享库中的实际内存地址）。  </li>
+</ul>
+<p>fishhook 正是利用了 PIC 技术做了这么两个操作：</p>
+<ul>
+<li>将指向系统方法（外部函数）的指针重新进行绑定指向内部函数/自定义 C 函数。</li>
+<li>将内部函数的指针在动态链接时指向系统方法的地址。</li>
+</ul>
+<p>这样就把系统方法与自己定义的方法进行了交换，达到 HOOK 系统 C 函数（共享库中的）的目的。</p>
+<h3 id="（二）用汇编解析过程"><a href="#（二）用汇编解析过程" class="headerlink" title="（二）用汇编解析过程"></a>（二）用汇编解析过程</h3><p>&emsp;为了更好的理解 fishhook 是如何 HOOK 系统的 C 函数，我们以 HOOK NSLog 为例，从汇编着手来一步步去分析，为大家扒开 fishhook 实现 HOOK 系统 NSLog 的全过程。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">注：对于非懒加载符号表，dyld 会在动态链接时就链接动态库</span><br><span class="line">    对于懒加载符号表，dyld 会在运行时函数第一次被调用时动态绑定一次</span><br><span class="line">    NSLog 在懒加载表中</span><br></pre></td></tr></table></figure></p>
+<h4 id="1-验证系统的动态绑定："><a href="#1-验证系统的动态绑定：" class="headerlink" title="1.验证系统的动态绑定："></a>1.验证系统的动态绑定：</h4><p>&emsp;新建一个空工程，写下这两行代码：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947bdfdc4adf78?w=1598&amp;h=358&amp;f=png&amp;s=105901" alt><br>&emsp;编译一下工程，在目录Products下将 .app内的可执行文件拷出用 MachOView 打开：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947c1c922ccad7?w=2160&amp;h=884&amp;f=png&amp;s=639106" alt><br>记下0x3028这个偏移值，这就是用于重定向到共享库中的那个指针相对于 MachO文件的偏移量。  </p>
+<p>在两个 NSLog 处分别加上断点，将工程 Run 起来，把 Debug -&gt; Debug Workflow -&gt; Always Show Disassembly 勾选上，用于查看汇编信息，断点断住后获取 MachO 在内存中的首地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947c95a6955ec6?w=2166&amp;h=78&amp;f=png&amp;s=50586" alt><br><strong>0x3028+0x000000010b0f7000</strong> 就是用于重定向到共享库中的那个指针的内存地址。此时我们查看该地址是否已经被重定向：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947d3fb8eb1b03?w=2148&amp;h=1440&amp;f=png&amp;s=811608" alt></p>
+<ol>
+<li>拿到该指针当前保存的值，iOS 的 CPU 是小端序，当前机型为 64 位 CPU，所以倒序读 8 个字节就是指针的值：<strong>0x010b0f89a0</strong></li>
+<li>dis -s 是反汇编命令，我们发现此时该指针指向的函数正在调用系统动态绑定的函数</li>
+<li>进一步查看调用函数详细信息：libdyld.dylib`dyld_stub_binder</li>
+</ol>
+<p>这是在干嘛？没错，这就是第一次调用 NSLog 时系统去重新绑定位懒加载符号表中 NSLog 对应的指针所指向的位置。</p>
+<p>接下来我们过掉第一次断点，让断点断在第二个 NSLog 处，再次查看符号表中该指针（依然是 <strong>0x3028+0x000000010b0f7000</strong> 这个地址）所指向的地址，<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947e1e12c3ce60?w=2180&amp;h=972&amp;f=png&amp;s=567653" alt><br>&emsp;我们发现，它指向的地址由之前的 <strong>0x010b0f89a0</strong><br>变为 <strong>0x010b491276</strong> 了，对应的函数也由之前的 dyld_stub_binder 变为 NSLog ，这意味着该函数的动态绑定已经完成。以上，我们验证了 iOS 的动态绑定全过程。</p>
+<h4 id="2-验证-fishhook-的重绑定："><a href="#2-验证-fishhook-的重绑定：" class="headerlink" title="2.验证 fishhook 的重绑定："></a>2.验证 fishhook 的重绑定：</h4><p>&emsp;我们将 fishhook文件拖入工程，并添加一个简单的绑定：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947f1ff35ebade?w=2758&amp;h=1580&amp;f=png&amp;s=575055" alt><br><strong>注意：修改文件后重新编译的 MachO 文件，符号表里的指针偏移值可能会改变，重新运行的程序内存首地址也会发生变化，需要你重新拿到它们计算得出指针新的内存地址。</strong> </p>
+<p>我们运行起来之后点击屏幕进入上图所示断点，查看符号表中原本指向系统 NSLog 的指针指向：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947f8a82a1d9a9?w=2304&amp;h=494&amp;f=png&amp;s=226668" alt><br>此时该指针的指向被修改为我们自定义的函数 myNslog 了，而将系统重定位的外部函数地址保存到了另一个自定义函数指针 sys_nslog 中：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169482b537e87b2d?w=2806&amp;h=962&amp;f=png&amp;s=555777" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169482c7f96c4e78?w=2792&amp;h=496&amp;f=png&amp;s=368451" alt><br>以上，我们通过断点分析汇编信息，验证了 fishhook 实现 HOOK 系统外部函数的思路。接下来我们结合 fishhook 的官方说明看它是如何根据字符串（方法名）找到对应指针在符号表中的偏移值的。</p>
+<h3 id="（三）fishhook-是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？"><a href="#（三）fishhook-是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？" class="headerlink" title="（三）fishhook 是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？"></a>（三）fishhook 是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？</h3><p>fishhook 官方给了这张图：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/1694835612995c46?w=1528&amp;h=1808&amp;f=png&amp;s=375686" alt><br>这张图主要在描述如何由一个字符串（比如 “NSLog”），跟着它在 MachO 文件的懒加载表中对应的指针，一步步的找到该指针指向的函数实现地址，大致步骤如下：</p>
+<ol>
+<li>在 Lazy Symbol Pointers 中该字符串的顺序就是其在 Dynamic Symbols Table -&gt; Indirect Symbols 表中的位置（这里是第一个）<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169485350abfa446?w=2132&amp;h=832&amp;f=png&amp;s=623817" alt><br>在实际计算地址中用到了 Load Commands 中对应头信息的 Reserved1 的 value （section基地址+  偏移量 value = 其在 Indirect Symbols 中对应的 offset）:下篇<a href="https://juejin.im/post/5c810294f265da2db91297f1">源码分析</a>有详细说明。<br><img src="https://user-gold-cdn.xitu.io/2019/3/13/169773b4e83c6422?w=1072&amp;h=289&amp;f=png&amp;s=93955" alt></li>
+<li>Dynamic Symbols Table -&gt; Indirect Symbols 表中的第一个对应的 Data 值（0x7A=122）就是其在Symbols Table -&gt; Symbols 中的索引。<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16948517a9d15528?w=2184&amp;h=1232&amp;f=png&amp;s=778503" alt></li>
+<li>在 Symbols Table -&gt; Symbols 中索引为 122 的位置对应的 Data = 0x9B：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169484c4a38ad17e?w=2156&amp;h=1316&amp;f=png&amp;s=751016" alt></li>
+<li>上表中的 Data（0x9B） + String Table的起始地址（0x4F04）就是目标函数实现的地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16948458a00d9911?w=2148&amp;h=1324&amp;f=png&amp;s=1032207" alt></li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;今天我们结合 iOS 的共享缓存库中采用的 PIC 技术，介绍了 fishhook 对系统外部函数实现 HOOK 基本原理和具体过程，并通过反汇编命令一一验证了 iOS 的动态绑定过程和 fishhook 的重新绑定机制，最后把 fishhook 在符号表中根据符号指针寻找函数实现的步骤做了演示。 愿你有所收获！ 水平有限，请多指教~</p>
+<p>&emsp;鉴于篇幅过长会影响大家的阅读体验，fishhook 的源码分析与应用场景以及安全防护的分享，<a href="https://juejin.im/post/5c810294f265da2db91297f1">我们这里继续</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/02/25/dyld背后的故事&源码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/02/25/dyld背后的故事&源码分析/" class="post-title-link" itemprop="url">dyld背后的故事&源码分析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-02-25 20:49:56" itemprop="dateCreated datePublished" datetime="2019-02-25T20:49:56+08:00">2019-02-25</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 22:16:34" itemprop="dateModified" datetime="2019-04-22T22:16:34+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/02/25/dyld背后的故事&源码分析/" class="leancloud_visitors" data-flag-title="dyld背后的故事&源码分析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="什么是dyld？"><a href="#什么是dyld？" class="headerlink" title="什么是dyld？"></a>什么是dyld？</h2><p>&emsp;dyld（the dynamic link editor）是苹果的动态链接器，是苹果操作系统的一个重要组成部分，当系统内核做好启动程序的准备工作之后，余下的工作会交给dyld来负责处理。那它存在的意义是什么？它又具体都负责做些什么呢？这一篇我们一起来一探究竟。前方长篇预警~</p>
+<hr>
+<h2 id="dyld存在的意义"><a href="#dyld存在的意义" class="headerlink" title="dyld存在的意义"></a>dyld存在的意义</h2><p>&emsp;存在即合理，但我们要弄清楚其合理性所在。先从可执行文件是如何由源码生成的说起。</p>
+<h3 id="1-可执行文件的生成–静态链接。"><a href="#1-可执行文件的生成–静态链接。" class="headerlink" title="1.可执行文件的生成–静态链接。"></a>1.可执行文件的生成–静态链接。</h3><p>先看下面这段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	printf(&quot;Hello World\n&quot;);</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;假设这段代码源文件为hello.c，我们输入最简单的命令：<code>$gcc hello.c</code> <code>$./a.out</code>，那么终端会输出：Hello World，在这个过程中，事实上经过了四个步骤：预处理、编译、汇编和链接。我们来具体看每一步都做了些什么。  </p>
+<p>&emsp;<strong>预编译</strong>的主要处理规则如下：</p>
+<ol>
+<li>删除所有#define，并将所有宏定义展开 </li>
+<li>将被包含的文件插入到预编译指令(#include)所在位置（这个过程是递归的）</li>
+<li>删除所有注释：// 、/<em> </em>/等</li>
+<li>添加行号和文件名标识，以便于编译时编译器产生调试用的行号信息及编译时能够显示警告和错误的所在行号</li>
+<li>保留所有的#pragma编译器指令，因为编译器须要使用它们</li>
+</ol>
+<p>结合上述规则，当我们无法判断宏定义是否正确或者头文件是否包含时可以查看预编译后的文件来确定问题，预编译的过程相当于如下命令：<br><code>$gcc -E hello.c -o hello.i</code> 或<br><code>$cpp hello.c &gt; hello.i</code>  </p>
+<p>&emsp;<strong>编译</strong>的过程就是把预处理完的文件进行一些列词法分析、语法分析、语义分析及优化后生产相应的汇编代码文件，这个过程往往是我们整个程序构建的核心部分，也是最复杂的部分之一，编译的具体步骤涉及到编译原理等内容，这里就不展开了。我们使用命令：<br><code>$gcc -S hello.c -o hello.s</code><br>可以得到汇编输出文件hello.s。  </p>
+<p>&emsp;对于 C 语言的代码来说，这个预编译和编译的程序是 ccl，但是对于 C++ 来说，对应的程序是 ccplus；Objective-C 的是 ccobjc；Java 是 jcl。所以实际上 gcc 这个命令只是这些后台程序的包装，它会根据不同的参数要求去调用预编译编译程序 ccl、汇编器 as、链接器 ld。</p>
+<p>&emsp;<strong>汇编器</strong>是将汇编代码转变成机器可以执行的指令，每一个汇编语句几乎都对应一条机器指令。所以汇编器的汇编过程相对于编译器来讲比较简单，它没有复杂的语法，也没有语义，也不需要做指令优化，只是根据汇编指令和机器指令的对照表一一翻译就可以了，我们使用命令：<br><code>$as hello.s -o hello.o</code> 或<br><code>$gcc -c hello.s -o hello.o</code><br>来完成汇编，输出<strong>目标文件</strong>（Object File）：hello.o。  </p>
+<p>&emsp;<strong>链接</strong>是让很多人费解的一个过程，为什么汇编器不直接输出可执行文件而是一个目标文件呢？链接过程到底包含了什么内容？为什么要链接？  </p>
+<p>&emsp;这就要扯一下计算机程序开发的历史了，最早的时候程序员是在纸带上用机器语言通过打孔来实现程序的，连汇编语言都没有，每当程序修改的时候，修改的指令后面的位置要相应的发生移动，程序员要人工计算每个子程序或跳转的目标地址，这个过程叫<strong>重定位</strong>。很显然这样修改程序的代价随着程序的增大会变得高不可攀，并且很容易出错，于是有先驱发明了汇编语言，汇编语言使用接近人类的各种符号和标记来帮助记忆，更重要的是，这种符号使得人们从具体的指令地址中逐步解放出来，当人们使用这种符号命名子程序或者跳转目标以后，不管目标指令之前修改了多少指令导致目标指令的地址发生了变化，汇编器在每次汇编程序的时候都会重新计算目标指令的地址，然后把所有引用到该指令的指令修正到正确的地址，这个过程不需要人工参与。  </p>
+<p>&emsp;有了汇编语言，生产力极大地提高了，随之而来的是软件的规模与日俱增，代码量快速膨胀，导致人们开始考虑将不同功能的代码以一定的方式组织起来，使得更加容易阅读和理解，更便于日后修改和复用。自然而然的，我们开始习惯用若干个变量和函数组成一个模块（比如类），然后用目录结构来组织这些源代码文件，在一个程序被多个模块分割以后，这些模块最终如何组合成一个单一的程序是须要解决的问题。这个问题归根结底是模块之间如何通信的问题，也就是访问函数需要知道函数的地址，访问变量需要知道变量的地址，这两个问题都是通过模块间符号的引用的方式来解决。这个模块间符号引用拼接的过程就是<strong>链接</strong>。  </p>
+<p>&emsp;<strong>链接</strong>的主要内容就是把各个模块之间相互引用的部分处理好，使得各个模块之间能够正确地衔接。本质上跟前面描述的“程序员人工调整地址”没什么区别，只不过现代的高级语言的诸多特性和功能，使得编译器、链接器更为复杂，功能更强大。<strong>链接</strong>过程包括了<strong>地址和空间分配</strong>、<strong>符号决议</strong>（也叫“符号/地址绑定”，“决议”更倾向于静态链接，而“绑定”更倾向于动态链接，即适用范围的区别）和<strong>重定位</strong>，链接器将经过汇编器编译成的所有目标文件和<strong>库</strong>进行<strong>链接</strong>形成最终的可执行文件，而最常见的库就是<strong>运行时库（RunTime Library）</strong>，它是支持程序运行的基本函数的集合。<strong>库</strong>其实就是一组最常用的代码编译成目标文件后的打包存放。  </p>
+<p>&emsp;知道了可执行文件是如何生成的，我们再来看看它又是如何被装载进系统中运行起来的。</p>
+<h3 id="2-可执行文件的装载与动态链接。"><a href="#2-可执行文件的装载与动态链接。" class="headerlink" title="2.可执行文件的装载与动态链接。"></a>2.可执行文件的装载与动态链接。</h3><h4 id="装载"><a href="#装载" class="headerlink" title="装载"></a>装载</h4><p>&emsp;装载与动态链接其实内容特别多，很多细节需要对计算机底层有非常扎实的理解，鉴于目前我的能力尚浅，这里只做粗略的介绍，推荐有兴趣的同学购买《程序员的自我修养–链接、装载与库》这本书了解更多细节。  </p>
+<p>&emsp;可执行文件(程序)是一个静态的概念，在运行之前它只是硬盘上的一个文件；而进程是一个动态的概念，它是程序运行时的一个过程，我们知道每个程序被运行起来后，它会拥有自己独立的<strong>虚拟地址空间</strong>，这个地址空间大小的上限是由计算机的硬件（CPU的位数）决定的，比如32位的处理器理论最大虚拟空间地址为0~2^32-1。即0x00000000~0xFFFFFFFF，当然，我们的程序运行在系统上时是不可能任意使用全部的虚拟空间的，操作系统为了达到监控程序运行等一系列目的，进程的虚拟空间都在操作系统的掌握之中，且在操作系统中会同时运行着多个进程，它们彼此之间的虚拟地址空间是隔离的，如果进程访问了操作系统分配给该进程以外的地址空间，会被系统当做非法操作而强制结束进程。  </p>
+<p>&emsp;将硬盘上的可执行文件映射到虚拟内存中的过程就是<strong>装载</strong>，但内存是昂贵且稀有的，所以将程序执行时所需的指令和数据全部装载到内存中显然是行不通的，于是人们研究发现了程序运行时是有<strong>局部性原</strong>理的，可以只将最常用的部分驻留在内存中，而不太常用的数据存放在磁盘里，这也是<strong>动态装载</strong>的基本原理。<strong>覆盖装入</strong>和<strong>页映射</strong>就是利用了局部性原理的两种经典动态装载方法，前者在发明虚拟内存之前使用比较广泛 ，现在基本已经淘汰，主要使用<strong>页映射</strong>。装载的过程也可以理解为进程建立的过程，操作系统只需要做以下三件事情：</p>
+<ol>
+<li>创建一个独立的虚拟地址空间</li>
+<li>读取可执行文件头，并且建立虚拟空间与可执行文件的映射关系</li>
+<li>将CPU的指令寄存器设置成可执行文件的入口地址，启动运行</li>
+</ol>
+<h4 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h4><p>&emsp;前面我们在生成可执行文件时说的链接是静态链接。最后一步是将经过汇编后的所有目标文件与库进行链接形成可执行文件，这里的提到的库，包括了很多<strong>运行时库</strong>。运行时库通常是支持程序运行的基本函数的集合，也就意味着每个进程都会用到它，如果每一个可执行文件都将其打包进自己的可执行文件，都用静态链接的方式，虽然原理上更容易理解，但是这种方式对计算机的内存和磁盘的空间浪费非常严重！在现在的Linux系统中，一个普通的程序会使用到的C语言静态库至少在1M以上，如果系统中有2000个这样的程序在运行，就要浪费将近2G的空间。为了解决这个问题，把运行时库的链接过程推迟到了运行时在进行，这就是<strong>动态链</strong>接（<strong>Dynamic Linking</strong>）的基本思想。动态链接的好处有以下几点：</p>
+<ol>
+<li>解决了共享的目标文件存在多个副本浪费磁盘和内存空间的问题</li>
+<li>减少物理页面的换入换出，还增加了CPU的缓存命中率，因为不同进程间的数据和指令访问都集中在了同一个共享模块上</li>
+<li>系统升级只需要替换掉对应的共享模块，当程序下次启动时新版本的共享模块会被自动装载并链接起来，程序就无感的对接到了新版本。</li>
+<li>更方便程序<strong>插件</strong>（Plug-in）的制作，为程序带来更好的可扩展性和兼容性。</li>
+</ol>
+<p>&emsp;至此，终于说回了我们今天的主角：<strong>dyld</strong>,现在咱们知道了它存在的意义——动态加载的支持。</p>
+<hr>
+<h2 id="动态链接的步骤"><a href="#动态链接的步骤" class="headerlink" title="动态链接的步骤"></a>动态链接的步骤</h2><p>&emsp;现在，我们理解了为什么需要动态链接，dyld作为苹果的动态链接器，但本质上dyld也是一个共享对象：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/16923803aaf75a12?w=1055&amp;h=116&amp;f=png&amp;s=33618" alt>上图是dyld在系统中的路径，在iPhone中只有获取root权限（也就是越狱）的用户才能访问，后面在逆向实战中会给大家演示。<br>&emsp;既然dyld也是一个共享对象，而普通共享对象的重定位工作又是由dyld来完成的，虽然也可以依赖于其他共享对象，但被依赖的共享对象还是要由dyld来负责链接和装载。那么dyld的重定向由谁来完成呢？dyld是否可以依赖其他的共享对象呢？这是一个“鸡生蛋，蛋生鸡”的问题，为了解决这个问题，<strong>动态链接器</strong>需要有些特殊性：</p>
+<ul>
+<li>动态链接器本身不依赖其他任何共享对象</li>
+<li>动态链接器本身所需要的全局和静态变量的重定位工作由它本身完成</li>
+</ul>
+<p>上述第一个条件在编写动态链接器时可以人为的控制，第二个条件要求动态链接器在启动时必须有一段代码可以在获得自身的重定位表和符号表的同时又不能用到全局和静态变量，甚至不能调用函数，这样的启动代码被称为<strong>自举</strong>（<strong>Bootstrap</strong>）。当操作系统将进程控制权交给动态链接器时，自举代码开始执行，它会找到动态链接器本身的重定位入口（具体过程和原理暂未深究），进而完成其自身的重定位，在此之后动态链接器中的代码才可以开始使用自己的全局、静态变量和各种函数了。  </p>
+<p>&emsp;完成基本的自举以后，动态链接器将可执行文件和链接器本身的符号表合并为一个，称为<strong>全局符号表</strong>。然后链接器开始寻找可执行文件所依赖的共享对象，如果我们把依赖关系看作一个图的话，那么这个装载过程就是一个图的便利过程，链接器可能会使用深度优先或者广度优先也可能其他的算法来遍历整个图，比较常见的算法都是广度优先的。  </p>
+<p>&emsp;每当一个新的共享对象被装载进来，它的符号表会被合并到全局符号表中，装载完毕后，链接器开始重新遍历可执行文件和共享对象的重定位表，将每个需要重新定位的位置进行修正，这个过程与静态链接的重定位原理基本相同。重定位完成之后，动态链接器会开始共享对象的初始化过程，但不会开始可执行文件的初始化工作，这将由程序初始化部分的代码负责执行。当完成了重定位和初始化之后，所有的准备工作就宣告完成了，这时动态链接器就如释重负，将进程的控制权交给程序的入口并且开始执行。 </p>
+<hr>
+<h2 id="dyld源码分析"><a href="#dyld源码分析" class="headerlink" title="dyld源码分析"></a>dyld源码分析</h2><p>&emsp;我们来通过分析dyld的源码验证上述过程：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/16923b9d32a0e4e7?w=1070&amp;h=418&amp;f=png&amp;s=228919" alt><br>新建一个Objective-C的iOS项目作为示例，在任意参与编译的类中重写 +load 方法并添加断点，运行起来进入断点即可看到上图所示的dyld调用堆栈信息。  </p>
+<p>&emsp;从图中frame9的汇编信息中，你一定发现了在dyld的入口函数<code>__dyld_start</code>里出现了<code>dyldbootstrap::start(macho_header const*, int, char const**, long, macho_header const*, unsigned long*)</code>的函数调用，那这段代码是干嘛的呢？上源码：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/16923f6d556eb8ef?w=775&amp;h=908&amp;f=png&amp;s=182757" alt>这个函数做了这么几件事：dyld的<strong>自举</strong>（slideOfMainExecutable、rebaseDyld 完成自身的<strong>重定位</strong>）、开放函数使用：mach_init、设置堆栈保护：__guard_setup、开始装载共享对象：dyld::_main。   </p>
+<p>在dyld::_main中主要做了以下几件事</p>
+<ol>
+<li>配置环境：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/1692435464464110?w=775&amp;h=754&amp;f=png&amp;s=166363" alt></li>
+<li>加载动态库(共享缓存)：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/1692445911c89b2d?w=832&amp;h=241&amp;f=png&amp;s=65009" alt></li>
+<li>实例化主程序：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/169246357df619b5?w=783&amp;h=320&amp;f=png&amp;s=75369" alt></li>
+<li>插入动态库：（越狱中编写插件就是修改这个配置让自己写的库被加载，这个配置也只有root用户才有权限修改，本来是苹果给自己预留插入动态库用的）<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/1692466fbead2ece?w=821&amp;h=121&amp;f=png&amp;s=30037" alt></li>
+<li>重定位完所有需要重定位的库，然后初始化主程序：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/1692481fcc629ace?w=825&amp;h=284&amp;f=png&amp;s=77826" alt><ol>
+<li>经过一系列初始化函数的调用，到notifySingle函数<ul>
+<li>通过断点调试发现此函数的回调是load_images这个函数</li>
+<li>load_images里执行call_load_methods函数<ul>
+<li>循环调用各个类的 load 方法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>然后调用了 doModInitFunctions 函数<ul>
+<li>内部会调用全局C++对象的构造函数（带<strong>attribute</strong>((constructor))的c函数）</li>
+</ul>
+</li>
+<li>返回主程序的入口函数，进入主程序的main函数：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/169248828b79d71d?w=824&amp;h=505&amp;f=png&amp;s=134011" alt>历经千辛万苦，我们抵达了最熟悉的main函数：<br><img src="https://user-gold-cdn.xitu.io/2019/2/25/169248963302cbc4?w=626&amp;h=125&amp;f=png&amp;s=23679" alt></li>
+</ol>
+</li>
+</ol>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;这一篇我们从dyld出发，将程序从编译到装载的整个过程串了一遍，并结合分析了dyld的源码，这些资源都是开源的，有兴趣一定要自己去自己啃一下，通过看苹果对数据结构的使用和设计，还是有很多启发的。在后续的逆向学习中，这一篇的研究或许能让我不仅知其然，而且知其所以然。</p>
+<p>路过的大神还望多多指教~</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/02/21/MachO 文件结构详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/02/21/MachO 文件结构详解/" class="post-title-link" itemprop="url">MachO 文件结构详解</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-02-21 20:49:56" itemprop="dateCreated datePublished" datetime="2019-02-21T20:49:56+08:00">2019-02-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 21:58:59" itemprop="dateModified" datetime="2019-04-22T21:58:59+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/02/21/MachO 文件结构详解/" class="leancloud_visitors" data-flag-title="MachO 文件结构详解">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="概念——什么是MachO？"><a href="#概念——什么是MachO？" class="headerlink" title="概念——什么是MachO？"></a>概念——什么是MachO？</h2><p>&emsp; 苹果开发者对它一定不陌生，特别是喜欢逆向的同学，对它的研究更是必不可少。在可安装的每一个.app包中，都有一个与app同名的可执行文件，它可能长这样：（如果你碰到显示为白色的MachO文件，说明当前用户对其没有<a href="https://juejin.im/post/5c46dcad518825260d7ee605">可执行权限</a>）<br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690ec28517fafa3?w=1074&amp;h=254&amp;f=png&amp;s=346927" alt><br>&emsp; MachO其实是Mach Object的缩写，是在Mac以及iOS上可执行的一种文件格式，包括但不限于：可执行文件(.out .o)、动态库、静态库、dyld、目标文件，官方文档中列举如下：<br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690f24c1823de3c?w=681&amp;h=348&amp;f=png&amp;s=106692" alt>它类似于Windows上的PE、Linux上的ELF格式，我们用file命令看上图中 AlipayWallet 的文件类型信息：<br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690eb457bf08075?w=762&amp;h=70&amp;f=png&amp;s=17346" alt>可以看到，该示例的MachO文件属于通用二进制文件（苹果提出的一种能同时适用多种架构二进制文件的程序代码），并支持在两种架构上运行：arm_v7和arm64，包含了多种架构的MachO文件可以通过lipo thin命令进行拆分：<code>lipo AlipayWallet -thin armv7 -output alipayArmv7</code>，同样也能用lipo create进行合并：<code>lipo alipayArm64 alipayArmv7 -create -output AlipayWalletNew</code>，大家可以自己实践一下。</p>
+<h2 id="构造——MachO的内部结构是怎样的？"><a href="#构造——MachO的内部结构是怎样的？" class="headerlink" title="构造——MachO的内部结构是怎样的？"></a>构造——MachO的内部结构是怎样的？</h2><h3 id="一：简单的讲，它包括以下四个组成部分："><a href="#一：简单的讲，它包括以下四个组成部分：" class="headerlink" title="一：简单的讲，它包括以下四个组成部分："></a>一：简单的讲，它包括以下四个组成部分：</h3><p><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690ee9ff0ce8d71?w=320&amp;h=362&amp;f=png&amp;s=67394" alt></p>
+<ul>
+<li>Header （头部）<ul>
+<li>用于快速确认该文件的CPU类型、文件类型等信息</li>
+</ul>
+</li>
+<li>LoadCommands （加载命令）<ul>
+<li>用于告诉loader如何设置并加载二进制数据</li>
+</ul>
+</li>
+<li>Data （数据段 segment）<ul>
+<li>存放数据：代码、字符常量、类、方法等</li>
+<li>可以拥有多个segment，每个segment可以有零到多个section。每个段都有一段虚拟地址映射到进程的地址空间</li>
+</ul>
+</li>
+<li>Loader Info （链接信息）<ul>
+<li>一个完整的用户级MachO文件的末端是一系列链接信息。其中包含了动态加载器用来链接可执行文件或者依赖所需使用的符号表、字符串表等  </li>
+</ul>
+</li>
+</ul>
+<p>&emsp; 来用MachOView验证一下该示例的MachO文件结构：<br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690ef52aaad8003?w=882&amp;h=842&amp;f=png&amp;s=167368" alt></p>
+<h3 id="二：逐一探索："><a href="#二：逐一探索：" class="headerlink" title="二：逐一探索："></a>二：逐一探索：</h3><h4 id="1-Header"><a href="#1-Header" class="headerlink" title="1.Header"></a>1.Header</h4><p>&emsp; 除了用MachOView能查看MachO文件信息，还可以通过otool命令查看，我们先来分析Header中的内容：<code>otool -h AlipayWallet</code>：<br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690efaec026514b?w=662&amp;h=120&amp;f=png&amp;s=18817" alt></p>
+<ul>
+<li>magic：MachO文件的魔数，用来确定其属于64位（0xfeedfacf）还是32位（0xfeedface）例子中有两个Header，分别对应的是armv7和arm64的Header，前者32位，后者64位。</li>
+<li>cputype和cupsubtype代表的是cpu的类型和其子类型，例子中分别是12(c)与9、16777228(100000c)与0定义如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#define CPU_TYPE_ARM((cpu_type_t) 12)</span><br><span class="line">#define CPU_SUBTYPE_ARM_V7((cpu_subtype_t) 9)</span><br><span class="line">#define CPU_TYPE_ARM64((cpu_type_t) 16777228)</span><br><span class="line">#define CPU_SUBTYPE_AR64M_ALL((cpu_subtype_t) 0)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>接着是filetype，2，代表可执行的文件：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#define	MH_EXECUTE	0x2		/* demand paged executable file */</span><br><span class="line">```  </span><br><span class="line">* ncmds 指的是加载命令(load commands)的数量，例子中一共75个，编号0-74</span><br><span class="line">* sizeofcmds 表示75个load commands的总字节大小， load commands区域是紧接着header区域的</span><br><span class="line">* 最后个flags 标识二进制文件支持的功能，主要与系统的加载、链接有关。</span><br><span class="line"></span><br><span class="line">这里为你准备了 mach_header 的苹果官方文档说明：（更多详细定义请参考[loader.h](https://opensource.apple.com/source/xnu/xnu-1456.1.26/EXTERNAL_HEADERS/mach-o/loader.h)）</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/2/21/1690f152b4cd7c0e?w=896&amp;h=736&amp;f=png&amp;s=192704)</span><br><span class="line">#### 2.LoadCommands</span><br><span class="line">我们继续用命令查看：`otool -l  alipayArm64`，该示例共有75个加载指令，我们只截取一个作为代表，分别为出现在segment和section中的每一个参数进行注释：</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>Load command 1<br>      cmd LC_SEGMENT_64         // cmd 是load command的类型，LC_SEGMENT_64的含义是将这个64位的段映射到进程地址空间，即加载命令<br>  cmdsize 712                   // 代表load command的大小<br>  segname <strong>TEXT                // 16字节的段名字 </strong>TEXT<br>   vmaddr 0x0000000100000000    // 段的虚拟内存起始地址<br>   vmsize 0x00000000036a4000    // 段的虚拟内存大小<br>  fileoff 0                     // 段在文件中的偏移量<br> filesize 57294848              // 段在文件中的大小<br>  maxprot 0x00000005            // 段页面所需要的最高内存保护（4=r,2=w,1=x）<br> initprot 0x00000005            // 段页面初始的内存保护<br>   nsects 8                     // 段中包含section的数量<br>    flags 0x0                   // 其他杂项标志位<br>Section<br>  sectname <strong>text               // 第一个是</strong>text ,就是主程序代码<br>   segname <strong>TEXT               // 该section所属的 segment名，第一个是</strong>TEXT<br>      addr 0x0000000100006110   // 该section在内存的启始位置，0x100006110<br>      size 0x000000000358a268   // size 该section的大小，0x358a268<br>    offset 24848                // 24848 0x6110<br>     align 2^4 (16)             // 字节大小对齐，16<br>    reloff 0                    // 重定位入口的文件偏移 0<br>    nreloc 0                    // 需要重定位的入口数量 0<br>     flags 0x80000400           // 包含section的type和attributes<br> reserved1 0                    // …保留用<br> reserved2 0                    // …保留用<br><code>`</code><br>注释完毕，我又为你准备了 segment和section 的苹果官方文档说明：（更多详细定义请参考<a href="https://opensource.apple.com/source/xnu/xnu-1456.1.26/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a>）<br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690f6dfda1854aa?w=765&amp;h=912&amp;f=png&amp;s=266593" alt><br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690f6ec5d6bea68?w=762&amp;h=786&amp;f=png&amp;s=239036" alt><br>&emsp; 我总结了最常见的加载命令如下：<br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690fa76882c8af7?w=268&amp;h=322&amp;f=png&amp;s=26066" alt><br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690fbc34565600d?w=221&amp;h=53&amp;f=png&amp;s=4528" alt></p>
+<ul>
+<li><strong>LC_SEGMENT_64</strong>： 将该段(64位)映射到进程地址空间中</li>
+<li><strong>LC_DYLD_INFO_ONLY</strong>：加载动态链接库信息（重定向地址、弱引用绑定、懒加载绑定、开放函数等的偏移值等信息）</li>
+<li><strong>LC_SYMTAB</strong>：载入符号表地址</li>
+<li><strong>LC_DYSYMTAB</strong>：载入动态符号表地址</li>
+<li><strong>LC_LOAD_DYLINKER</strong>：加载动态加载库，可以看出示例使用的是/usr/lib/dyld<br><img src="https://user-gold-cdn.xitu.io/2019/2/21/1690fb2174b662e0?w=1093&amp;h=113&amp;f=png&amp;s=32934" alt></li>
+<li><strong>LC_UUID</strong>：确定文件的唯一标识，crash解析中也会有这个，去检测dysm文件和crash文件是否匹配</li>
+<li><strong>LC_VERSION_MIN_MACOSX</strong>/LC_VERSION_MIN_IPHONEOS：确定二进制文件要求的最低操作系统版本</li>
+<li><strong>LC_SOURCE_VERSION</strong>：构建该二进制文件使用的源代码版本</li>
+<li><strong>LC_MAIN</strong>：设置程序主线程的入口地址和栈大小</li>
+<li><strong>LC_ENCRYPTION_INFO_64</strong>：获取加密信息</li>
+<li><strong>LC_LOAD_DYLIB</strong>：加载额外的动态库</li>
+<li><strong>LC_FUNCTION_STARTS</strong>：定义一个函数起始地址表,使调试器和其他程序易于看到一个地址是否在函数内</li>
+<li><strong>LC_DATA_IN_CODE</strong>：定义在代码段内的非指令的表</li>
+<li><strong>LC_CODE_SIGNATURE</strong>：获取应用签名信息<h4 id="3-Data、链接信息"><a href="#3-Data、链接信息" class="headerlink" title="3.Data、链接信息"></a>3.Data、链接信息</h4>&emsp; 如果说前面两部分的主要作用，是让kern内核知道如何读取MachO文件，并指定MachO文件的动态链接器(dyly)用来完成后续的动态库加载，然后设置好程序入口等一些列程序启动前的信息，那么Data和链接信息部分，就相当于当程序运行起来后，为每一个映射到虚拟内存中的指令操作提供真实的物理地址支持。详细的过程会面会单独写一篇文章展开来讲。</li>
+</ul>
+<h2 id="收获——熟悉MachO可以做什么"><a href="#收获——熟悉MachO可以做什么" class="headerlink" title="收获——熟悉MachO可以做什么"></a>收获——熟悉MachO可以做什么</h2><p>&emsp; 理解原理很重要，了解MachO格式的结构和加载运行，不仅可以帮助我们理解MacOS和iOS的app可执行文件启动过程，还能做且不限于：</p>
+<ul>
+<li>bitcode分析</li>
+<li>crash符号化</li>
+<li>符号模块查找</li>
+<li>非OC函数switch</li>
+<li>包支持架构分析</li>
+<li>常量字符串分析</li>
+<li>进程启动速度优化</li>
+<li>学习经典的数据结构</li>
+</ul>
+<p>希望你有所收获！下篇我们主要<a href="https://juejin.im/post/5c727262e51d457139116208">围绕dyld讲动态加载过程</a>，see you~</p>
+<hr>
+<p>参考文章：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/54d842db3f69" target="_blank" rel="noopener">趣探 Mach-O：文件格式分析</a></li>
+<li><a href="https://blog.csdn.net/bjtufang/article/details/50628310" target="_blank" rel="noopener">Mach-O文件格式和程序从加载到执行过程</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1477,615 +2366,13 @@ field printed by the -l option is followed by a &apos;+&apos; character.
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  
-  
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/09/RSA的主场-证书签名&OpenSSL演示/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小可长江">
-      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小可的编程之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/09/RSA的主场-证书签名&OpenSSL演示/" class="post-title-link" itemprop="url">RSA的主场-证书签名&OpenSSL演示</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-01-09 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-09T20:49:56+08:00">2019-01-09</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-04-22 21:09:52" itemprop="dateModified" datetime="2019-04-22T21:09:52+08:00">2019-04-22</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2019/01/09/RSA的主场-证书签名&OpenSSL演示/" class="leancloud_visitors" data-flag-title="RSA的主场-证书签名&OpenSSL演示">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Views: </span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>&emsp;在上一篇<a href="https://enjoycoding007.github.io/2019/01/07/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86--RSA%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/" target="_blank" rel="noopener">非对称加密–RSA原理浅析</a>中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过<a href="https://zh.wikipedia.org/wiki/Base64" target="_blank" rel="noopener">Base64</a>、<a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8" target="_blank" rel="noopener">Hash</a>、<a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">对称加密</a>等处理后，再用RSA对其进行加密，因此<a href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">RSA</a>最主要的应用场景，是数字签名–对数据做身份/合法性校验。<br>&emsp;权威的<a href="https://zh.wikipedia.org/wiki/%E8%AF%81%E4%B9%A6%E9%A2%81%E5%8F%91%E6%9C%BA%E6%9E%84" target="_blank" rel="noopener">证书颁发机构</a>–躺着赚钱的CA，就是用的RSA这一套算法，这一篇我们一起用命令行来逐步拆解证书的生成过程，揭开证书背后的秘密。Talk is cheap，show you the code，Come on！</p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/1/9/168318e5e48e3cb3?w=1200&amp;h=326&amp;f=png&amp;s=117690" alt></p>
-<h4 id="什么是OpenSSL"><a href="#什么是OpenSSL" class="headerlink" title="什么是OpenSSL"></a>什么是OpenSSL</h4><p>&emsp;SSL大家都不陌生，我们访问网站的时候，以HTTPS开头的表示你和服务器之间传输的数据经过了加密，这里所使用的加密协议就是SSL（Secure Sockets Layer，后来又推出了它的后续版本，改名叫TLS）。也就是说，把HTTP协议经过一层SSL协议进行加密包装，就变成了HTTPS。当然，SSL/TLS还用在很多协议中，例如VPN、加密的电子邮件协议等。<br>&emsp;那OpenSSL是啥？在SSL协议中，我们使用了很多密码学手段来保护数据，其中包括对称密码、公钥密码、数字签名、证书、完整性校验、伪随机数生成等。由于这些算法和操作都非常复杂，于是开源社区就开发了一套库，这个库里面提供了很多现成的标准方法，其他开发者只要用正确调用这些方法，就可以实现SSL协议中的各种加密/解密操作了。因此，<a href="https://zh.wikipedia.org/wiki/OpenSSL" target="_blank" rel="noopener">OpenSSL</a>是一套开源的密码学工具包（open source cryptography toolkit）。情理之中的，OpenSSL也支持了RSA算法，接下来我们就用OpenSSL在macOS的终端上为大家演示证书签名的每一个步骤。</p>
-<h4 id="RSA加密、证书生成终端演示"><a href="#RSA加密、证书生成终端演示" class="headerlink" title="RSA加密、证书生成终端演示"></a>RSA加密、证书生成终端演示</h4><p>&emsp;为了便于观察，请开辟并前往一个空文件夹下开始你的表演~<br>输入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out private.pem 2048</span><br><span class="line">```  </span><br><span class="line">此时目录中出现一个private.pem文件，这个文件包含了私钥信息  </span><br><span class="line">根据私钥生成公钥  </span><br><span class="line">输入：</span><br></pre></td></tr></table></figure></p>
-<p>openssl rsa -in private.pem -pubout -out public.pem<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">分别查看文件中的内容：</span><br></pre></td></tr></table></figure></p>
-<p>cat private.pem<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">cat public.pem</span><br><span class="line">```  </span><br><span class="line">你会得到这样类似这样的结果：</span><br></pre></td></tr></table></figure></p>
-<p>—–BEGIN RSA PRIVATE KEY—–<br>Base64编码的内容<br>—–END RSA PRIVATE KEY—–<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">-----BEGIN PUBLIC KEY-----</span><br><span class="line">Base64编码的内容</span><br><span class="line">-----END PUBLIC KEY-----</span><br><span class="line">```  </span><br><span class="line">现在我们随便写一个txt文件作为要加密的数据：</span><br></pre></td></tr></table></figure></p>
-<p>echo “hello word!“ &gt; message.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用公钥对其加密：</span><br></pre></td></tr></table></figure></p>
-<p>openssl rsautl -encrypt -in message.txt -inkey public.pem -pubin -out enc.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">查看加密后的文件：```cat enc.txt```，你只能看到一堆乱码  </span><br><span class="line">用私钥对加密文件解密：</span><br></pre></td></tr></table></figure></p>
-<p>openssl rsautl -decrypt -in enc.txt -inkey private.pem -out dec.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">查看解密结果：```cat dec.txt```，与你的message.txt内容完美吻合~  </span><br><span class="line">上面的过程反过来（私钥加密 公钥解密）一个道理，但执行命令有点区别：  </span><br><span class="line">用私钥对其加密：</span><br></pre></td></tr></table></figure></p>
-<p>openssl rsautl -sign -in message.txt -inkey private.pem -out enc.bat<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用公钥对加密文件解密：</span><br></pre></td></tr></table></figure></p>
-<p>openssl rsautl -verify -in enc.bat -inkey public.pem -pubin -out dec.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;emsp;至此，我们已经完成了RSA加密解密的操作，那我们开发中用的证书跟它们有什么关系呢？做iOS开发的都用钥匙串从CA请求过csr文件，其实就是根据当前Mac内置的私钥（当然你也可以自己指定私钥）生成对应的公钥，生成的csr文件包含了公钥证书原始文件+你的服务器信息和单位等信息。我们来用命令执行这一步操作：</span><br></pre></td></tr></table></figure></p>
-<p>openssl req -new -key private.pem -out rsacert.csr<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根据提示依次输入下列信息并回车:</span><br></pre></td></tr></table></figure></p>
-<p>Country Name (2 letter code) []:<br>State or Province Name (full name) []:<br>Locality Name (eg, city) []:<br>Organization Name (eg, company) []:<br>Organizational Unit Name (eg, section) []:<br>Common Name (eg, fully qualified host name) []:<br>Email Address []:<br>A challenge password []:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">拿到带着公钥信息的csr文件之后，下一步就是交给CA认证中心进行签名，也就是让CA盖个章（一个章一年五千大洋@_@，如果你的https用自签的证书那别人访问时有不安全提示就是因为你没有CA盖的这个章，不被承认是安全的）：</span><br></pre></td></tr></table></figure></p>
-<p>openssl x509 -req -days 3650 -in rsacert.csr -signkey private.pem -out rsacert.crt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这时得到的crt文件是Base64编码的，我们需要转成DER二进制格式的证书才能直接使用：</span><br></pre></td></tr></table></figure></p>
-<p>openssl x509 -outform der -in rsacert.crt -out rsacert.der<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这个rsacert.der文件就是包含了我们公钥信息的证书！  </span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/9/16832dfe1997dfd0?w=1022&amp;h=826&amp;f=png&amp;s=172453)</span><br><span class="line">最后一步，导出公钥证书对应的私钥证书：</span><br></pre></td></tr></table></figure></p>
-<p>openssl pkcs12 -export -out p.p12 -inkey private.pem -in rsacert.crt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/9/16832e25c325de5f?w=1004&amp;h=816&amp;f=png&amp;s=165762)</span><br><span class="line">输入两次私钥证书的密码就得到了我们最熟悉的.p12文件。  </span><br><span class="line">&amp;emsp;当然，在我们实际开发中不会同时拿到这两个证书，这里只是给大家演示它们之间的关系，后面我会对苹果的双向验证(双层签名)原理专门写一篇文章讲解  </span><br><span class="line">### 补充</span><br><span class="line">&amp;emsp;关于.pem文件内部的数据结构可以通过命令</span><br></pre></td></tr></table></figure></p>
-<p>openssl rsa -in private.pem -text -out ptivate.txt<br><code>`</code><br>查看，ptivate.txt文件中每一项的具体意义请参考<a href="http://blog.sina.com.cn/s/blog_4fcd1ea30100yh4s.html" target="_blank" rel="noopener">（PEM格式）解析</a><br>&emsp;在上面的命令中如果有些不明觉厉的玩意儿，那多半是你对证书相关的文件编码格式、协议和扩展名不太熟悉，不要慌，我已经为你准备好了加餐。</p>
-<h4 id="高能预警——证书文件编码格式、扩展名、协议科普"><a href="#高能预警——证书文件编码格式、扩展名、协议科普" class="headerlink" title="高能预警——证书文件编码格式、扩展名、协议科普"></a>高能预警——证书文件编码格式、扩展名、协议科普</h4><p>&emsp;我们统一采用<a href="https://zh.wikipedia.org/wiki/X.509" target="_blank" rel="noopener">X.509</a>的格式标准生成证书，接触过证书的同学看到：pem、der、pfx、jks、kdb、cer、key、csr、crt、crl、ocsp、scep等这些字眼一定不会完全陌生，这些东东究竟是个啥？赶紧来一探究竟，有描述不准确的地方还望指正：</p>
-<ul>
-<li>编码格式<ul>
-<li>DER：（Distinguished Encoding Rules）的缩写，它是大多数浏览器的缺省格式，并按 ASN1 DER 格式存储，它是无报头的。可包含所有私钥、公钥和证书。</li>
-<li>PEM：（Privacy Enhanced Mail）的缩写，它是OpenSSL默认采用的信息存放方式，它存储用Base64编码的DER格式数据，用ASCII报头包围，因此适合系统之间的文本模式传输。可以包括所有私钥、公钥和证书。</li>
-</ul>
-</li>
-<li>文件扩展名<ul>
-<li>.pem - (隐私增强型电子邮件) DER编码的证书再进行Base64编码的数据存放在”—–BEGIN CERTIFICATE—–”和”—–END CERTIFICATE—–”之中</li>
-<li>.cer, .crt, .der - 通常是DER二进制格式的证书，但Base64编码后也很常见</li>
-<li>.p7b, .p7c - PKCS#7 SignedData structure without data, just certificate(s) or CRL(s)，加密消息语法(pkcs7),是各种消息存放的格式标准。这些消息包括:数据、签名数据、数字信封、签名数字信封、摘要数据和加密数据。</li>
-<li>.p12 - PKCS#12格式，包含证书的同时可能还有带密码保护的私钥</li>
-<li>.pfx - PFX，PKCS#12之前的格式（通常用PKCS#12格式，比如那些由IIS产生的PFX文件）</li>
-<li>.jks - 通常可以将Apache/OpenSSL使用的“.key文件 + .crt文件”格式转换为标准的Java Key Store(JKS)文件。JKS文件格式被广泛的应用在基于JAVA的WEB服务器、应用服务器、中间件。你可以将JKS文件导入到TOMCAT、WEBLOGIC 等软件</li>
-<li>.kdb - 通常可以将Apache/OpenSSL使用的“.key文件 + .crt文件”格式转换为标准的IBM KDB文件。KDB文件格式被广泛的应用在IBM的WEB服务器、应用服务器、中间件。你可以将KDB文件导入到IBM HTTP Server、IBM Websphere 等软件</li>
-<li>.csr - 证书请求文件(Certificate Signing Request)。生成X509数字证书前,一般先由用户提交证书申请文件,然后由 CA 来签发证书。</li>
-<li>.key - 一般指PEM格式的私钥文件，也可能是DER格式的</li>
-<li>.crl - 证书吊销列表 (Certification Revocation List)是一种包含撤销的证书列表的签名数据结构。CRL是证书撤销状态的公布形式,CRL 就像信用卡的黑名单,用于公布某些数字证书不再有效。CRL是一种离线的证书状态信息。它以一定的周期进行更新。CRL可以分为完全CRL和增量CRL。在完全CRL中包含了所有的被撤销证书信息,增量CRL由一系列的CRL来表明被撤销的证书信息,它每次发布的CRL是对前面发布CRL的增量扩充。基本的CRL信息有:被撤销证书序列号、撤销时间、撤销原因、签名者以及 CRL 签名等信息。基于CRL的验证是一种不严格的证书认证。CRL能证明在CRL中被撤销的证书是无效的。但是,它不能给出不在CRL中的证书的状态。如果执行严格的认证,需要采用在线方式进行认证,即<a href="https://zh.wikipedia.org/wiki/%E5%9C%A8%E7%BA%BF%E8%AF%81%E4%B9%A6%E7%8A%B6%E6%80%81%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">OCSP</a>认证。一般是由CA签名的一组电子文档，包括了被废除证书的唯一标识（证书序列号），CRL用来列出已经过期或废除的数字证书。它每隔一段时间就会更新，因此必须定期下载该清单，才会取得最新信息</li>
-</ul>
-</li>
-<li>协议<ul>
-<li><a href="https://zh.wikipedia.org/wiki/%E5%9C%A8%E7%BA%BF%E8%AF%81%E4%B9%A6%E7%8A%B6%E6%80%81%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">OCSP</a> – 在线证书状态协议(Online Certificate Status Protocol,rfc2560)，用于实时表明证书状态。OCSP 客户端通过查询 OCSP 服务来确定一个证书的状态,可以提供给使用者一个或多个数字证书的有效性资料，它建立一个可实时响应的机制，让用户可以实时确认每一张证书的有效性，解决由CRL引发的安全问题。。OCSP 可以通过 HTTP协议来实现。rfc2560 定义了 OCSP 客户端和服务端的消息格式</li>
-<li><a href="https://en.wikipedia.org/wiki/Simple_Certificate_Enrollment_Protocol" target="_blank" rel="noopener">SCEP</a> － 简单证书注册协议（Simple Certificate Enrollment Protocol），基于文件的证书登记方式需要从您的本地计算机将文本文件复制和粘贴到证书发布中心，和从证书发布中心复制和粘贴到您的本地计算机。SCEP可以自动处理这个过程但是CRLs仍然需要手动的在本地计算机和CA发布中心之间进行复制和粘贴</li>
-</ul>
-</li>
-</ul>
-<h4 id="实践出真知，下篇再会-老规矩，有问题请踊跃留言。"><a href="#实践出真知，下篇再会-老规矩，有问题请踊跃留言。" class="headerlink" title="实践出真知，下篇再会~ 老规矩，有问题请踊跃留言。"></a>实践出真知，下篇再会~ 老规矩，有问题请踊跃留言。</h4><p>更多一手好文更新<br>请关注我的个人微信公众号：面向未来编程 </p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  
-  
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/07/非对称加密--RSA原理浅析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小可长江">
-      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小可的编程之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/07/非对称加密--RSA原理浅析/" class="post-title-link" itemprop="url">非对称加密--RSA原理浅析</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-01-07 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-07T20:49:56+08:00">2019-01-07</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-04-22 20:51:47" itemprop="dateModified" datetime="2019-04-22T20:51:47+08:00">2019-04-22</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2019/01/07/非对称加密--RSA原理浅析/" class="leancloud_visitors" data-flag-title="非对称加密--RSA原理浅析">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Views: </span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="来龙去脉"><a href="#来龙去脉" class="headerlink" title="来龙去脉"></a>来龙去脉</h3><p>&emsp;在1976年以前，所有的加密方法都是同一种模式：加密、解密使用同一种算法。在交互数据的时候，彼此通信的双方就必须将规则告诉对方，否则没法解密。这种加密与解密使用同一规则的加密方式被称为<a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">对称加密算法</a>。那么加密和解密的规则（简称密钥）的保护就显得尤其重要，传递密钥的风险也一直是个隐患。<br>&emsp;直到1976年，两位美国计算机学家：迪菲（W.Diffie）、赫尔曼（M.Hellman）提出了一种崭新构思，可以在不直接传递密钥的情况下完成密钥交换，开创了密码学研究的新方向。这就是<a href="https://zh.wikipedia.org/wiki/%E8%BF%AA%E8%8F%B2-%E8%B5%AB%E7%88%BE%E6%9B%BC%E5%AF%86%E9%91%B0%E4%BA%A4%E6%8F%9B" target="_blank" rel="noopener">“迪菲赫尔曼密钥交换”</a>算法，其仍然是一种对称加密算法，只是密钥不再需要传递。交换原理如下图所示：<br><img src="https://user-gold-cdn.xitu.io/2019/1/7/168275fb2e34d666?w=834&amp;h=476&amp;f=png&amp;s=93483" alt="迪菲赫尔曼密钥交换原理"><br>其中a，b是在通信两端本地的随机数，g是模p的一个<a href="https://zh.wikipedia.org/wiki/%E5%8E%9F%E6%A0%B9" target="_blank" rel="noopener">原根</a>，K是交换后产生的密钥，安全性来源于当p非常大时，已知g，p，A，B很难反算出a，b。<a href="https://zh.wikipedia.org/wiki/%E7%A6%BB%E6%95%A3%E5%AF%B9%E6%95%B0" target="_blank" rel="noopener">离散对数问题</a>是该算法的基础。<br>&emsp;1977年，三位麻省理工学院的数学家 罗纳德·李维斯特（Ron Rivest）、阿迪·萨莫尔（Adi Shamir）和伦纳德·阿德曼（Leonard Adleman）一起设计了一种算法，可以实现非对称加密。这就是用他们三个人的名字命名的算法–<a href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">RSA</a>算法。<br>&emsp;要弄清楚RSA的加密原理，先要知道<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%AE%9A%E7%90%86_(%E6%95%B0%E8%AE%BA" target="_blank" rel="noopener">欧拉定理</a>)：  </p>
-<blockquote>
-<p>对于两个互质的正整数m、n，m^φ(n) mod n ≡ 1<br>当m&lt;n时不难推导出：m^(k*φ(n)) mod n ≡ 1<br>进一步得到：m^(k*φ(n)+1) mod n ≡ m </p>
-</blockquote>
-<p>基于此还需要理解一个概念，<a href="https://zh.wikipedia.org/wiki/%E6%A8%A1%E5%8F%8D%E5%85%83%E7%B4%A0" target="_blank" rel="noopener">模反元素</a>：  </p>
-<blockquote>
-<p>如果两个正整数e和x互质，那么一定可以找到整数d，使得 e*d-1 被x整除。那么d就是e对于x的“模反元素”<br>即e<em>d mod x ≡ 1<br>等同于 e\</em>d ≡ k*x + 1，k为正整数  </p>
-</blockquote>
-<p>敲黑板！！！关键来了，上面两个转换的结果一碰撞，Duang！就碰出了我们RSA的核心算法：  </p>
-<blockquote>
-<p>当e与φ(n)互质时，m^(e*d) mod n ≡ m  </p>
-</blockquote>
-<p>鸡不鸡冻，开不开森！还有点迷糊？没关系，来继续：  </p>
-<blockquote>
-<p>假设我们对m进行加密传输<br>加密：m^e mod n = c，<br>解密：c^d mod n = m^(e*d) mod n = m  </p>
-</blockquote>
-<p>上述过程中，<strong>n+e就是RSA中的公钥，n+d就是RSA中的私钥，c是加密后的密文。</strong></p>
-<h3 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h3><ol>
-<li>n会非常大，长度一般为1024个二进制位，现在稳妥一点的长度为2048个二进制位。（目前人类已经分解的最大整数，232个十进制位，768个二进制位）  </li>
-<li>因为需要求出φ(n)，所以根据<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">欧拉函数</a>特点，最简单得到n的方式是由两个质数相乘: 质数：p1、p2<br>Φ(n) = (p1 - 1) * (p2 - 1)</li>
-<li>最终由φ(n)得到 e 和 d   </li>
-</ol>
-<p>总共生成6个数字：p1、p2、n、φ(n)、e、d  </p>
-<h3 id="关于RSA的安全："><a href="#关于RSA的安全：" class="headerlink" title="关于RSA的安全："></a>关于RSA的安全：</h3><p>除了公钥用到了n和e 其余的4个数字是不公开的。<br>目前破解RSA得到私钥d的思路如下：</p>
-<ol>
-<li>由于e*d = φ(n)*k + 1。e是公开的，那必须要知道φ(n)</li>
-<li>要得到φ(n)，必须知道p1 和 p2</li>
-<li>由于 n = p1 * p2，所以只有将n因数分解才能算出p1 p2</li>
-<li><a href="https://zh.wikipedia.org/wiki/%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E6%9C%BA" target="_blank" rel="noopener">量子计算机</a>如果成功诞生，现在通行于银行及网络等处的RSA加密算法可以破解，也会瓦解所有基于大质数因式分解算力逆天而衍生出的加密算法。</li>
-</ol>
-<p>后续会对iOS证书签名相关原理进行分析，同时把常见的加密算法做一下梳理和比较，并附上每种算法在iOS中的代码实现。欢迎一起交流学习心得~</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  
-  
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/05/如何成为有效学习的高手/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小可长江">
-      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小可的编程之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/01/05/如何成为有效学习的高手/" class="post-title-link" itemprop="url">如何成为有效学习的高手</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-01-05 12:49:34" itemprop="dateCreated datePublished" datetime="2019-01-05T12:49:34+08:00">2019-01-05</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-04-22 20:43:16" itemprop="dateModified" datetime="2019-04-22T20:43:16+08:00">2019-04-22</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-            <span id="/2019/01/05/如何成为有效学习的高手/" class="leancloud_visitors" data-flag-title="如何成为有效学习的高手">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Views: </span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>不闲言赘语，直戳痛点，放下借口，共同面对内心的忐忑吧。</p>
-<p>注：本文为得到专栏付费课程学习心得，分享给大家一起加快成长速度。</p>
-</blockquote>
-<p>&emsp;高效学习，它没有一种准确的定义，它更是对一种学习状态的描述，一万小时理论我们都听过，但这个理论可能不适合我们99.9%的人，我想这个理论出现的目的其实是为了推翻人们对于天才的迷信，但是，一万小时理论所展现的那种学习或者说练习的场景跟你和我的生活、工作离得都很远，我们也不需要都成为世界级的高手。这个理论本身没有错，它在打破人们对于天才的迷信的同时，也打击了绝大部分成年人的信心：谁有功夫每天8小时练习，练10年呢？但我们常常需要在很短的时间里要掌握一些技能，而且要达到专业级别的水准，这要求我们必须在有限的业余碎片时间中，高效的有目的的学习，话不多说，进入正题。</p>
-<h3 id="让我们从七个关键词着手："><a href="#让我们从七个关键词着手：" class="headerlink" title="让我们从七个关键词着手："></a>让我们从七个关键词着手：</h3><ol>
-<li>适合自己</li>
-<li>学习手法</li>
-<li>短时间</li>
-<li>注意力</li>
-<li>解决难题</li>
-<li>设定目标</li>
-<li>名师</li>
-</ol>
-<p>接下来我会对这七个关键词主义展开来探讨，学习如何将他们有机的结合起来，形成一套可自控，可循环，甚至是可以升级的学习套路。此篇先消化前两个关键词。</p>
-<h4 id="1-找到适合你的学习方法"><a href="#1-找到适合你的学习方法" class="headerlink" title="1.找到适合你的学习方法"></a>1.找到适合你的学习方法</h4><p>&emsp; 先重点要给大家介绍的两种学习思维，自然主义和结构主义。自然主义是模仿式的学习，自然主义注重文本的本身，什么是文本？就是一门知识或者技能它表面上看起来的样子，遇到什么就学什么，积少成多，以量取胜。学完了就那样了，它就是你自己的了，你就可以去运用了。结构主义它侧重对结构和交互关系的一个认识，它提倡透过表面的现象去寻求底层的关系。也就是说你要学习的是一套能举一反三的系统，这种诉求为的是什么呢？体系化的去学习，学会之后的目的，一定是为了创造，是一种质变，它要的是一种质变。选对学习方式这是第一步。（学习比如像语言、乐器、书法这些东西，你可能要用自然主义的学习方法去学习才更有效果。如果你学比如像医药、艺术，或者经济学，那就应该用结构主义的方式来学了。）</p>
-<p>&emsp; 再谈谈学习速度和效率的提升，理论上可以分为两个阶段：第一是避免无效学习，也就是选对学习方式。然后就是尽可能通过更好的学习策略来把这个有效变为高效。最简单有效的技巧就是 ：  </p>
-<p>&emsp; <strong>把你的目标要拆碎，针对那些细节进行反复的练习。不要一开始就照顾全局。</strong>  </p>
-<p>如果还能以碎片化的方式挤出更多的时间来学习的话，那效果会更好。</p>
-<h5 id="碎片化学习的真相"><a href="#碎片化学习的真相" class="headerlink" title="碎片化学习的真相"></a>碎片化学习的真相</h5><p>&emsp; 碎片化学习的真相是碎片化学习一定要基于搜索，搜索是什么意思？意思就是你要带着困惑和问题去执行碎片化的学习，最终的效果一定是要把这些碎片给链接起来。在一段时间内，你的头脑当中应该始终有一个课题，这些碎片它不是满地的落叶，而是我们可以把它比喻成一个打碎的瓷器所产生的碎片。你要有目的的去拾获这些碎片，而不是乱捡。就算碎片化知识是树叶，你也得先有树根、树干和树枝。碎片化学习要的是枝繁叶茂，而不是捡几片树叶回来夹在书里边。那就属于一种情绪化的行为。</p>
-<p>&emsp; 话说回来，碎片化学习它终究是有局限性的，因为它缺乏思考，缺乏辩论，缺乏与人交流的这些环节。所谓学而不思则罔嘛。碎片划拉的越多，可能越糊涂了。但是，无论如何，碎片化学习作为一种成年人学习的补充手段，无疑它是有很大力量的。</p>
-<p>&emsp; 我必须还要提醒你一件事情！！！有一种假的碎片化学习叫做收藏。你一定对这个东西非常熟悉，收藏这个按钮是非常常见的，在很多app和软件当中，所谓一种人性化的设置。它的存在能够非常大程度缓解人们的焦虑。但这种缓解它其实不是真正的缓解，它只是给你造成一种幻觉，就是收藏了这些知识就是你的了。但其实，如果你收藏完了不看的话，你不去碰它，它并不是你的。你必须要破除掉这种幻觉。</p>
-<h4 id="2-不谈兴趣，用任务驱动学习"><a href="#2-不谈兴趣，用任务驱动学习" class="headerlink" title="2.不谈兴趣，用任务驱动学习"></a>2.不谈兴趣，用任务驱动学习</h4><p>&emsp; 学习，很多人提倡培养兴趣，让自己爱上学习，通常这些人最后都放弃了。以至于慢慢的习惯了没兴趣所以学不会、学不好的自我认知。学不会：连门都没入，这可能确实跟天赋有关，你让身高一米五的去打NBA这种情况我们就不讨论了；学不好：没达到某种专业的程度。兴趣无疑是最好的老师，这句话没毛病，但是如果明明没兴趣的东西，非要让你喜欢上它，这显然是极小概率事件，生活没时间给你去玩小概率。</p>
-<p>&emsp; 一个很浅显的道理，人做任何事都是要回报的，所以一个人能带着多大的痛苦去做一件事，那是因为做成了这事儿会收获更大的利益。人做事的驱动有两个方面，一个是内部驱动，兴趣就是最大的内部驱动；一个是外部驱动，也就是完成目标之后收获的利益，既然你对该做的事没兴趣，那就干脆别浪费心思培养兴趣了，我要说的是，成年人学习不需要培养兴趣，应该用任务来驱动。你可能仍然会说，我没有任务啊，我找不到任务啊。任务到处都是，生活中的任务驱动，职场中的职业强迫，以教为学这些都是任务，找不到任务的唯一可能是你对未来的自己缺少预期。</p>
-<p>&emsp; 生活中的驱动，比如厨艺、摄影、英语，现在的食品安全现状你还打算吃多久的外卖？想记录属于自己的美好记忆总觉得拍的照片经不起回味？出国游、面对各种英文文档没有翻译工具寸步难行？职场中的驱动，比如领域专业度、语言表达力、情绪与财富管理，部门每年加薪名额就那么点凭什么让老板优先考虑你呢？经常词不达意引起误会甚至错失良机？任性买买买快三十了还没房没车？以教为学，无论你学了什么，一旦你可以教别人了，你就不再是无业了。而且你还不是给人打工，你是自由职业者。以教为学一方面可以是自己对自己设置的一个任务和目标，不断地督促自己，另一方面其实会让你学的更好更透彻。</p>
-<p>&emsp; 补充一点：你在心态上要有一种自觉，自己来聘请自己，让自我预期的小目标不断指引着持续学习，无论你在生活还是工作当中做任何事情都要这样做，不要心血来潮一股猛劲儿三分钟就疲了。</p>
-<blockquote>
-<p>愿你有所收获<br> ( ゜- ゜)つロ乾杯🍻</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
+
 
 
           </div>
@@ -2125,7 +2412,7 @@ field printed by the -l option is followed by a &apos;+&apos; character.
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-count">13</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

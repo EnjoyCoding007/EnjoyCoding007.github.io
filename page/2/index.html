@@ -96,20 +96,17 @@
 
 
 
-  <meta name="description" content="&amp;emsp;在上一篇非对称加密–RSA原理浅析中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过Base64、Hash、对称加密等处理后，再用RSA对其进行加密，因此RSA最主要的应用场景，是数字签名–对数据做身份/合法性校验。&amp;emsp;权威的证书颁发机构–躺着赚钱的CA，就是用的R">
+  <meta name="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
 <meta name="keywords" content="iOS OpenGL Metal">
-<meta property="og:type" content="article">
-<meta property="og:title" content="RSA的主场-证书签名&amp;OpenSSL演示">
-<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/09/RSA的主场-证书签名&OpenSSL演示/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小可的编程之路">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/page/2/index.html">
 <meta property="og:site_name" content="小可的编程之路">
-<meta property="og:description" content="&amp;emsp;在上一篇非对称加密–RSA原理浅析中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过Base64、Hash、对称加密等处理后，再用RSA对其进行加密，因此RSA最主要的应用场景，是数字签名–对数据做身份/合法性校验。&amp;emsp;权威的证书颁发机构–躺着赚钱的CA，就是用的R">
+<meta property="og:description" content="做一个对社会有价值的人，社会自然不会亏待你。">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/1/9/168318e5e48e3cb3?w=1200&h=326&f=png&s=117690">
-<meta property="og:updated_time" content="2019-04-22T13:09:52.416Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RSA的主场-证书签名&amp;OpenSSL演示">
-<meta name="twitter:description" content="&amp;emsp;在上一篇非对称加密–RSA原理浅析中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过Base64、Hash、对称加密等处理后，再用RSA对其进行加密，因此RSA最主要的应用场景，是数字签名–对数据做身份/合法性校验。&amp;emsp;权威的证书颁发机构–躺着赚钱的CA，就是用的R">
-<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/1/9/168318e5e48e3cb3?w=1200&h=326&f=png&s=117690">
+<meta name="twitter:title" content="小可的编程之路">
+<meta name="twitter:description" content="做一个对社会有价值的人，社会自然不会亏待你。">
 
 
 
@@ -117,7 +114,7 @@
 
   
   
-  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/09/RSA的主场-证书签名&OpenSSL演示/">
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/page/2/">
 
 
 
@@ -127,7 +124,7 @@
   };
 </script>
 
-  <title>RSA的主场-证书签名&OpenSSL演示 | 小可的编程之路</title>
+  <title>小可的编程之路</title>
   
 
 
@@ -175,7 +172,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -279,9 +277,9 @@
           
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
 
   
 
@@ -315,8 +313,10 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">RSA的主场-证书签名&OpenSSL演示
-
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/09/RSA的主场-证书签名&OpenSSL演示/" class="post-title-link" itemprop="url">RSA的主场-证书签名&OpenSSL演示</a>
               
             
           </h1>
@@ -385,13 +385,6 @@
           
 
           
-            <span class="post-meta-divider">|</span>
-            <span class="post-meta-item-icon">
-            <i class="fa fa-eye"></i>
-             Views:  
-            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
-            </span>
-          
 
           
 
@@ -410,7 +403,9 @@
       
 
       
-        <p>&emsp;在上一篇<a href="https://enjoycoding007.github.io/2019/01/07/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86--RSA%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/" target="_blank" rel="noopener">非对称加密–RSA原理浅析</a>中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过<a href="https://zh.wikipedia.org/wiki/Base64" target="_blank" rel="noopener">Base64</a>、<a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8" target="_blank" rel="noopener">Hash</a>、<a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">对称加密</a>等处理后，再用RSA对其进行加密，因此<a href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">RSA</a>最主要的应用场景，是数字签名–对数据做身份/合法性校验。<br>&emsp;权威的<a href="https://zh.wikipedia.org/wiki/%E8%AF%81%E4%B9%A6%E9%A2%81%E5%8F%91%E6%9C%BA%E6%9E%84" target="_blank" rel="noopener">证书颁发机构</a>–躺着赚钱的CA，就是用的RSA这一套算法，这一篇我们一起用命令行来逐步拆解证书的生成过程，揭开证书背后的秘密。Talk is cheap，show you the code，Come on！</p>
+        
+          
+            <p>&emsp;在上一篇<a href="https://enjoycoding007.github.io/2019/01/07/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86--RSA%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/" target="_blank" rel="noopener">非对称加密–RSA原理浅析</a>中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过<a href="https://zh.wikipedia.org/wiki/Base64" target="_blank" rel="noopener">Base64</a>、<a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8" target="_blank" rel="noopener">Hash</a>、<a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">对称加密</a>等处理后，再用RSA对其进行加密，因此<a href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">RSA</a>最主要的应用场景，是数字签名–对数据做身份/合法性校验。<br>&emsp;权威的<a href="https://zh.wikipedia.org/wiki/%E8%AF%81%E4%B9%A6%E9%A2%81%E5%8F%91%E6%9C%BA%E6%9E%84" target="_blank" rel="noopener">证书颁发机构</a>–躺着赚钱的CA，就是用的RSA这一套算法，这一篇我们一起用命令行来逐步拆解证书的生成过程，揭开证书背后的秘密。Talk is cheap，show you the code，Come on！</p>
 <p><img src="https://user-gold-cdn.xitu.io/2019/1/9/168318e5e48e3cb3?w=1200&amp;h=326&amp;f=png&amp;s=117690" alt></p>
 <h4 id="什么是OpenSSL"><a href="#什么是OpenSSL" class="headerlink" title="什么是OpenSSL"></a>什么是OpenSSL</h4><p>&emsp;SSL大家都不陌生，我们访问网站的时候，以HTTPS开头的表示你和服务器之间传输的数据经过了加密，这里所使用的加密协议就是SSL（Secure Sockets Layer，后来又推出了它的后续版本，改名叫TLS）。也就是说，把HTTP协议经过一层SSL协议进行加密包装，就变成了HTTPS。当然，SSL/TLS还用在很多协议中，例如VPN、加密的电子邮件协议等。<br>&emsp;那OpenSSL是啥？在SSL协议中，我们使用了很多密码学手段来保护数据，其中包括对称密码、公钥密码、数字签名、证书、完整性校验、伪随机数生成等。由于这些算法和操作都非常复杂，于是开源社区就开发了一套库，这个库里面提供了很多现成的标准方法，其他开发者只要用正确调用这些方法，就可以实现SSL协议中的各种加密/解密操作了。因此，<a href="https://zh.wikipedia.org/wiki/OpenSSL" target="_blank" rel="noopener">OpenSSL</a>是一套开源的密码学工具包（open source cryptography toolkit）。情理之中的，OpenSSL也支持了RSA算法，接下来我们就用OpenSSL在macOS的终端上为大家演示证书签名的每一个步骤。</p>
 <h4 id="RSA加密、证书生成终端演示"><a href="#RSA加密、证书生成终端演示" class="headerlink" title="RSA加密、证书生成终端演示"></a>RSA加密、证书生成终端演示</h4><p>&emsp;为了便于观察，请开辟并前往一个空文件夹下开始你的表演~<br>输入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out private.pem 2048</span><br><span class="line">```  </span><br><span class="line">此时目录中出现一个private.pem文件，这个文件包含了私钥信息  </span><br><span class="line">根据私钥生成公钥  </span><br><span class="line">输入：</span><br></pre></td></tr></table></figure></p>
@@ -456,6 +451,8 @@
 </ul>
 <h4 id="实践出真知，下篇再会-老规矩，有问题请踊跃留言。"><a href="#实践出真知，下篇再会-老规矩，有问题请踊跃留言。" class="headerlink" title="实践出真知，下篇再会~ 老规矩，有问题请踊跃留言。"></a>实践出真知，下篇再会~ 老规矩，有问题请踊跃留言。</h4><p>更多一手好文更新<br>请关注我的个人微信公众号：面向未来编程 </p>
 
+          
+        
       
     </div>
 
@@ -478,32 +475,12 @@
       
 
       
-      
+
       
 
       
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/01/07/非对称加密--RSA原理浅析/" rel="next" title="非对称加密--RSA原理浅析">
-                <i class="fa fa-chevron-left"></i> 非对称加密--RSA原理浅析
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/12/浅谈iOS中常用加密算法的使用/" rel="prev" title="浅谈iOS中常用加密算法的使用">
-                浅谈iOS中常用加密算法的使用 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
       
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -513,15 +490,412 @@
   </article>
 
 
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/07/非对称加密--RSA原理浅析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/07/非对称加密--RSA原理浅析/" class="post-title-link" itemprop="url">非对称加密--RSA原理浅析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-07 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-07T20:49:56+08:00">2019-01-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 20:51:47" itemprop="dateModified" datetime="2019-04-22T20:51:47+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/07/非对称加密--RSA原理浅析/" class="leancloud_visitors" data-flag-title="非对称加密--RSA原理浅析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="来龙去脉"><a href="#来龙去脉" class="headerlink" title="来龙去脉"></a>来龙去脉</h3><p>&emsp;在1976年以前，所有的加密方法都是同一种模式：加密、解密使用同一种算法。在交互数据的时候，彼此通信的双方就必须将规则告诉对方，否则没法解密。这种加密与解密使用同一规则的加密方式被称为<a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">对称加密算法</a>。那么加密和解密的规则（简称密钥）的保护就显得尤其重要，传递密钥的风险也一直是个隐患。<br>&emsp;直到1976年，两位美国计算机学家：迪菲（W.Diffie）、赫尔曼（M.Hellman）提出了一种崭新构思，可以在不直接传递密钥的情况下完成密钥交换，开创了密码学研究的新方向。这就是<a href="https://zh.wikipedia.org/wiki/%E8%BF%AA%E8%8F%B2-%E8%B5%AB%E7%88%BE%E6%9B%BC%E5%AF%86%E9%91%B0%E4%BA%A4%E6%8F%9B" target="_blank" rel="noopener">“迪菲赫尔曼密钥交换”</a>算法，其仍然是一种对称加密算法，只是密钥不再需要传递。交换原理如下图所示：<br><img src="https://user-gold-cdn.xitu.io/2019/1/7/168275fb2e34d666?w=834&amp;h=476&amp;f=png&amp;s=93483" alt="迪菲赫尔曼密钥交换原理"><br>其中a，b是在通信两端本地的随机数，g是模p的一个<a href="https://zh.wikipedia.org/wiki/%E5%8E%9F%E6%A0%B9" target="_blank" rel="noopener">原根</a>，K是交换后产生的密钥，安全性来源于当p非常大时，已知g，p，A，B很难反算出a，b。<a href="https://zh.wikipedia.org/wiki/%E7%A6%BB%E6%95%A3%E5%AF%B9%E6%95%B0" target="_blank" rel="noopener">离散对数问题</a>是该算法的基础。<br>&emsp;1977年，三位麻省理工学院的数学家 罗纳德·李维斯特（Ron Rivest）、阿迪·萨莫尔（Adi Shamir）和伦纳德·阿德曼（Leonard Adleman）一起设计了一种算法，可以实现非对称加密。这就是用他们三个人的名字命名的算法–<a href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">RSA</a>算法。<br>&emsp;要弄清楚RSA的加密原理，先要知道<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%AE%9A%E7%90%86_(%E6%95%B0%E8%AE%BA" target="_blank" rel="noopener">欧拉定理</a>)：  </p>
+<blockquote>
+<p>对于两个互质的正整数m、n，m^φ(n) mod n ≡ 1<br>当m&lt;n时不难推导出：m^(k*φ(n)) mod n ≡ 1<br>进一步得到：m^(k*φ(n)+1) mod n ≡ m </p>
+</blockquote>
+<p>基于此还需要理解一个概念，<a href="https://zh.wikipedia.org/wiki/%E6%A8%A1%E5%8F%8D%E5%85%83%E7%B4%A0" target="_blank" rel="noopener">模反元素</a>：  </p>
+<blockquote>
+<p>如果两个正整数e和x互质，那么一定可以找到整数d，使得 e*d-1 被x整除。那么d就是e对于x的“模反元素”<br>即e<em>d mod x ≡ 1<br>等同于 e\</em>d ≡ k*x + 1，k为正整数  </p>
+</blockquote>
+<p>敲黑板！！！关键来了，上面两个转换的结果一碰撞，Duang！就碰出了我们RSA的核心算法：  </p>
+<blockquote>
+<p>当e与φ(n)互质时，m^(e*d) mod n ≡ m  </p>
+</blockquote>
+<p>鸡不鸡冻，开不开森！还有点迷糊？没关系，来继续：  </p>
+<blockquote>
+<p>假设我们对m进行加密传输<br>加密：m^e mod n = c，<br>解密：c^d mod n = m^(e*d) mod n = m  </p>
+</blockquote>
+<p>上述过程中，<strong>n+e就是RSA中的公钥，n+d就是RSA中的私钥，c是加密后的密文。</strong></p>
+<h3 id="补充："><a href="#补充：" class="headerlink" title="补充："></a>补充：</h3><ol>
+<li>n会非常大，长度一般为1024个二进制位，现在稳妥一点的长度为2048个二进制位。（目前人类已经分解的最大整数，232个十进制位，768个二进制位）  </li>
+<li>因为需要求出φ(n)，所以根据<a href="https://zh.wikipedia.org/wiki/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">欧拉函数</a>特点，最简单得到n的方式是由两个质数相乘: 质数：p1、p2<br>Φ(n) = (p1 - 1) * (p2 - 1)</li>
+<li>最终由φ(n)得到 e 和 d   </li>
+</ol>
+<p>总共生成6个数字：p1、p2、n、φ(n)、e、d  </p>
+<h3 id="关于RSA的安全："><a href="#关于RSA的安全：" class="headerlink" title="关于RSA的安全："></a>关于RSA的安全：</h3><p>除了公钥用到了n和e 其余的4个数字是不公开的。<br>目前破解RSA得到私钥d的思路如下：</p>
+<ol>
+<li>由于e*d = φ(n)*k + 1。e是公开的，那必须要知道φ(n)</li>
+<li>要得到φ(n)，必须知道p1 和 p2</li>
+<li>由于 n = p1 * p2，所以只有将n因数分解才能算出p1 p2</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E6%9C%BA" target="_blank" rel="noopener">量子计算机</a>如果成功诞生，现在通行于银行及网络等处的RSA加密算法可以破解，也会瓦解所有基于大质数因式分解算力逆天而衍生出的加密算法。</li>
+</ol>
+<p>后续会对iOS证书签名相关原理进行分析，同时把常见的加密算法做一下梳理和比较，并附上每种算法在iOS中的代码实现。欢迎一起交流学习心得~</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/05/如何成为有效学习的高手/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/05/如何成为有效学习的高手/" class="post-title-link" itemprop="url">如何成为有效学习的高手</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-05 12:49:34" itemprop="dateCreated datePublished" datetime="2019-01-05T12:49:34+08:00">2019-01-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 20:43:16" itemprop="dateModified" datetime="2019-04-22T20:43:16+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/05/如何成为有效学习的高手/" class="leancloud_visitors" data-flag-title="如何成为有效学习的高手">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>不闲言赘语，直戳痛点，放下借口，共同面对内心的忐忑吧。</p>
+<p>注：本文为得到专栏付费课程学习心得，分享给大家一起加快成长速度。</p>
+</blockquote>
+<p>&emsp;高效学习，它没有一种准确的定义，它更是对一种学习状态的描述，一万小时理论我们都听过，但这个理论可能不适合我们99.9%的人，我想这个理论出现的目的其实是为了推翻人们对于天才的迷信，但是，一万小时理论所展现的那种学习或者说练习的场景跟你和我的生活、工作离得都很远，我们也不需要都成为世界级的高手。这个理论本身没有错，它在打破人们对于天才的迷信的同时，也打击了绝大部分成年人的信心：谁有功夫每天8小时练习，练10年呢？但我们常常需要在很短的时间里要掌握一些技能，而且要达到专业级别的水准，这要求我们必须在有限的业余碎片时间中，高效的有目的的学习，话不多说，进入正题。</p>
+<h3 id="让我们从七个关键词着手："><a href="#让我们从七个关键词着手：" class="headerlink" title="让我们从七个关键词着手："></a>让我们从七个关键词着手：</h3><ol>
+<li>适合自己</li>
+<li>学习手法</li>
+<li>短时间</li>
+<li>注意力</li>
+<li>解决难题</li>
+<li>设定目标</li>
+<li>名师</li>
+</ol>
+<p>接下来我会对这七个关键词主义展开来探讨，学习如何将他们有机的结合起来，形成一套可自控，可循环，甚至是可以升级的学习套路。此篇先消化前两个关键词。</p>
+<h4 id="1-找到适合你的学习方法"><a href="#1-找到适合你的学习方法" class="headerlink" title="1.找到适合你的学习方法"></a>1.找到适合你的学习方法</h4><p>&emsp; 先重点要给大家介绍的两种学习思维，自然主义和结构主义。自然主义是模仿式的学习，自然主义注重文本的本身，什么是文本？就是一门知识或者技能它表面上看起来的样子，遇到什么就学什么，积少成多，以量取胜。学完了就那样了，它就是你自己的了，你就可以去运用了。结构主义它侧重对结构和交互关系的一个认识，它提倡透过表面的现象去寻求底层的关系。也就是说你要学习的是一套能举一反三的系统，这种诉求为的是什么呢？体系化的去学习，学会之后的目的，一定是为了创造，是一种质变，它要的是一种质变。选对学习方式这是第一步。（学习比如像语言、乐器、书法这些东西，你可能要用自然主义的学习方法去学习才更有效果。如果你学比如像医药、艺术，或者经济学，那就应该用结构主义的方式来学了。）</p>
+<p>&emsp; 再谈谈学习速度和效率的提升，理论上可以分为两个阶段：第一是避免无效学习，也就是选对学习方式。然后就是尽可能通过更好的学习策略来把这个有效变为高效。最简单有效的技巧就是 ：  </p>
+<p>&emsp; <strong>把你的目标要拆碎，针对那些细节进行反复的练习。不要一开始就照顾全局。</strong>  </p>
+<p>如果还能以碎片化的方式挤出更多的时间来学习的话，那效果会更好。</p>
+<h5 id="碎片化学习的真相"><a href="#碎片化学习的真相" class="headerlink" title="碎片化学习的真相"></a>碎片化学习的真相</h5><p>&emsp; 碎片化学习的真相是碎片化学习一定要基于搜索，搜索是什么意思？意思就是你要带着困惑和问题去执行碎片化的学习，最终的效果一定是要把这些碎片给链接起来。在一段时间内，你的头脑当中应该始终有一个课题，这些碎片它不是满地的落叶，而是我们可以把它比喻成一个打碎的瓷器所产生的碎片。你要有目的的去拾获这些碎片，而不是乱捡。就算碎片化知识是树叶，你也得先有树根、树干和树枝。碎片化学习要的是枝繁叶茂，而不是捡几片树叶回来夹在书里边。那就属于一种情绪化的行为。</p>
+<p>&emsp; 话说回来，碎片化学习它终究是有局限性的，因为它缺乏思考，缺乏辩论，缺乏与人交流的这些环节。所谓学而不思则罔嘛。碎片划拉的越多，可能越糊涂了。但是，无论如何，碎片化学习作为一种成年人学习的补充手段，无疑它是有很大力量的。</p>
+<p>&emsp; 我必须还要提醒你一件事情！！！有一种假的碎片化学习叫做收藏。你一定对这个东西非常熟悉，收藏这个按钮是非常常见的，在很多app和软件当中，所谓一种人性化的设置。它的存在能够非常大程度缓解人们的焦虑。但这种缓解它其实不是真正的缓解，它只是给你造成一种幻觉，就是收藏了这些知识就是你的了。但其实，如果你收藏完了不看的话，你不去碰它，它并不是你的。你必须要破除掉这种幻觉。</p>
+<h4 id="2-不谈兴趣，用任务驱动学习"><a href="#2-不谈兴趣，用任务驱动学习" class="headerlink" title="2.不谈兴趣，用任务驱动学习"></a>2.不谈兴趣，用任务驱动学习</h4><p>&emsp; 学习，很多人提倡培养兴趣，让自己爱上学习，通常这些人最后都放弃了。以至于慢慢的习惯了没兴趣所以学不会、学不好的自我认知。学不会：连门都没入，这可能确实跟天赋有关，你让身高一米五的去打NBA这种情况我们就不讨论了；学不好：没达到某种专业的程度。兴趣无疑是最好的老师，这句话没毛病，但是如果明明没兴趣的东西，非要让你喜欢上它，这显然是极小概率事件，生活没时间给你去玩小概率。</p>
+<p>&emsp; 一个很浅显的道理，人做任何事都是要回报的，所以一个人能带着多大的痛苦去做一件事，那是因为做成了这事儿会收获更大的利益。人做事的驱动有两个方面，一个是内部驱动，兴趣就是最大的内部驱动；一个是外部驱动，也就是完成目标之后收获的利益，既然你对该做的事没兴趣，那就干脆别浪费心思培养兴趣了，我要说的是，成年人学习不需要培养兴趣，应该用任务来驱动。你可能仍然会说，我没有任务啊，我找不到任务啊。任务到处都是，生活中的任务驱动，职场中的职业强迫，以教为学这些都是任务，找不到任务的唯一可能是你对未来的自己缺少预期。</p>
+<p>&emsp; 生活中的驱动，比如厨艺、摄影、英语，现在的食品安全现状你还打算吃多久的外卖？想记录属于自己的美好记忆总觉得拍的照片经不起回味？出国游、面对各种英文文档没有翻译工具寸步难行？职场中的驱动，比如领域专业度、语言表达力、情绪与财富管理，部门每年加薪名额就那么点凭什么让老板优先考虑你呢？经常词不达意引起误会甚至错失良机？任性买买买快三十了还没房没车？以教为学，无论你学了什么，一旦你可以教别人了，你就不再是无业了。而且你还不是给人打工，你是自由职业者。以教为学一方面可以是自己对自己设置的一个任务和目标，不断地督促自己，另一方面其实会让你学的更好更透彻。</p>
+<p>&emsp; 补充一点：你在心态上要有一种自觉，自己来聘请自己，让自我预期的小目标不断指引着持续学习，无论你在生活还是工作当中做任何事情都要这样做，不要心血来潮一股猛劲儿三分钟就疲了。</p>
+<blockquote>
+<p>愿你有所收获<br> ( ゜- ゜)つロ乾杯🍻</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
           
-
-  
-
-
 
         </div>
         
@@ -541,17 +915,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -597,23 +962,6 @@
         </div>
       </div>
 
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是OpenSSL"><span class="nav-number">1.</span> <span class="nav-text">什么是OpenSSL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RSA加密、证书生成终端演示"><span class="nav-number">2.</span> <span class="nav-text">RSA加密、证书生成终端演示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高能预警——证书文件编码格式、扩展名、协议科普"><span class="nav-number">3.</span> <span class="nav-text">高能预警——证书文件编码格式、扩展名、协议科普</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实践出真知，下篇再会-老规矩，有问题请踊跃留言。"><span class="nav-number">4.</span> <span class="nav-text">实践出真知，下篇再会~ 老规矩，有问题请踊跃留言。</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
       
 
       
@@ -770,10 +1118,6 @@
 
 
   
-  <script src="/js/scrollspy.js?v=7.1.0"></script>
-<script src="/js/post-details.js?v=7.1.0"></script>
-
-
 
   
 
@@ -790,8 +1134,6 @@
   
 
 
-  
-
 
   
 
@@ -802,30 +1144,38 @@
   
   <script>
     
-    function addCount(Counter) {
+    function showTime(Counter) {
+      var entries = [];
       var $visitors = $('.leancloud_visitors');
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
 
-      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+      $visitors.each(function() {
+        entries.push( $(this).attr('id').trim() );
+      });
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url: { '$in': entries } }) })
         .done(function({ results }) {
-          if (results.length > 0) {
-            var counter = results[0];
-            
-              var $element = $(document.getElementById(url));
-              $element.find('.leancloud-visitors-count').text(counter.time + 1);
-            
-            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
-            
-              .fail(function ({ responseJSON }) {
-                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
-              })
-          } else {
-            
-              var $element = $(document.getElementById(url));
-              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
-              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
-            
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if (countSpan.text() == '') {
+              countSpan.text(0);
+            }
           }
         })
         .fail(function ({ responseJSON }) {
@@ -850,7 +1200,9 @@
             });
           };
           
-            addCount(Counter);
+            if ($('.post-title-link').length >= 1) {
+              showTime(Counter);
+            }
           
         });
     });
