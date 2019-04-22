@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="上一篇iOS APP签名详解我们了解了iOS签名的机制和原理，这一篇我们一起来动手写一个自动重签名的脚本，懒是程序员乃至人类进步的终极力量，造轮子写工具可以极大的避免重复性工作，为我们节省更多的时间放在思考上，话不多说撸起袖子开始干：   第一步：获取脱壳的ipa包 从iTunes 12.6.3及以前的版本上直接下载 （macOS Mojave Doesn’t Support），这样获取到的是正版">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="撸一个 iOS 重签名脚本">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/23/撸一个iOS重签名脚本/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="上一篇iOS APP签名详解我们了解了iOS签名的机制和原理，这一篇我们一起来动手写一个自动重签名的脚本，懒是程序员乃至人类进步的终极力量，造轮子写工具可以极大的避免重复性工作，为我们节省更多的时间放在思考上，话不多说撸起袖子开始干：   第一步：获取脱壳的ipa包 从iTunes 12.6.3及以前的版本上直接下载 （macOS Mojave Doesn’t Support），这样获取到的是正版">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/1/22/16871b154fd4fd26?w=1114&h=590&f=png&s=68151">
+<meta property="og:updated_time" content="2019-04-22T13:53:09.997Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="撸一个 iOS 重签名脚本">
+<meta name="twitter:description" content="上一篇iOS APP签名详解我们了解了iOS签名的机制和原理，这一篇我们一起来动手写一个自动重签名的脚本，懒是程序员乃至人类进步的终极力量，造轮子写工具可以极大的避免重复性工作，为我们节省更多的时间放在思考上，话不多说撸起袖子开始干：   第一步：获取脱壳的ipa包 从iTunes 12.6.3及以前的版本上直接下载 （macOS Mojave Doesn’t Support），这样获取到的是正版">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/1/22/16871b154fd4fd26?w=1114&h=590&f=png&s=68151">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/23/撸一个iOS重签名脚本/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>撸一个 iOS 重签名脚本 | 小可的编程之路</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/23/撸一个iOS重签名脚本/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">撸一个 iOS 重签名脚本
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-23 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-23T20:49:56+08:00">2019-01-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 21:53:09" itemprop="dateModified" datetime="2019-04-22T21:53:09+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/23/撸一个iOS重签名脚本/" class="leancloud_visitors" data-flag-title="撸一个 iOS 重签名脚本">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             Views:  
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一篇<a href="https://enjoycoding007.github.io/2019/01/21/iOS%20APP%E7%AD%BE%E5%90%8D%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3/" target="_blank" rel="noopener">iOS APP签名详解</a>我们了解了iOS签名的机制和原理，这一篇我们一起来动手写一个自动重签名的脚本，懒是程序员乃至人类进步的终极力量，造轮子写工具可以极大的避免重复性工作，为我们节省更多的时间放在思考上，话不多说撸起袖子开始干：  </p>
+<h3 id="第一步：获取脱壳的ipa包"><a href="#第一步：获取脱壳的ipa包" class="headerlink" title="第一步：获取脱壳的ipa包"></a>第一步：获取脱壳的ipa包</h3><ol>
+<li>从iTunes 12.6.3及以前的版本上直接下载 （macOS Mojave Doesn’t Support），这样获取到的是正版ipa，需要用Clutch、dumdecrypted等工具先脱壳，否则别人的加密验证不通过无法安装</li>
+<li>各类助手上下载越狱版ipa包</li>
+<li>越狱手机导出</li>
+<li>Xcode打包 等等</li>
+</ol>
+<p>这里我下载了微信的越狱版ipa包用来演示。</p>
+<h3 id="第二步：命令行实现重签名"><a href="#第二步：命令行实现重签名" class="headerlink" title="第二步：命令行实现重签名"></a>第二步：命令行实现重签名</h3><ol>
+<li><p>将ipa解压缩后前往.app所在目录，输入  </p>
+ <figure class="highlight plain"><figcaption><span>-d -vv WeChat.app```  </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">	查看可执行文件的签名信息：</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/22/1687194244bf3be8?w=1424&amp;h=376&amp;f=png&amp;s=245630)</span><br><span class="line">可以看到签名信息现在还是腾讯的  </span><br><span class="line"></span><br><span class="line">2. 输入：  </span><br><span class="line">	```security find-identity -v -p codesigning```  </span><br><span class="line">	查看Mac本地的证书列表:</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/22/16871950dcd0e283?w=1592&amp;h=272&amp;f=png&amp;s=114415)</span><br><span class="line">	记下你要用来签名的证书双引号（包括双引号）中的字符串，一会儿会用到  </span><br><span class="line">	</span><br><span class="line">3. 确认ipa包是否已经脱壳，输入：  </span><br><span class="line">	```cd WeChat.app```  </span><br><span class="line">	```otool -l WeChat | grep crypt```  </span><br><span class="line">	会输出：![](https://user-gold-cdn.xitu.io/2019/1/22/16871958f396421c?w=988&amp;h=244&amp;f=png&amp;s=94527)</span><br><span class="line">	cryptid为0即为已脱壳，为1为加密状态。这里有两组数据是因为这是个支持两种CPU架构的可执行文件，可输入```file WeChat```查看可执行文件支持的架构：</span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/22/16871961777d44a5?w=1396&amp;h=142&amp;f=png&amp;s=108757)</span><br><span class="line">4. 删除无法签名的插件文件：PlugIns文件夹、Watch文件夹  </span><br><span class="line">5. 对.app文件夹内的Frameworks文件夹中的每一个framework强制重签名：</span><br><span class="line">	```codesign -fs 步骤2中记下的证书信息 要签名的.framework```  </span><br><span class="line">	注意不要遗漏，每一个framework都要用自己的证书重签一下</span><br><span class="line">6. 将自己的描述文件名改为embedded.mobileprovision，并拖入到.app中，再将.app中info.plist文件里的Bundle identifier改成我们自己的BundleID</span><br><span class="line">7. 在.app同级目录下新建一个entitlements.plist文件，查看描述文件内容：  </span><br><span class="line">    ```security cms -D -i embedded.mobileprovision```将Entitlements节点下的</span><br></pre></td></tr></table></figure>
+<p> <dict></dict></p>
+<pre><code>...
+...
+</code></pre><p>   </p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">    复制粘贴到刚刚新建的entitlements.plist文件中</span><br><span class="line">8. 最后一步，对整个包签名，回到.app所在目录，输入：</span><br><span class="line">    ```codesign -fs 步骤2中记下的证书信息 --no-strict --entitlements=entitlements.plist WeChat.app```  </span><br><span class="line">    签名成功！</span><br><span class="line">9. 打包：```zip -ry WeiChat.ipa Payload</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>以上，就是通过命令行一步步的实现应用重签名。</p>
+<h3 id="最后：撸自动重签名的脚本"><a href="#最后：撸自动重签名的脚本" class="headerlink" title="最后：撸自动重签名的脚本"></a>最后：撸自动重签名的脚本</h3><p>现在我就按照这个思路写脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">#$&#123;SRCROOT&#125; 它是工程文件所在的目录</span><br><span class="line">TEMP_PATH=&quot;$&#123;SRCROOT&#125;/Temp&quot;</span><br><span class="line">#资源文件夹，我们提前在工程目录下新建一个APP文件夹，里面放ipa包</span><br><span class="line">ASSETS_PATH=&quot;$&#123;SRCROOT&#125;/APP&quot;</span><br><span class="line">#目标ipa包路径</span><br><span class="line">TARGET_IPA_PATH=&quot;$&#123;ASSETS_PATH&#125;/*.ipa&quot;</span><br><span class="line">#清空Temp文件夹</span><br><span class="line">rm -rf &quot;$&#123;SRCROOT&#125;/Temp&quot;</span><br><span class="line">mkdir -p &quot;$&#123;SRCROOT&#125;/Temp&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 1. 解压IPA到Temp下</span><br><span class="line">unzip -oqq &quot;$TARGET_IPA_PATH&quot; -d &quot;$TEMP_PATH&quot;</span><br><span class="line"># 拿到解压的临时的APP的路径</span><br><span class="line">TEMP_APP_PATH=$(set -- &quot;$TEMP_PATH/Payload/&quot;*.app;echo &quot;$1&quot;)</span><br><span class="line"># echo &quot;路径是:$TEMP_APP_PATH&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 2. 将解压出来的.app拷贝进入工程下</span><br><span class="line"># BUILT_PRODUCTS_DIR 工程生成的APP包的路径</span><br><span class="line"># TARGET_NAME target名称</span><br><span class="line">TARGET_APP_PATH=&quot;$BUILT_PRODUCTS_DIR/$TARGET_NAME.app&quot;</span><br><span class="line">echo &quot;app路径:$TARGET_APP_PATH&quot;</span><br><span class="line"></span><br><span class="line">rm -rf &quot;$TARGET_APP_PATH&quot;</span><br><span class="line">mkdir -p &quot;$TARGET_APP_PATH&quot;</span><br><span class="line">cp -rf &quot;$TEMP_APP_PATH/&quot; &quot;$TARGET_APP_PATH&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 3. 删除extension和WatchAPP.个人证书没法签名Extention</span><br><span class="line">rm -rf &quot;$TARGET_APP_PATH/PlugIns&quot;</span><br><span class="line">rm -rf &quot;$TARGET_APP_PATH/Watch&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 4. 更新info.plist文件 CFBundleIdentifier</span><br><span class="line">#  设置:&quot;Set : KEY Value&quot; &quot;目标文件路径&quot;</span><br><span class="line">/usr/libexec/PlistBuddy -c &quot;Set :CFBundleIdentifier $PRODUCT_BUNDLE_IDENTIFIER&quot; &quot;$TARGET_APP_PATH/Info.plist&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 5. 给MachO文件上执行权限</span><br><span class="line"># 拿到MachO文件的路径</span><br><span class="line">APP_BINARY=`plutil -convert xml1 -o - $TARGET_APP_PATH/Info.plist|grep -A1 Exec|tail -n1|cut -f2 -d\&gt;|cut -f1 -d\&lt;`</span><br><span class="line">#上可执行权限</span><br><span class="line">chmod +x &quot;$TARGET_APP_PATH/$APP_BINARY&quot;</span><br><span class="line"></span><br><span class="line">#----------------------------------------</span><br><span class="line"># 6. 重签名第三方 FrameWorks</span><br><span class="line">TARGET_APP_FRAMEWORKS_PATH=&quot;$TARGET_APP_PATH/Frameworks&quot;</span><br><span class="line">if [ -d &quot;$TARGET_APP_FRAMEWORKS_PATH&quot; ];</span><br><span class="line">then</span><br><span class="line">for FRAMEWORK in &quot;$TARGET_APP_FRAMEWORKS_PATH/&quot;*</span><br><span class="line">do</span><br><span class="line"></span><br><span class="line">#签名</span><br><span class="line">/usr/bin/codesign --force --sign &quot;$EXPANDED_CODE_SIGN_IDENTITY&quot; &quot;$FRAMEWORK&quot;</span><br><span class="line">done</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>将写好的脚本直接丢到.xcodeproj同级目录中</li>
+<li>Xcode –&gt; Build Phases –&gt; New Run Script Phase:<br><img src="https://user-gold-cdn.xitu.io/2019/1/22/16871b154fd4fd26?w=1114&amp;h=590&amp;f=png&amp;s=68151" alt></li>
+<li>现在，将你要重签名的ipa包丢到在工程目录下新建的文件夹APP中（这个文件夹跟你写的脚本中的目标文件夹同名即可），直接Run！任何应用都会在你的真机上跑起来了！这也是后面讲逆向的准备工作。</li>
+</ul>
+<h4 id="了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰-如果你在实践中遇到任何问题，欢迎留言交流"><a href="#了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰-如果你在实践中遇到任何问题，欢迎留言交流" class="headerlink" title="了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰~如果你在实践中遇到任何问题，欢迎留言交流~"></a>了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰~如果你在实践中遇到任何问题，欢迎留言交流~</h4>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/18/iOS APP签名机制详解/" rel="next" title="iOS APP签名机制详解">
+                <i class="fa fa-chevron-left"></i> iOS APP签名机制详解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一步：获取脱壳的ipa包"><span class="nav-number">1.</span> <span class="nav-text">第一步：获取脱壳的ipa包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二步：命令行实现重签名"><span class="nav-number">2.</span> <span class="nav-text">第二步：命令行实现重签名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最后：撸自动重签名的脚本"><span class="nav-number">3.</span> <span class="nav-text">最后：撸自动重签名的脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰-如果你在实践中遇到任何问题，欢迎留言交流"><span class="nav-number">3.1.</span> <span class="nav-text">了解了iOS签名的原理再做重签名，我相信上面的每一步为什么那么做，你自然也很清楚了，写起脚本来自然思路也很清晰~如果你在实践中遇到任何问题，欢迎留言交流~</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+</html>
