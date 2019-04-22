@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="&amp;emsp;在上一篇非对称加密–RSA原理浅析中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过Base64、Hash、对称加密等处理后，再用RSA对其进行加密，因此RSA最主要的应用场景，是数字签名–对数据做身份/合法性校验。&amp;emsp;权威的证书颁发机构–躺着赚钱的CA，就是用的R">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RSA的主场-证书签名&amp;OpenSSL演示">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/09/RSA的主场-证书签名&OpenSSL演示/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="&amp;emsp;在上一篇非对称加密–RSA原理浅析中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过Base64、Hash、对称加密等处理后，再用RSA对其进行加密，因此RSA最主要的应用场景，是数字签名–对数据做身份/合法性校验。&amp;emsp;权威的证书颁发机构–躺着赚钱的CA，就是用的R">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/1/9/168318e5e48e3cb3?w=1200&h=326&f=png&s=117690">
+<meta property="og:updated_time" content="2019-04-22T13:09:52.416Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RSA的主场-证书签名&amp;OpenSSL演示">
+<meta name="twitter:description" content="&amp;emsp;在上一篇非对称加密–RSA原理浅析中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过Base64、Hash、对称加密等处理后，再用RSA对其进行加密，因此RSA最主要的应用场景，是数字签名–对数据做身份/合法性校验。&amp;emsp;权威的证书颁发机构–躺着赚钱的CA，就是用的R">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/1/9/168318e5e48e3cb3?w=1200&h=326&f=png&s=117690">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/09/RSA的主场-证书签名&OpenSSL演示/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>RSA的主场-证书签名&OpenSSL演示 | 小可的编程之路</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/09/RSA的主场-证书签名&OpenSSL演示/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RSA的主场-证书签名&OpenSSL演示
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-09 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-09T20:49:56+08:00">2019-01-09</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-04-22 21:09:52" itemprop="dateModified" datetime="2019-04-22T21:09:52+08:00">2019-04-22</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+            <span id="/2019/01/09/RSA的主场-证书签名&OpenSSL演示/" class="leancloud_visitors" data-flag-title="RSA的主场-证书签名&OpenSSL演示">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Views: </span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             Views:  
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;在上一篇<a href="https://enjoycoding007.github.io/2019/01/07/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86--RSA%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/" target="_blank" rel="noopener">非对称加密–RSA原理浅析</a>中，我们了解了RSA加密的数学原理，RSA的安全性目前虽然得到公认，但它同样也有缺点：加密速度慢、性能较低，不适合对大文件直接做加密，需要加密的原始数据通常会先经过<a href="https://zh.wikipedia.org/wiki/Base64" target="_blank" rel="noopener">Base64</a>、<a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8" target="_blank" rel="noopener">Hash</a>、<a href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86" target="_blank" rel="noopener">对称加密</a>等处理后，再用RSA对其进行加密，因此<a href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">RSA</a>最主要的应用场景，是数字签名–对数据做身份/合法性校验。<br>&emsp;权威的<a href="https://zh.wikipedia.org/wiki/%E8%AF%81%E4%B9%A6%E9%A2%81%E5%8F%91%E6%9C%BA%E6%9E%84" target="_blank" rel="noopener">证书颁发机构</a>–躺着赚钱的CA，就是用的RSA这一套算法，这一篇我们一起用命令行来逐步拆解证书的生成过程，揭开证书背后的秘密。Talk is cheap，show you the code，Come on！</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/1/9/168318e5e48e3cb3?w=1200&amp;h=326&amp;f=png&amp;s=117690" alt></p>
+<h4 id="什么是OpenSSL"><a href="#什么是OpenSSL" class="headerlink" title="什么是OpenSSL"></a>什么是OpenSSL</h4><p>&emsp;SSL大家都不陌生，我们访问网站的时候，以HTTPS开头的表示你和服务器之间传输的数据经过了加密，这里所使用的加密协议就是SSL（Secure Sockets Layer，后来又推出了它的后续版本，改名叫TLS）。也就是说，把HTTP协议经过一层SSL协议进行加密包装，就变成了HTTPS。当然，SSL/TLS还用在很多协议中，例如VPN、加密的电子邮件协议等。<br>&emsp;那OpenSSL是啥？在SSL协议中，我们使用了很多密码学手段来保护数据，其中包括对称密码、公钥密码、数字签名、证书、完整性校验、伪随机数生成等。由于这些算法和操作都非常复杂，于是开源社区就开发了一套库，这个库里面提供了很多现成的标准方法，其他开发者只要用正确调用这些方法，就可以实现SSL协议中的各种加密/解密操作了。因此，<a href="https://zh.wikipedia.org/wiki/OpenSSL" target="_blank" rel="noopener">OpenSSL</a>是一套开源的密码学工具包（open source cryptography toolkit）。情理之中的，OpenSSL也支持了RSA算法，接下来我们就用OpenSSL在macOS的终端上为大家演示证书签名的每一个步骤。</p>
+<h4 id="RSA加密、证书生成终端演示"><a href="#RSA加密、证书生成终端演示" class="headerlink" title="RSA加密、证书生成终端演示"></a>RSA加密、证书生成终端演示</h4><p>&emsp;为了便于观察，请开辟并前往一个空文件夹下开始你的表演~<br>输入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out private.pem 2048</span><br><span class="line">```  </span><br><span class="line">此时目录中出现一个private.pem文件，这个文件包含了私钥信息  </span><br><span class="line">根据私钥生成公钥  </span><br><span class="line">输入：</span><br></pre></td></tr></table></figure></p>
+<p>openssl rsa -in private.pem -pubout -out public.pem<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">分别查看文件中的内容：</span><br></pre></td></tr></table></figure></p>
+<p>cat private.pem<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">cat public.pem</span><br><span class="line">```  </span><br><span class="line">你会得到这样类似这样的结果：</span><br></pre></td></tr></table></figure></p>
+<p>—–BEGIN RSA PRIVATE KEY—–<br>Base64编码的内容<br>—–END RSA PRIVATE KEY—–<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">-----BEGIN PUBLIC KEY-----</span><br><span class="line">Base64编码的内容</span><br><span class="line">-----END PUBLIC KEY-----</span><br><span class="line">```  </span><br><span class="line">现在我们随便写一个txt文件作为要加密的数据：</span><br></pre></td></tr></table></figure></p>
+<p>echo “hello word!“ &gt; message.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用公钥对其加密：</span><br></pre></td></tr></table></figure></p>
+<p>openssl rsautl -encrypt -in message.txt -inkey public.pem -pubin -out enc.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">查看加密后的文件：```cat enc.txt```，你只能看到一堆乱码  </span><br><span class="line">用私钥对加密文件解密：</span><br></pre></td></tr></table></figure></p>
+<p>openssl rsautl -decrypt -in enc.txt -inkey private.pem -out dec.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">查看解密结果：```cat dec.txt```，与你的message.txt内容完美吻合~  </span><br><span class="line">上面的过程反过来（私钥加密 公钥解密）一个道理，但执行命令有点区别：  </span><br><span class="line">用私钥对其加密：</span><br></pre></td></tr></table></figure></p>
+<p>openssl rsautl -sign -in message.txt -inkey private.pem -out enc.bat<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用公钥对加密文件解密：</span><br></pre></td></tr></table></figure></p>
+<p>openssl rsautl -verify -in enc.bat -inkey public.pem -pubin -out dec.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;emsp;至此，我们已经完成了RSA加密解密的操作，那我们开发中用的证书跟它们有什么关系呢？做iOS开发的都用钥匙串从CA请求过csr文件，其实就是根据当前Mac内置的私钥（当然你也可以自己指定私钥）生成对应的公钥，生成的csr文件包含了公钥证书原始文件+你的服务器信息和单位等信息。我们来用命令执行这一步操作：</span><br></pre></td></tr></table></figure></p>
+<p>openssl req -new -key private.pem -out rsacert.csr<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根据提示依次输入下列信息并回车:</span><br></pre></td></tr></table></figure></p>
+<p>Country Name (2 letter code) []:<br>State or Province Name (full name) []:<br>Locality Name (eg, city) []:<br>Organization Name (eg, company) []:<br>Organizational Unit Name (eg, section) []:<br>Common Name (eg, fully qualified host name) []:<br>Email Address []:<br>A challenge password []:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">拿到带着公钥信息的csr文件之后，下一步就是交给CA认证中心进行签名，也就是让CA盖个章（一个章一年五千大洋@_@，如果你的https用自签的证书那别人访问时有不安全提示就是因为你没有CA盖的这个章，不被承认是安全的）：</span><br></pre></td></tr></table></figure></p>
+<p>openssl x509 -req -days 3650 -in rsacert.csr -signkey private.pem -out rsacert.crt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这时得到的crt文件是Base64编码的，我们需要转成DER二进制格式的证书才能直接使用：</span><br></pre></td></tr></table></figure></p>
+<p>openssl x509 -outform der -in rsacert.crt -out rsacert.der<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">这个rsacert.der文件就是包含了我们公钥信息的证书！  </span><br><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/9/16832dfe1997dfd0?w=1022&amp;h=826&amp;f=png&amp;s=172453)</span><br><span class="line">最后一步，导出公钥证书对应的私钥证书：</span><br></pre></td></tr></table></figure></p>
+<p>openssl pkcs12 -export -out p.p12 -inkey private.pem -in rsacert.crt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">![](https://user-gold-cdn.xitu.io/2019/1/9/16832e25c325de5f?w=1004&amp;h=816&amp;f=png&amp;s=165762)</span><br><span class="line">输入两次私钥证书的密码就得到了我们最熟悉的.p12文件。  </span><br><span class="line">&amp;emsp;当然，在我们实际开发中不会同时拿到这两个证书，这里只是给大家演示它们之间的关系，后面我会对苹果的双向验证(双层签名)原理专门写一篇文章讲解  </span><br><span class="line">### 补充</span><br><span class="line">&amp;emsp;关于.pem文件内部的数据结构可以通过命令</span><br></pre></td></tr></table></figure></p>
+<p>openssl rsa -in private.pem -text -out ptivate.txt<br><code>`</code><br>查看，ptivate.txt文件中每一项的具体意义请参考<a href="http://blog.sina.com.cn/s/blog_4fcd1ea30100yh4s.html" target="_blank" rel="noopener">（PEM格式）解析</a><br>&emsp;在上面的命令中如果有些不明觉厉的玩意儿，那多半是你对证书相关的文件编码格式、协议和扩展名不太熟悉，不要慌，我已经为你准备好了加餐。</p>
+<h4 id="高能预警——证书文件编码格式、扩展名、协议科普"><a href="#高能预警——证书文件编码格式、扩展名、协议科普" class="headerlink" title="高能预警——证书文件编码格式、扩展名、协议科普"></a>高能预警——证书文件编码格式、扩展名、协议科普</h4><p>&emsp;我们统一采用<a href="https://zh.wikipedia.org/wiki/X.509" target="_blank" rel="noopener">X.509</a>的格式标准生成证书，接触过证书的同学看到：pem、der、pfx、jks、kdb、cer、key、csr、crt、crl、ocsp、scep等这些字眼一定不会完全陌生，这些东东究竟是个啥？赶紧来一探究竟，有描述不准确的地方还望指正：</p>
+<ul>
+<li>编码格式<ul>
+<li>DER：（Distinguished Encoding Rules）的缩写，它是大多数浏览器的缺省格式，并按 ASN1 DER 格式存储，它是无报头的。可包含所有私钥、公钥和证书。</li>
+<li>PEM：（Privacy Enhanced Mail）的缩写，它是OpenSSL默认采用的信息存放方式，它存储用Base64编码的DER格式数据，用ASCII报头包围，因此适合系统之间的文本模式传输。可以包括所有私钥、公钥和证书。</li>
+</ul>
+</li>
+<li>文件扩展名<ul>
+<li>.pem - (隐私增强型电子邮件) DER编码的证书再进行Base64编码的数据存放在”—–BEGIN CERTIFICATE—–”和”—–END CERTIFICATE—–”之中</li>
+<li>.cer, .crt, .der - 通常是DER二进制格式的证书，但Base64编码后也很常见</li>
+<li>.p7b, .p7c - PKCS#7 SignedData structure without data, just certificate(s) or CRL(s)，加密消息语法(pkcs7),是各种消息存放的格式标准。这些消息包括:数据、签名数据、数字信封、签名数字信封、摘要数据和加密数据。</li>
+<li>.p12 - PKCS#12格式，包含证书的同时可能还有带密码保护的私钥</li>
+<li>.pfx - PFX，PKCS#12之前的格式（通常用PKCS#12格式，比如那些由IIS产生的PFX文件）</li>
+<li>.jks - 通常可以将Apache/OpenSSL使用的“.key文件 + .crt文件”格式转换为标准的Java Key Store(JKS)文件。JKS文件格式被广泛的应用在基于JAVA的WEB服务器、应用服务器、中间件。你可以将JKS文件导入到TOMCAT、WEBLOGIC 等软件</li>
+<li>.kdb - 通常可以将Apache/OpenSSL使用的“.key文件 + .crt文件”格式转换为标准的IBM KDB文件。KDB文件格式被广泛的应用在IBM的WEB服务器、应用服务器、中间件。你可以将KDB文件导入到IBM HTTP Server、IBM Websphere 等软件</li>
+<li>.csr - 证书请求文件(Certificate Signing Request)。生成X509数字证书前,一般先由用户提交证书申请文件,然后由 CA 来签发证书。</li>
+<li>.key - 一般指PEM格式的私钥文件，也可能是DER格式的</li>
+<li>.crl - 证书吊销列表 (Certification Revocation List)是一种包含撤销的证书列表的签名数据结构。CRL是证书撤销状态的公布形式,CRL 就像信用卡的黑名单,用于公布某些数字证书不再有效。CRL是一种离线的证书状态信息。它以一定的周期进行更新。CRL可以分为完全CRL和增量CRL。在完全CRL中包含了所有的被撤销证书信息,增量CRL由一系列的CRL来表明被撤销的证书信息,它每次发布的CRL是对前面发布CRL的增量扩充。基本的CRL信息有:被撤销证书序列号、撤销时间、撤销原因、签名者以及 CRL 签名等信息。基于CRL的验证是一种不严格的证书认证。CRL能证明在CRL中被撤销的证书是无效的。但是,它不能给出不在CRL中的证书的状态。如果执行严格的认证,需要采用在线方式进行认证,即<a href="https://zh.wikipedia.org/wiki/%E5%9C%A8%E7%BA%BF%E8%AF%81%E4%B9%A6%E7%8A%B6%E6%80%81%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">OCSP</a>认证。一般是由CA签名的一组电子文档，包括了被废除证书的唯一标识（证书序列号），CRL用来列出已经过期或废除的数字证书。它每隔一段时间就会更新，因此必须定期下载该清单，才会取得最新信息</li>
+</ul>
+</li>
+<li>协议<ul>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%9C%A8%E7%BA%BF%E8%AF%81%E4%B9%A6%E7%8A%B6%E6%80%81%E5%8D%8F%E8%AE%AE" target="_blank" rel="noopener">OCSP</a> – 在线证书状态协议(Online Certificate Status Protocol,rfc2560)，用于实时表明证书状态。OCSP 客户端通过查询 OCSP 服务来确定一个证书的状态,可以提供给使用者一个或多个数字证书的有效性资料，它建立一个可实时响应的机制，让用户可以实时确认每一张证书的有效性，解决由CRL引发的安全问题。。OCSP 可以通过 HTTP协议来实现。rfc2560 定义了 OCSP 客户端和服务端的消息格式</li>
+<li><a href="https://en.wikipedia.org/wiki/Simple_Certificate_Enrollment_Protocol" target="_blank" rel="noopener">SCEP</a> － 简单证书注册协议（Simple Certificate Enrollment Protocol），基于文件的证书登记方式需要从您的本地计算机将文本文件复制和粘贴到证书发布中心，和从证书发布中心复制和粘贴到您的本地计算机。SCEP可以自动处理这个过程但是CRLs仍然需要手动的在本地计算机和CA发布中心之间进行复制和粘贴</li>
+</ul>
+</li>
+</ul>
+<h4 id="实践出真知，下篇再会-老规矩，有问题请踊跃留言。"><a href="#实践出真知，下篇再会-老规矩，有问题请踊跃留言。" class="headerlink" title="实践出真知，下篇再会~ 老规矩，有问题请踊跃留言。"></a>实践出真知，下篇再会~ 老规矩，有问题请踊跃留言。</h4><p>更多一手好文更新<br>请关注我的个人微信公众号：面向未来编程 </p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/07/非对称加密--RSA原理浅析/" rel="next" title="非对称加密--RSA原理浅析">
+                <i class="fa fa-chevron-left"></i> 非对称加密--RSA原理浅析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/12/浅谈iOS中常用加密算法的使用/" rel="prev" title="浅谈iOS中常用加密算法的使用">
+                浅谈iOS中常用加密算法的使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是OpenSSL"><span class="nav-number">1.</span> <span class="nav-text">什么是OpenSSL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RSA加密、证书生成终端演示"><span class="nav-number">2.</span> <span class="nav-text">RSA加密、证书生成终端演示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高能预警——证书文件编码格式、扩展名、协议科普"><span class="nav-number">3.</span> <span class="nav-text">高能预警——证书文件编码格式、扩展名、协议科普</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实践出真知，下篇再会-老规矩，有问题请踊跃留言。"><span class="nav-number">4.</span> <span class="nav-text">实践出真知，下篇再会~ 老规矩，有问题请踊跃留言。</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="Total Visitors">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="Total Views">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text(counter.time + 1);
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
+</html>

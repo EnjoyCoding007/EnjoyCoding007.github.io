@@ -96,18 +96,20 @@
 
 
 
-  <meta name="description" content="不闲言赘语，直戳痛点，放下借口，共同面对内心的忐忑吧。 注：本文为得到专栏付费课程学习心得，分享给大家一起加快成长速度。  &amp;emsp;高效学习，它没有一种准确的定义，它更是对一种学习状态的描述，一万小时理论我们都听过，但这个理论可能不适合我们99.9%的人，我想这个理论出现的目的其实是为了推翻人们对于天才的迷信，但是，一万小时理论所展现的那种学习或者说练习的场景跟你和我的生活、工作离得都很远，">
+  <meta name="description" content="苹果的需求 为了保证系统的安全性，所有iPhone上安装的应用必须是经过苹果授权的 安装包不需要上传到App Store也能被安装 （开发调试 企业灰度） 防止证书权限滥用：设备限制、指定APP、iCloud/PUSH/后台运行等附加权限控制  苹果的解决方案：双层代码签名+描述文件: 这里画一张图附上： &amp;emsp;在iOS出来之前，主流的操作系统（MacOS/Windows）软件随便从哪里下载">
 <meta name="keywords" content="iOS OpenGL Metal">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何成为有效学习的高手">
-<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/05/如何成为有效学习的高手/index.html">
+<meta property="og:title" content="iOS APP签名机制详解">
+<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/21/iOS APP签名机制详解/index.html">
 <meta property="og:site_name" content="小可的编程之路">
-<meta property="og:description" content="不闲言赘语，直戳痛点，放下借口，共同面对内心的忐忑吧。 注：本文为得到专栏付费课程学习心得，分享给大家一起加快成长速度。  &amp;emsp;高效学习，它没有一种准确的定义，它更是对一种学习状态的描述，一万小时理论我们都听过，但这个理论可能不适合我们99.9%的人，我想这个理论出现的目的其实是为了推翻人们对于天才的迷信，但是，一万小时理论所展现的那种学习或者说练习的场景跟你和我的生活、工作离得都很远，">
+<meta property="og:description" content="苹果的需求 为了保证系统的安全性，所有iPhone上安装的应用必须是经过苹果授权的 安装包不需要上传到App Store也能被安装 （开发调试 企业灰度） 防止证书权限滥用：设备限制、指定APP、iCloud/PUSH/后台运行等附加权限控制  苹果的解决方案：双层代码签名+描述文件: 这里画一张图附上： &amp;emsp;在iOS出来之前，主流的操作系统（MacOS/Windows）软件随便从哪里下载">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-04-22T12:43:16.631Z">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/1/21/16870efe0c1b7b07?w=2112&h=1138&f=png&s=444176">
+<meta property="og:updated_time" content="2019-04-22T13:15:58.167Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="如何成为有效学习的高手">
-<meta name="twitter:description" content="不闲言赘语，直戳痛点，放下借口，共同面对内心的忐忑吧。 注：本文为得到专栏付费课程学习心得，分享给大家一起加快成长速度。  &amp;emsp;高效学习，它没有一种准确的定义，它更是对一种学习状态的描述，一万小时理论我们都听过，但这个理论可能不适合我们99.9%的人，我想这个理论出现的目的其实是为了推翻人们对于天才的迷信，但是，一万小时理论所展现的那种学习或者说练习的场景跟你和我的生活、工作离得都很远，">
+<meta name="twitter:title" content="iOS APP签名机制详解">
+<meta name="twitter:description" content="苹果的需求 为了保证系统的安全性，所有iPhone上安装的应用必须是经过苹果授权的 安装包不需要上传到App Store也能被安装 （开发调试 企业灰度） 防止证书权限滥用：设备限制、指定APP、iCloud/PUSH/后台运行等附加权限控制  苹果的解决方案：双层代码签名+描述文件: 这里画一张图附上： &amp;emsp;在iOS出来之前，主流的操作系统（MacOS/Windows）软件随便从哪里下载">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/1/21/16870efe0c1b7b07?w=2112&h=1138&f=png&s=444176">
 
 
 
@@ -115,7 +117,7 @@
 
   
   
-  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/05/如何成为有效学习的高手/">
+  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/21/iOS APP签名机制详解/">
 
 
 
@@ -125,7 +127,7 @@
   };
 </script>
 
-  <title>如何成为有效学习的高手 | 小可的编程之路</title>
+  <title>iOS APP签名机制详解 | 小可的编程之路</title>
   
 
 
@@ -296,7 +298,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/05/如何成为有效学习的高手/">
+    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/01/21/iOS APP签名机制详解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小可长江">
@@ -313,7 +315,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">如何成为有效学习的高手
+          <h1 class="post-title" itemprop="name headline">iOS APP签名机制详解
 
               
             
@@ -339,7 +341,7 @@
                 
               
 
-              <time title="Created: 2019-01-05 12:49:34" itemprop="dateCreated datePublished" datetime="2019-01-05T12:49:34+08:00">2019-01-05</time>
+              <time title="Created: 2019-01-21 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-21T20:49:56+08:00">2019-01-21</time>
             
 
             
@@ -356,7 +358,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-04-22 20:43:16" itemprop="dateModified" datetime="2019-04-22T20:43:16+08:00">2019-04-22</time>
+                <time title="Modified: 2019-04-22 21:15:58" itemprop="dateModified" datetime="2019-04-22T21:15:58+08:00">2019-04-22</time>
               
             
           </span>
@@ -370,7 +372,7 @@
 
           
           
-            <span id="/2019/01/05/如何成为有效学习的高手/" class="leancloud_visitors" data-flag-title="如何成为有效学习的高手">
+            <span id="/2019/01/21/iOS APP签名机制详解/" class="leancloud_visitors" data-flag-title="iOS APP签名机制详解">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -408,35 +410,27 @@
       
 
       
-        <blockquote>
-<p>不闲言赘语，直戳痛点，放下借口，共同面对内心的忐忑吧。</p>
-<p>注：本文为得到专栏付费课程学习心得，分享给大家一起加快成长速度。</p>
-</blockquote>
-<p>&emsp;高效学习，它没有一种准确的定义，它更是对一种学习状态的描述，一万小时理论我们都听过，但这个理论可能不适合我们99.9%的人，我想这个理论出现的目的其实是为了推翻人们对于天才的迷信，但是，一万小时理论所展现的那种学习或者说练习的场景跟你和我的生活、工作离得都很远，我们也不需要都成为世界级的高手。这个理论本身没有错，它在打破人们对于天才的迷信的同时，也打击了绝大部分成年人的信心：谁有功夫每天8小时练习，练10年呢？但我们常常需要在很短的时间里要掌握一些技能，而且要达到专业级别的水准，这要求我们必须在有限的业余碎片时间中，高效的有目的的学习，话不多说，进入正题。</p>
-<h3 id="让我们从七个关键词着手："><a href="#让我们从七个关键词着手：" class="headerlink" title="让我们从七个关键词着手："></a>让我们从七个关键词着手：</h3><ol>
-<li>适合自己</li>
-<li>学习手法</li>
-<li>短时间</li>
-<li>注意力</li>
-<li>解决难题</li>
-<li>设定目标</li>
-<li>名师</li>
+        <h3 id="苹果的需求"><a href="#苹果的需求" class="headerlink" title="苹果的需求"></a>苹果的需求</h3><ol>
+<li>为了保证系统的安全性，所有iPhone上安装的应用必须是经过苹果授权的</li>
+<li>安装包不需要上传到App Store也能被安装 （开发调试 企业灰度）</li>
+<li>防止证书权限滥用：设备限制、指定APP、iCloud/PUSH/后台运行等附加权限控制</li>
 </ol>
-<p>接下来我会对这七个关键词主义展开来探讨，学习如何将他们有机的结合起来，形成一套可自控，可循环，甚至是可以升级的学习套路。此篇先消化前两个关键词。</p>
-<h4 id="1-找到适合你的学习方法"><a href="#1-找到适合你的学习方法" class="headerlink" title="1.找到适合你的学习方法"></a>1.找到适合你的学习方法</h4><p>&emsp; 先重点要给大家介绍的两种学习思维，自然主义和结构主义。自然主义是模仿式的学习，自然主义注重文本的本身，什么是文本？就是一门知识或者技能它表面上看起来的样子，遇到什么就学什么，积少成多，以量取胜。学完了就那样了，它就是你自己的了，你就可以去运用了。结构主义它侧重对结构和交互关系的一个认识，它提倡透过表面的现象去寻求底层的关系。也就是说你要学习的是一套能举一反三的系统，这种诉求为的是什么呢？体系化的去学习，学会之后的目的，一定是为了创造，是一种质变，它要的是一种质变。选对学习方式这是第一步。（学习比如像语言、乐器、书法这些东西，你可能要用自然主义的学习方法去学习才更有效果。如果你学比如像医药、艺术，或者经济学，那就应该用结构主义的方式来学了。）</p>
-<p>&emsp; 再谈谈学习速度和效率的提升，理论上可以分为两个阶段：第一是避免无效学习，也就是选对学习方式。然后就是尽可能通过更好的学习策略来把这个有效变为高效。最简单有效的技巧就是 ：  </p>
-<p>&emsp; <strong>把你的目标要拆碎，针对那些细节进行反复的练习。不要一开始就照顾全局。</strong>  </p>
-<p>如果还能以碎片化的方式挤出更多的时间来学习的话，那效果会更好。</p>
-<h5 id="碎片化学习的真相"><a href="#碎片化学习的真相" class="headerlink" title="碎片化学习的真相"></a>碎片化学习的真相</h5><p>&emsp; 碎片化学习的真相是碎片化学习一定要基于搜索，搜索是什么意思？意思就是你要带着困惑和问题去执行碎片化的学习，最终的效果一定是要把这些碎片给链接起来。在一段时间内，你的头脑当中应该始终有一个课题，这些碎片它不是满地的落叶，而是我们可以把它比喻成一个打碎的瓷器所产生的碎片。你要有目的的去拾获这些碎片，而不是乱捡。就算碎片化知识是树叶，你也得先有树根、树干和树枝。碎片化学习要的是枝繁叶茂，而不是捡几片树叶回来夹在书里边。那就属于一种情绪化的行为。</p>
-<p>&emsp; 话说回来，碎片化学习它终究是有局限性的，因为它缺乏思考，缺乏辩论，缺乏与人交流的这些环节。所谓学而不思则罔嘛。碎片划拉的越多，可能越糊涂了。但是，无论如何，碎片化学习作为一种成年人学习的补充手段，无疑它是有很大力量的。</p>
-<p>&emsp; 我必须还要提醒你一件事情！！！有一种假的碎片化学习叫做收藏。你一定对这个东西非常熟悉，收藏这个按钮是非常常见的，在很多app和软件当中，所谓一种人性化的设置。它的存在能够非常大程度缓解人们的焦虑。但这种缓解它其实不是真正的缓解，它只是给你造成一种幻觉，就是收藏了这些知识就是你的了。但其实，如果你收藏完了不看的话，你不去碰它，它并不是你的。你必须要破除掉这种幻觉。</p>
-<h4 id="2-不谈兴趣，用任务驱动学习"><a href="#2-不谈兴趣，用任务驱动学习" class="headerlink" title="2.不谈兴趣，用任务驱动学习"></a>2.不谈兴趣，用任务驱动学习</h4><p>&emsp; 学习，很多人提倡培养兴趣，让自己爱上学习，通常这些人最后都放弃了。以至于慢慢的习惯了没兴趣所以学不会、学不好的自我认知。学不会：连门都没入，这可能确实跟天赋有关，你让身高一米五的去打NBA这种情况我们就不讨论了；学不好：没达到某种专业的程度。兴趣无疑是最好的老师，这句话没毛病，但是如果明明没兴趣的东西，非要让你喜欢上它，这显然是极小概率事件，生活没时间给你去玩小概率。</p>
-<p>&emsp; 一个很浅显的道理，人做任何事都是要回报的，所以一个人能带着多大的痛苦去做一件事，那是因为做成了这事儿会收获更大的利益。人做事的驱动有两个方面，一个是内部驱动，兴趣就是最大的内部驱动；一个是外部驱动，也就是完成目标之后收获的利益，既然你对该做的事没兴趣，那就干脆别浪费心思培养兴趣了，我要说的是，成年人学习不需要培养兴趣，应该用任务来驱动。你可能仍然会说，我没有任务啊，我找不到任务啊。任务到处都是，生活中的任务驱动，职场中的职业强迫，以教为学这些都是任务，找不到任务的唯一可能是你对未来的自己缺少预期。</p>
-<p>&emsp; 生活中的驱动，比如厨艺、摄影、英语，现在的食品安全现状你还打算吃多久的外卖？想记录属于自己的美好记忆总觉得拍的照片经不起回味？出国游、面对各种英文文档没有翻译工具寸步难行？职场中的驱动，比如领域专业度、语言表达力、情绪与财富管理，部门每年加薪名额就那么点凭什么让老板优先考虑你呢？经常词不达意引起误会甚至错失良机？任性买买买快三十了还没房没车？以教为学，无论你学了什么，一旦你可以教别人了，你就不再是无业了。而且你还不是给人打工，你是自由职业者。以教为学一方面可以是自己对自己设置的一个任务和目标，不断地督促自己，另一方面其实会让你学的更好更透彻。</p>
-<p>&emsp; 补充一点：你在心态上要有一种自觉，自己来聘请自己，让自我预期的小目标不断指引着持续学习，无论你在生活还是工作当中做任何事情都要这样做，不要心血来潮一股猛劲儿三分钟就疲了。</p>
-<blockquote>
-<p>愿你有所收获<br> ( ゜- ゜)つロ乾杯🍻</p>
-</blockquote>
+<p>苹果的解决方案：<strong>双层代码签名+描述文件:</strong></p>
+<p>这里画一张图附上：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/1/21/16870efe0c1b7b07?w=2112&amp;h=1138&amp;f=png&amp;s=444176" alt><br>&emsp;在iOS出来之前，主流的操作系统（MacOS/Windows）软件随便从哪里下载都能运行，系统安全存在隐患，盗版软件、病毒入侵、静默安装等等，苹果希望解决类似的问题，保证在iPhone iOS上的APP都是经过苹果官方允许的，怎样保证呢？就是通过<strong>代码签名</strong>。  </p>
+<p>&emsp;如果要实现验证，最简单的方式就是苹果官方生成一对RSA公私钥，在iOS系统中内置一个公钥，私钥由苹果后台保存，我们上传APP到App Store时苹果后台用私钥对APP数据进行加密，iPhone下载APP后用公钥验证这个签名就可以确认APP是否经过允许或被三方篡改过。但是，我们安装APP并不仅仅只有App Store这一个方式，比如真机调试、企业包等，所以只靠这个简单的数字签名方式是不够的。  </p>
+<p>&emsp;于是苹果设计了双层签名的机制，我们都知道iOS的应用开发必须在Mac系统下进行，正是由于这个依赖关系，双层签名才有了基础：  </p>
+<ol>
+<li>在Mac系统中生成一对非对称加密算法的公私钥M（Xcode会帮你做好）  </li>
+<li>苹果自己有固定的一对公私钥，正如上述最简单的代码签名中提到的：私钥A在苹果后台，公钥A在每个iOS系统的手机中  </li>
+<li>把公钥M以及一些开发者信息（也就是CSR文件）发送给苹果后台，用苹果后台的私钥A对公钥M签名，得到一份包含公钥M以及其签名结果的数据就是证书（.p12）。  </li>
+<li>在开发时，当我们打包时会用本地的私钥M（也就是可导出给小伙伴的开发者证书）对这个APP进行签名，同时把第三步得到的证书一起打包进APP里，然后安装到手机上（真机联调）或者提交App Store审核  </li>
+<li>安装时，iOS系统取得内置公钥A去验证公钥M的数字签名证书是否正确  </li>
+<li>验证公钥M是苹果认证过的后，再用公钥M去验证APP的签名，这样就间接验证了这个APP的安装是经过苹果允许的了（注意这里只验证安装行为，不验证APP是否被改动，因为开发阶段APP内容总是不断变化的）</li>
+</ol>
+<p>&emsp;有了上面的过程已经可以保证开发者的认证和程序的安全了，但是如果只有上述的过程，那岂不是只要申请了一个证书就可以安装到所有的iOS设备了？所以，苹果又增加了授权文件（Provisioning profile）的验证，Provisioning profile一般包括三样东西：证书、APP ID、设备。  </p>
+<p>&emsp;描述文件是在AppleDevelop网站创建的(在Xcode中填上AppleID它会代办创建)，Xcode运行时会打包进入APP内。在开发时，编译完一个 APP 后，用本地的私钥M对这个APP进行签名，同时把从苹果服务器得到的 Provisioning Profile 文件打包进APP里，文件名为embedded.mobileprovision，当把APP安装到手机上时，iOS系统会进行验证。  </p>
+<p>&emsp;以上就是iOS应用签名的原理，下一篇基于这个原理我会手撸一个自动重签名的脚本。</p>
 
       
     </div>
@@ -467,15 +461,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/01/12/浅谈iOS中常用加密算法的使用/" rel="next" title="浅谈iOS中常用加密算法的使用">
+                <i class="fa fa-chevron-left"></i> 浅谈iOS中常用加密算法的使用
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/07/非对称加密--RSA原理浅析/" rel="prev" title="非对称加密--RSA原理浅析">
-                非对称加密--RSA原理浅析 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -586,7 +580,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#让我们从七个关键词着手："><span class="nav-number">1.</span> <span class="nav-text">让我们从七个关键词着手：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-找到适合你的学习方法"><span class="nav-number">1.1.</span> <span class="nav-text">1.找到适合你的学习方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#碎片化学习的真相"><span class="nav-number">1.1.1.</span> <span class="nav-text">碎片化学习的真相</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-不谈兴趣，用任务驱动学习"><span class="nav-number">1.2.</span> <span class="nav-text">2.不谈兴趣，用任务驱动学习</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#苹果的需求"><span class="nav-number">1.</span> <span class="nav-text">苹果的需求</span></a></li></ol></div>
             
 
           </div>
