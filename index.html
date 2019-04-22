@@ -358,7 +358,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2019-04-22 21:53:52" itemprop="dateModified" datetime="2019-04-22T21:53:52+08:00">2019-04-22</time>
+                <time title="Modified: 2019-04-22 21:56:42" itemprop="dateModified" datetime="2019-04-22T21:56:42+08:00">2019-04-22</time>
               
             
           </span>
@@ -405,7 +405,7 @@
       
         
           
-            <p>&emsp;在之前这篇<a href="https://enjoycoding007.github.io/2019/01/23/%E6%92%B8%E4%B8%80%E4%B8%AA%20iOS%20%E9%87%8D%E7%AD%BE%E5%90%8D%E8%84%9A%E6%9C%AC/" target="_blank" rel="noopener">iOS应用脚本重签名</a>中，我们对脱壳的微信安装包进行重签名，并成功在真机上运行起来，完成了iOS逆向的准备工作。这一篇我们将通过演示如何HOOK微信登录事件并获取到用户密码，把iOS代码注入的几种方式串起来做个简单地概述。不管做逆向还是正向开发，这些都能为你提供一些在应用安全攻防方面的思路。<br>&emsp;当拿到别人的脱壳包，想要HOOK别人的方法做些小插件，首先需要程序执行你写的代码，你才有机会利用runtime的运行时机制去做自己的事情，关于方法混淆的注意事项请参考<a href="https://juejin.im/entry/5a1fceddf265da43310d9985">这一篇</a>。让程序执行我们写的代码就需要修改MachO文件，关于MachO我在<a href="https://juejin.im/post/5c67e7efe51d45164c75993b">这一篇</a>里详细讲解了，这篇主要讲代码注入的事儿：  </p>
+            <p>&emsp;在之前这篇<a href="https://enjoycoding007.github.io/2019/01/23/%E6%92%B8%E4%B8%80%E4%B8%AAiOS%E9%87%8D%E7%AD%BE%E5%90%8D%E8%84%9A%E6%9C%AC/" target="_blank" rel="noopener">iOS应用脚本重签名</a>中，我们对脱壳的微信安装包进行重签名，并成功在真机上运行起来，完成了iOS逆向的准备工作。这一篇我们将通过演示如何HOOK微信登录事件并获取到用户密码，把iOS代码注入的几种方式串起来做个简单地概述。不管做逆向还是正向开发，这些都能为你提供一些在应用安全攻防方面的思路。<br>&emsp;当拿到别人的脱壳包，想要HOOK别人的方法做些小插件，首先需要程序执行你写的代码，你才有机会利用runtime的运行时机制去做自己的事情，关于方法混淆的注意事项请参考<a href="https://juejin.im/entry/5a1fceddf265da43310d9985">这一篇</a>。让程序执行我们写的代码就需要修改MachO文件，关于MachO我在<a href="https://juejin.im/post/5c67e7efe51d45164c75993b">这一篇</a>里详细讲解了，这篇主要讲代码注入的事儿：  </p>
 <ol>
 <li><h3 id="Framework注入"><a href="#Framework注入" class="headerlink" title="Framework注入"></a>Framework注入</h3> 添加自己的Framework：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e075c1e8eafc8?w=2320&amp;h=1048&amp;f=png&amp;s=1057376" alt><br> 写好测试代码，在<a href="https://juejin.im/post/5c460908f265da6167209b87">上一篇</a>重签名脚本的基础上加一行修改MachO加载路径的代码：<code>yololib &quot;$TARGET_APP_PATH/$APP_BINARY&quot; &quot;Frameworks/SharonFramework.framework/SharonFramework&quot;</code>，Framework文件名为你自己刚刚添加的。直接Run！<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0762658096c8?w=2294&amp;h=842&amp;f=png&amp;s=274662" alt><br>大功告成。</li>
 <li><h3 id="Dylib注入"><a href="#Dylib注入" class="headerlink" title="Dylib注入"></a>Dylib注入</h3> 添加自己的Dylib：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e07d75b2604bf?w=2360&amp;h=1146&amp;f=png&amp;s=1189863" alt>&emsp;要注意的是这样添加的MacOS的Dylib需要将BuildSetting–&gt;Base SDK改为iOS，BuildSetting–&gt;CODE SIGN IDENTITY改为iPhone Developer即可在iPhone上运行。<br>另外，与Framework不同的是它需要手动添加关联库：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0849536db686?w=1964&amp;h=988&amp;f=png&amp;s=335435" alt><br>同样在重签名脚本中加一行修改MachO可执行文件路径的代码：<code>yololib &quot;$TARGET_APP_PATH/$APP_BINARY&quot; &quot;Frameworks/libSharonLibrary.dylib&quot;</code>，dylib文件名为你自己刚刚添加的。直接Run！<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e08c6363b234e?w=2606&amp;h=940&amp;f=png&amp;s=716314" alt></li>
