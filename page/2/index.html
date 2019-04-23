@@ -399,7 +399,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/03/23/LLDB 知多少/">
+    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/02/25/dyld背后的故事&源码分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小可长江">
@@ -419,7 +419,7 @@
           <h2 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2019/03/23/LLDB 知多少/" class="post-title-link" itemprop="url">LLDB 知多少</a>
+                <a href="/2019/02/25/dyld背后的故事&源码分析/" class="post-title-link" itemprop="url">dyld背后的故事&源码分析</a>
               
             
           </h2>
@@ -444,7 +444,7 @@
                 
               
 
-              <time title="创建时间：2019-03-23 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-23T20:49:56+08:00">2019-03-23</time>
+              <time title="创建时间：2019-02-25 20:49:56" itemprop="dateCreated datePublished" datetime="2019-02-25T20:49:56+08:00">2019-02-25</time>
             
 
             
@@ -461,7 +461,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-04-23 16:10:01" itemprop="dateModified" datetime="2019-04-23T16:10:01+08:00">2019-04-23</time>
+                <time title="修改时间：2019-04-23 16:09:07" itemprop="dateModified" datetime="2019-04-23T16:09:07+08:00">2019-04-23</time>
               
             
           </span>
@@ -485,7 +485,7 @@
                   ，
                 
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/LLDB/" itemprop="url" rel="index"><span itemprop="name">LLDB</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/逆向/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a></span>
 
                 
                 
@@ -504,8 +504,8 @@
                 </span>
             
                 <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/03/23/LLDB 知多少/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/23/LLDB 知多少/" itemprop="commentCount"></span>
+                <a href="/2019/02/25/dyld背后的故事&源码分析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/25/dyld背后的故事&源码分析/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -513,7 +513,1230 @@
 
           
           
-            <span id="/2019/03/23/LLDB 知多少/" class="leancloud_visitors" data-flag-title="LLDB 知多少">
+            <span id="/2019/02/25/dyld背后的故事&源码分析/" class="leancloud_visitors" data-flag-title="dyld背后的故事&源码分析">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">5.6k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">5 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              什么是dyld？&emsp;dyld（the dynamic link editor）是苹果的动态链接器，是苹果操作系统的一个重要组成部分，当系统内核做好启动程序的准备工作之后，余下的工作会交给dyld来负责处理。那它存在的意义是什么？它又具体都负责做些什么呢？这一篇我们一起来一探究竟。前方长篇预警~
+
+dyld存在的意义&emsp;存在即合理，但我们要弄清楚其合理性所在。先从可执行文件是如何由源
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/02/25/dyld背后的故事&源码分析/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/02/21/MachO 文件结构详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/page-logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/02/21/MachO 文件结构详解/" class="post-title-link" itemprop="url">MachO 文件结构详解</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-21 20:49:56" itemprop="dateCreated datePublished" datetime="2019-02-21T20:49:56+08:00">2019-02-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-23 16:10:20" itemprop="dateModified" datetime="2019-04-23T16:10:20+08:00">2019-04-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/逆向/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/02/21/MachO 文件结构详解/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/21/MachO 文件结构详解/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/02/21/MachO 文件结构详解/" class="leancloud_visitors" data-flag-title="MachO 文件结构详解">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">4.2k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">4 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              概念——什么是MachO？&emsp; 苹果开发者对它一定不陌生，特别是喜欢逆向的同学，对它的研究更是必不可少。在可安装的每一个.app包中，都有一个与app同名的可执行文件，它可能长这样：（如果你碰到显示为白色的MachO文件，说明当前用户对其没有可执行权限）&emsp; MachO其实是Mach Object的缩写，是在Mac以及iOS上可执行的一种文件格式，包括但不限于：可执行文件(.out
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/02/21/MachO 文件结构详解/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/page-logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/" class="post-title-link" itemprop="url">非越狱下iOS代码注入&微信登录HOOK</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-10 20:49:56" itemprop="dateCreated datePublished" datetime="2019-02-10T20:49:56+08:00">2019-02-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-23 16:07:13" itemprop="dateModified" datetime="2019-04-23T16:07:13+08:00">2019-04-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/逆向/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/" class="leancloud_visitors" data-flag-title="非越狱下iOS代码注入&微信登录HOOK">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">2.1k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">2 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              &emsp;在之前这篇iOS应用脚本重签名中，我们对脱壳的微信安装包进行重签名，并成功在真机上运行起来，完成了iOS逆向的准备工作。这一篇我们将通过演示如何HOOK微信登录事件并获取到用户密码，把iOS代码注入的几种方式串起来做个简单地概述。不管做逆向还是正向开发，这些都能为你提供一些在应用安全攻防方面的思路。&emsp;当拿到别人的脱壳包，想要HOOK别人的方法做些小插件，首先需要程序执行你写的
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/01/31/走出区块链认知的误区/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/page-logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/31/走出区块链认知的误区/" class="post-title-link" itemprop="url">走出区块链认知的误区</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-31 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-31T20:49:56+08:00">2019-01-31</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-23 16:08:45" itemprop="dateModified" datetime="2019-04-23T16:08:45+08:00">2019-04-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/区块链/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/区块链/基本概念/" itemprop="url" rel="index"><span itemprop="name">基本概念</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/01/31/走出区块链认知的误区/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/31/走出区块链认知的误区/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/31/走出区块链认知的误区/" class="leancloud_visitors" data-flag-title="走出区块链认知的误区">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">4.6k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">4 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              &emsp;新事物往往不是凭空而来，发展和演化也很少一蹴而就。认识新事物，首先要弄清楚它的来龙去脉，知其出身，方能知其所以然。此文章为《区块链技术指南》的读后笔记&amp;摘要。
+账本科技的演化&emsp;区块链（Blockchain）的概念首次被人们关注，源于2009年初上线的比特币（Bitcoin）开源项目。从记账科技的演化角度来看，区块链实际上是记账问题发展到分布式场景下的天然结果。账本科技
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/31/走出区块链认知的误区/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/01/27/Unix:Linux文件类型与权限管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/page-logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/27/Unix:Linux文件类型与权限管理/" class="post-title-link" itemprop="url">Unix/Linux文件类型与权限管理</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-27 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-27T20:49:56+08:00">2019-01-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-23 16:12:42" itemprop="dateModified" datetime="2019-04-23T16:12:42+08:00">2019-04-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/计算机系统/" itemprop="url" rel="index"><span itemprop="name">计算机系统</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/计算机系统/文件管理/" itemprop="url" rel="index"><span itemprop="name">文件管理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/01/27/Unix:Linux文件类型与权限管理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/27/Unix:Linux文件类型与权限管理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/27/Unix:Linux文件类型与权限管理/" class="leancloud_visitors" data-flag-title="Unix/Linux文件类型与权限管理">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">2.1k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">2 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              &emsp;在小白与计算机的日常中，经常会碰到文件无（读、写、执行）权限，包括很多刚入门的程序员，也常常在别人的博客里会看到类似 777 XX.file```、```chmod u+x XX.file```、```chmod g-w XX.file```这些不明觉厉的命令，今天来帮还不清楚的童鞋科普一下，电脑中每个文件的权限 系统究竟是如何管理的，又如何修改文件的权限。  ### 看懂文件类型与权
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/27/Unix:Linux文件类型与权限管理/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/01/23/撸一个iOS重签名脚本/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/page-logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/23/撸一个iOS重签名脚本/" class="post-title-link" itemprop="url">撸一个 iOS 重签名脚本</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-23 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-23T20:49:56+08:00">2019-01-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-23 16:07:37" itemprop="dateModified" datetime="2019-04-23T16:07:37+08:00">2019-04-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/应用签名/" itemprop="url" rel="index"><span itemprop="name">应用签名</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/01/23/撸一个iOS重签名脚本/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/23/撸一个iOS重签名脚本/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/23/撸一个iOS重签名脚本/" class="leancloud_visitors" data-flag-title="撸一个 iOS 重签名脚本">
               <span class="post-meta-divider">|</span>
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
@@ -574,373 +1797,21 @@
       
         
           
-            <h2 id="重识-LLDB"><a href="#重识-LLDB" class="headerlink" title="重识 LLDB"></a>重识 LLDB</h2><h3 id="LLDB-是什么？"><a href="#LLDB-是什么？" class="headerlink" title="LLDB 是什么？"></a>LLDB 是什么？</h3><p>&emsp;“如果调试是删除 bug 的过程，那么编程就是引入 bug 的过程。”（Edsger W. Dijkstra）</p>
-<p>&emsp;对于苹果开发者而言，LLDB 是无人不知的调试工具，然而此知非彼知，相信有相当规模的开发者对 LLDB 的了解仍然停留于几个基础命令的使用，今天让我们来重新认识一下既熟悉又陌生的 LLDB，看看它那些你不曾用过的强大功能，以及如何提高我们的开发效率。  </p>
-<p>&emsp;开始把玩其功能之前，先搞清楚 LLDB 是什么，简言之，LLDB 是一个有着 REPL 的特性和 C++ 、Python 插件的开源调试器。</p>
-<p>&emsp;LLDB is a next generation, high-performance debugger. It is built as a set of reusable components which highly leverage existing libraries in the larger LLVM Project, such as the Clang expression parser and <span class="exturl" data-url="aHR0cDovL2xsdm0ub3JnLw==" title="http://llvm.org/">LLVM<i class="fa fa-external-link"></i></span> disassembler.<br>&emsp;LLDB is the default debugger in Xcode on Mac OS X and supports debugging C, Objective-C and C++ on the desktop and iOS devices and simulator.  </p>
-<p>&emsp;以上摘自官方文档中的一段简短的介绍，更多相关信息请参阅 LLDB <span class="exturl" data-url="aHR0cDovL2xsZGIubGx2bS5vcmcvaW5kZXguaHRtbA==" title="http://lldb.llvm.org/index.html">官方文档<i class="fa fa-external-link"></i></span>。</p>
-<h3 id="LLDB-命令结构"><a href="#LLDB-命令结构" class="headerlink" title="LLDB 命令结构"></a>LLDB 命令结构</h3><p>&emsp;知道了 LLDB 是什么，还要了解其命令结构及语法，这样才能告别死记命令，开启压榨 LLDB 之路了。LLDB 通用结构的形式如下：  </p>
-<p><code>&lt;command&gt; [&lt;subcommand&gt; [&lt;subcommand&gt;...]] &lt;action&gt; [-options [option-value]] [argument [argument...]]</code>  </p>
-<p>其中：</p>
-<ul>
-<li>command、subcommand：LLDB调试命令的名称。命令和子命令按层级结构来排列：一个命令对象为跟随其的子命令对象创建一个上下文，子命令又为其子命令创建一个上下文，依此类推。</li>
-<li>action：命令操作，想在前面的命令序列的上下文中执行的一些操作。</li>
-<li>options：命令选项，行为修改器(action modifiers)。通常带有一些值。</li>
-<li>argument：命令参数，根据使用的命令的上下文来表示各种不同的东西。</li>
-<li>[]：表示命令是可选的，可以有也可以没有。  </li>
-</ul>
-<p>举个例子：</p>
-<p>命令：<code>breakpoint set -n main</code> 对应到上面的语法就是：</p>
-<ul>
-<li>command：breakpoint 断点命令</li>
-<li>action：set 设置断点</li>
-<li>option：-n 表根据方法 name 设置断点</li>
-<li>arguement：mian 表示方法名为 mian</li>
-</ul>
-<p>关于<strong>原始命令</strong>：</p>
-<p>&emsp;LLDB支持不带命令选项的原始命令，原始命令会将命令后面的所有东西当做参数(arguement)处理。但很多原始命令也可以带命令选项，当你使用命令选项的时候，需要在命令选项后面加 <code>--</code> 区分命令选项和参数。<br>&emsp;如：<code>expression</code> （就是 <code>p</code>/<code>print</code>/<code>call</code>）、<code>expression -o</code>（就是 <code>po</code>），打印一个<code>UIView</code>对象地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a926c79ac2fad?w=970&amp;h=205&amp;f=png&amp;s=55903" alt><br>&emsp;前者是计算其地址的值，后者调用了对象的 description 方法，其中体现了唯一匹配原则：假如根据前n个字母已经能唯一匹配到某个命令，则只写前n个字母等效于写下完整的命令。再用设置断点的命令举例，下面两条命令等效：<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a95fec62b6dc5?w=677&amp;h=67&amp;f=png&amp;s=14387" alt><br>&emsp;更多命令结构的介绍及用法，请参考 <span class="exturl" data-url="aHR0cDovL2xsZGIubGx2bS5vcmcvdHV0b3JpYWwuaHRtbA==" title="http://lldb.llvm.org/tutorial.html">LLDB 入门<i class="fa fa-external-link"></i></span>。接下来介绍点 LLDB 最实用又最容易被忽略的用法。</p>
-<hr>
-<h2 id="LLDB-常用命令总结"><a href="#LLDB-常用命令总结" class="headerlink" title="LLDB 常用命令总结"></a>LLDB 常用命令总结</h2><h3 id="辅助记忆：apropos"><a href="#辅助记忆：apropos" class="headerlink" title="辅助记忆：apropos"></a>辅助记忆：apropos</h3><p>&emsp;当我们并不能完全记得某个命令的时候，使用 <strong>apropos</strong> 通过命令中的某个关键字就可以找到所有相关的命令信息。<br>比如: 我们想使用stop-hook的命令，但是已经不记得stop-hook命令是啥样了：<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a9a93fb2e4469?w=992&amp;h=276&amp;f=png&amp;s=72149" alt><br>实在记不起来也不要慌，这里有 <span class="exturl" data-url="aHR0cHM6Ly9sbGRiLmxsdm0ub3JnL2xsZGItZ2RiLmh0bWw=" title="https://lldb.llvm.org/lldb-gdb.html">命令list<i class="fa fa-external-link"></i></span>。</p>
-<h3 id="一-断点设置"><a href="#一-断点设置" class="headerlink" title="一.断点设置"></a>一.断点设置</h3><p>&emsp;关于断点设置，多数人都习惯用图形界面去做，但在调试中有些场景仅仅靠图形界面还是不够的，比如：如何通过断点实现类似 KVO 那样对成员变量变化的监听呢？（别跟我说你要加代码重写set方法…即使这样也不靠谱）。下面一一罗列那些好用的断点命令：</p>
-<ol>
-<li>breakpoint list：查看所有断点列表</li>
-<li>breakpoint delete：删除所有断点（可跟组号删除指定组）</li>
-<li>breakpoint disable/enable：禁用 启用指定断点</li>
-<li>breakpoint set -r some：遍历整个项目中包含 some 这个字符的所有方法并设置断点</li>
-<li>breakpoint 支持按文件名、函数名、行数、正则等各种条件筛选设置断点，请结合语法并参考官方文档</li>
-<li>watchpoint set expression 0x10cc64d50：在内存中为地址为0x10cc64d50的对象设置内存断点</li>
-<li>watchpoint set variable xxoo：为当前对象的变量 xxoo 设置内存断点</li>
-<li>target stop-hook add -o “frame variable”：添加每次程序 stop 时都希望执行的命令：frame variable（打印当前栈内的所有变量）</li>
-<li>target stop-hook、watchpoint 的增删改查命令与 breakpoint 的基本相同</li>
-<li>更多变态断点玩法需自定义插件支持，迫不及待的你请快进此文 》》》</li>
-</ol>
-<h3 id="二-流程控制"><a href="#二-流程控制" class="headerlink" title="二.流程控制"></a>二.流程控制</h3><p>这两幅图你一定不陌生：</p>
-<ol>
-<li>图一<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a9c232e8133fd?w=838&amp;h=65&amp;f=png&amp;s=17763" alt></li>
-<li>图二<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169a9c1cf046cc81?w=712&amp;h=53&amp;f=png&amp;s=13168" alt></li>
-</ol>
-<ul>
-<li>第一个按钮：continue/c 继续执行</li>
-<li>第二个按钮：<ul>
-<li>图一： thread step-over/next/n 当前线程下一步（以一个完整子函数为一步）</li>
-<li>图二：  thread step-inst-over/ni 当前线程下一步（以一个汇编函数为一步）</li>
-</ul>
-</li>
-<li>第三个按钮：<ul>
-<li>图一： thread step-in/step/s 当前线程下一步（遇到子函数就进入并且继续单步执行）</li>
-<li>图二： thread step-inst-over/si 当前线程下一步（遇到汇编函数就进入并且继续单步执行汇编指令）</li>
-</ul>
-</li>
-<li>第四个按钮：thread step-out/finish 退出当前帧栈</li>
-</ul>
-<p>其他命令：  </p>
-<ul>
-<li>thread return：它有一个可选参数，在执行时它会把可选参数加载进返回寄存器里，然后立刻执行返回命令，跳出当前栈帧。这意味这函数剩余的部分不会被执行。这会给 ARC 的引用计数造成一些问题，或者会使函数内的清理部分失效。但是在函数的开头执行这个命令，是个非常好的隔离次函数、伪造返回值的方式。</li>
-</ul>
-<h3 id="三-可执行文件-amp-共享库查询命令"><a href="#三-可执行文件-amp-共享库查询命令" class="headerlink" title="三.可执行文件&amp;共享库查询命令"></a>三.可执行文件&amp;共享库查询命令</h3><p>这些命令在逆向及定位错误时使用频率非常高。</p>
-<ol>
-<li>image list：列出主要的可执行文件和所有依赖的共享库。</li>
-<li>image lookup –address 0x1ec4：在可执行文件或任何共享库中查找原始地址信息。</li>
-<li>image lookup -v –address 0x1ec4：查找完整的源代码行信息。</li>
-<li>image lookup –type NSString：根据名称查找对应（NSString）类型的信息。</li>
-</ol>
-<h3 id="四-其他常用命令模板"><a href="#四-其他常用命令模板" class="headerlink" title="四.其他常用命令模板"></a>四.其他常用命令模板</h3><ol>
-<li>register read：显示当前线程的通用寄存器。</li>
-<li>register write rax 123：将一个新的十进制值“123”写入当前线程寄存器“rax”。</li>
-<li>memory read –size 4 –format x –count 4 0xbffff3c0：从地址0xbffff3c0读取内存，并显示4个十六进制uint32_t值。</li>
-</ol>
-<h2 id="加强版-LLDB-——-修改-lldbinit-文件-amp-插件安装"><a href="#加强版-LLDB-——-修改-lldbinit-文件-amp-插件安装" class="headerlink" title="加强版 LLDB —— 修改 .lldbinit 文件 &amp; 插件安装"></a>加强版 LLDB —— 修改 <code>.lldbinit</code> 文件 &amp; 插件安装</h2><p>&emsp;前面所列的命令在 <span class="exturl" data-url="aHR0cHM6Ly9sbGRiLmxsdm0ub3JnL2xsZGItZ2RiLmh0bWw=" title="https://lldb.llvm.org/lldb-gdb.html">这里<i class="fa fa-external-link"></i></span> 都能找到官方说明，更多命令用法有兴趣的建议自己去细细探索，接下来我们将站在巨人的肩膀上，用高手们专门为 LLDB 写的插件去深入挖掘它的潜力。  </p>
-<ol>
-<li><p><strong>推荐插件一</strong>： facebook 开源的 LLDB 插件 <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2ZhY2Vib29rL2NoaXNlbA==" title="https://github.com/facebook/chisel">chisel<i class="fa fa-external-link"></i></span></p>
-<p> <code>brew install chisel</code> 的安装过程这里就不赘述了，安装成功后，在~/目录下的 <code>.lldbinit</code> 文件中引入对应文件路径，增加一行：<code>command script import /usr/local/opt/chisel/libexec/fblldb.py</code> 后保存， 重启 Xcode即可使用。它提供的快捷 <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2ZhY2Vib29rL2NoaXNlbC93aWtp" title="https://github.com/facebook/chisel/wiki">命令清单及说明<i class="fa fa-external-link"></i></span> 这里也不赘述了。截个图感受下它的强大吧：<br><img src="https://user-gold-cdn.xitu.io/2019/3/23/169aa02fe152b579?w=967&amp;h=697&amp;f=png&amp;s=160330" alt></p>
-</li>
-<li><p><strong>推荐插件二</strong>：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0RlcmVrU2VsYW5kZXIvTExEQg==" title="https://github.com/DerekSelander/LLDB">DerekSelander/LLDB<i class="fa fa-external-link"></i></span></p>
-<p> 该插件与 chisel 都是用 Python 写的，其安装需要手动下载仓库，然后将仓库中 <code>dslldb.py</code> 文件的路径用与上述同样的方式添加到  <code>.lldbinit</code> 中，具体用法也很简单粗暴，就不在这粘贴了，请至 <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0RlcmVrU2VsYW5kZXIvTExEQi9ibG9iL21hc3Rlci9SRUFETUUubWQ=" title="https://github.com/DerekSelander/LLDB/blob/master/README.md">README<i class="fa fa-external-link"></i></span> 领略。</p>
-</li>
-</ol>
-<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>&emsp;看到这，你收获的只有暂时记忆，其实等于毫无所获…而且还浪费了宝贵的几分钟，这也是我极不希望看到的，而避免其成为事实的唯一方式就是，请你打开 Xcode，运行一个项目，参照着文中涉及到的说明文档，试着敲一敲每个命令，体会一下它们的用法与区别。最后，为你的 LLDB 配好插件，去感受它的蜕变，相信我，你的开发效率提升的可不止一点点。学习是一种能力，拒绝操作手册式灌输，分享者多半是在总结学习收获时为读者提供一些思路或方向，这也是我为你保留一丝探索余地的初衷，愿你有所收获。</p>
-<p>&emsp;水平有限，请大神多多指正。下篇再会~</p>
-
+            <p>
+              上一篇iOS APP签名详解我们了解了iOS签名的机制和原理，这一篇我们一起来动手写一个自动重签名的脚本，懒是程序员乃至人类进步的终极力量，造轮子写工具可以极大的避免重复性工作，为我们节省更多的时间放在思考上，话不多说撸起袖子开始干：  
+第一步：获取脱壳的ipa包
+从iTunes 12.6.3及以前的版本上直接下载 （macOS Mojave Doesn’t Support），这样获取到的是正版
+              ...
+            </p>
+          <!--noindex-->
           
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  
-  
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/03/16/拒绝做焦虑贩卖者的韭菜/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小可长江">
-      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
-      <meta itemprop="image" content="/images/page-logo.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小可的编程之路">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/03/16/拒绝做焦虑贩卖者的韭菜/" class="post-title-link" itemprop="url">拒绝做焦虑贩卖者的韭菜</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-03-16 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-16T20:49:56+08:00">2019-03-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-04-23 16:07:22" itemprop="dateModified" datetime="2019-04-23T16:07:22+08:00">2019-04-23</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/成长/" itemprop="url" rel="index"><span itemprop="name">成长</span></a></span>
-
-                
-                
-                  ，
-                
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/成长/反思/" itemprop="url" rel="index"><span itemprop="name">反思</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-              
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">评论数：</span>
-                <a href="/2019/03/16/拒绝做焦虑贩卖者的韭菜/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/16/拒绝做焦虑贩卖者的韭菜/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-            <span id="/2019/03/16/拒绝做焦虑贩卖者的韭菜/" class="leancloud_visitors" data-flag-title="拒绝做焦虑贩卖者的韭菜">
-              <span class="post-meta-divider">|</span>
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              
-                <span class="post-meta-item-text">阅读次数：</span>
-              
-                <span class="leancloud-visitors-count"></span>
-            </span>
-          
-
-          
-
-          
-            <div class="post-symbolscount">
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">本文字数：</span>
-                
-                <span title="本文字数">3.8k</span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">3 分钟</span>
-              
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/01/23/撸一个iOS重签名脚本/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
             </div>
           
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="多数人的现状"><a href="#多数人的现状" class="headerlink" title="多数人的现状"></a>多数人的现状</h3><p>&emsp; 无论你出入职场，还是置身亲友，不管你是大龄未婚，还是已为人父母，纵然你已小有成就，亦或名利双收，我依然深信总有那么一群不满现状的人，在各种圈子里、角色下、欲望中，被不同的焦虑环绕着，看看身边年龄相仿的同事、亲友的现状，一切都不言自明。写这篇文章的初衷，是希望我们都能正确的看待焦虑，同时传递给你两个信息：1.不做勤劳的懒惰者；2.你并不孤单，也从未丧失机会。</p>
-<p>&emsp; 30左右的年龄（中年危机），在一二线城市没房又没成家（无可增长资产，且未来仍有大笔支出），资本市场持续降温（虽然这是短期的转折，但历史进化永远都是在淘汰弱者），新技术、新概念更新速度越来越快（吾生也有涯，而知也无涯。以有涯随无涯，殆已！已而为知者，殆而已矣！）……这是目前互联网从业者（其实远不止）的大部分现状。这一现状无疑让越来越多的人感到焦虑，特别是对自己有更高期望而瓶颈很难突破的人。当然不排除有无论世界怎么变都无知无觉的人，他们不在我们今天讨论的范畴。</p>
-<p>&emsp; 基于上述普遍存在的现状，越来越多的人从中发现了商机：1、知识付费；2、毒鸡汤抢流量。首先声明一点，我是知识付费的拥护者，同时也是受益者。但每当某一领域的需求增长过快时，都难免有一群趁机谋取利益的水军混入其中，良莠不齐，使人们获取有价值信息的成本不断提高。从前几年一度火爆的培训班，到现在线上平台的付费专栏、直播授课，交学费时无不吹破牛皮、信誓旦旦，到最后学无所成的人比比皆是。这究竟是授课的机构和讲师水平的问题，还是学习者自身的学习能力不够或者半途而废造成的呢？我觉得都有问题。毒鸡汤类的公众号、自媒体，更是无处不在的收割着人们的注意力和时间。而被毒鸡汤淹没，只能承认更多是因为个人认知水平决定了识别能力。</p>
-<p>&emsp; 如果你认为贩卖焦虑只限于上述商业从事者，那说明你还未曾就此深入的思考过。在我看来，一切利用人们焦虑情绪去做更利于自己事情的人，都是焦虑贩卖者。更有甚者，先诱导人产生焦虑再加以利用。如果你仔细观察，这样的人其实你身边也大有人在。包括很多亲友甚至都在无意识的为你增加焦虑，然后促使你去做什么什么…这里就不区分主观意识的好坏了。总之，我们自己要有足够强的自我掌控力和辨别能力，才能尽可能避免自己和身边的人成为被别人利用情绪进而操纵行为的人。拒绝做炮灰，主导自己命运的方向。</p>
-<h3 id="我的挣扎历程"><a href="#我的挣扎历程" class="headerlink" title="我的挣扎历程"></a>我的挣扎历程</h3><p>&emsp; 我就此现状分享下我的一点心得吧，同时也很想听到你们对自我成长的见解和当前形势的看法。</p>
-<p>&emsp; 显然我的现状仍属上述之列（没办法，我开窍晚了），所以曾经我也焦虑过，也被收过智商税，但好在已于一年前想清楚了自己该做什么、想要什么，所以现在的状态总体还不错 —— 每一天都能真切的感到比昨天进步了，无论是专业技能上，还是其他领域的知识，都在不断的添砖加瓦，逐渐的自成体系。如果你也有这种感受，我相信你也早跟焦虑彻底说再见了。至于如何彻底走出焦虑的阴影，找到自己的方向和目标，我仔细回想了那段时间自己的心路历程，大致总结如下：</p>
-<h4 id="刨根问底"><a href="#刨根问底" class="headerlink" title="刨根问底"></a>刨根问底</h4><ol>
-<li><p>想明白焦虑是什么？</p>
-<p> 我的理解：<strong>对现状的不满 + 改变现状时的无力/乏力感 + 对未来的不确定 = 焦虑</strong></p>
-</li>
-<li><p>焦虑从何而来？</p>
-<p> 结合前一点，焦虑主要有以下来源：</p>
-<ol>
-<li>职业发展的迷茫与无助</li>
-<li>成长速度过慢甚至停止</li>
-<li>人与人之间横向的对比</li>
-<li>距离自我期望差距太大</li>
-<li>人生大事至今毫无头绪</li>
-<li>科技进步社会变迁加速</li>
-</ol>
-</li>
-<li><p>如何彻底根治焦虑？</p>
-<p> 同样结合上面的分析，对症下药：</p>
-<ol>
-<li>人的精力是有限的，无所不能的天才确实存在，但请相信我，我们都不是。有限的精力一定要花在最有用、长期收益最大的事情上，别想着什么都想学，静下心来分析，找准你所在的领域里，在可以预见的未来某一个不可或缺的方向，花几年时间把它做到极致。（不要抱怨工作太忙没时间想，没时间做，至少你永远都有选择的权利）</li>
-<li>学习一定是有方法可循的，最好的方式就是尽可能找到你能接触到的行业大牛（一定要是能说实话的人），实在没机会就关注他们的动态、博客、心得，他们之所以能走的比你快，一定是有很多可取之处的，思考方式、对新事物的态度、乐于分享和总结的精神等等，找到属于你的标杆（不需要很多，一两个足够），照着做就是了，对了，请忘记“速成”这个词。最好的方法一定来自不断的实践与总结，绝不是简单的模仿。</li>
-<li>你会经常发现，哇，这小子比我小好几岁，却样样比我优秀！这其实是个不值得有任何感叹的事实，《师说》曾说：“生乎吾后，其闻道也亦先乎吾，吾从而师之”、“闻道有先后，术业有专攻”。人生来先天条件各不相同，即使先天条件不如你的后来比你强了，也没什么可比性。因为你不仅要承认努力很重要，运气也很重要。而决定运气的是我们对这个世界的态度。接纳不够好的自己，做好自己该做的，优秀的人是用来学习借鉴的，而不是衬托自己落魄的。</li>
-<li>合理的目标是前提，否则这无异于给自己一个必败的残局和自我否定的恶性循环。人的幸福感很大程度上来源于自恋的感觉被满足，无论是恋爱还是交朋友，都是因为他们认可你，满足了你的自恋情绪，所以他们才能激发你的潜能。同样的，合理的目标是最好的自我鼓励方式，阶段性的达成目标，才能形成自我认可、持续进步、不断缩小与更高期望之间差距的正向循环。</li>
-<li>大龄单身青年随处可见，第一个原因，人所受教育的程度与为繁衍后代（完成任务）而结婚的接受度呈明显负相关，也就是说，不是你一个人不想将就，是都不想将就。第二个原因，社会的高速发展注定了年轻一代的高压状态，而且该状态在可预见的未来会一直持续，这种状态决定了接触到靠谱异性圈子的场景越来越少，这两点也是高等教育普及以来人口生育率一路下滑的真相。第三个原因，你不够主动，其实还是有很多合适的人在等你主动，不要做个玻璃心，不试试怎么知道呢？偷偷告诉你，我就是这么成功的。</li>
-<li>不管科技如何发达，社会如何变革，既然追不上变化那就别追了，倒不如换个角度想想什么是一成不变的。这之前，先区分一下两个词，趋势和潮流。乍一看以为是同义词，其实很多时候是截然相反的两个东西，但它们又互相作用，类似海洋深处的暗流涌动与我们看得到的狂风骇浪的关系。暗流就是趋势，它是由人类共同体决定的大方向，其力量之大往往是不可抗力，且需要较长的时间才能逐渐显现出来。而潮流则瞬息万变，无法捕捉，但它却又是暗流之上的具体体现。这跟我们想说的有什么关系呢？简单来说，如果你一直忙于追随潮流、赶热门、学热点，就像是在玩冲浪一样，即使短时间内你借着几个浪头获得了升迁加薪的机会，多半也是昙花一现，结局都只会被下一个风头无情的拍入海底。如果你深入观察分析行业内的顶尖人士，你会发现他们都不是全能型的，且他们都具有以不变应万变的本领，因为他们抓住了没变的东西，预测到了未来的趋势。那到底什么是不变的，又如何做出预测的呢？通过不断观察、学习和验证，我得出以下两点：<ul>
-<li>一，人的基本需求和本性。根据这一点（前提是你对人性和心理学有一定的研究），对未来的预测也比较简单粗暴：关注新的科学和技术，思考科技如何更好的满足人的基本需求和本性：它们有哪些将要落地或者已经落地但需求远大于供给的场景。</li>
-<li>二，社会的财富分配规律。无论社会财富积累有多丰裕，穷人所占的比例似乎并无变化，即使人均收入不断增加，那也只是富人拉升平均数的假象。这侧面反映出真正不向命运低头，愿意为改变现状付出代价的人并不多。无论是环境影响还是趋利避害的本能反应，动物都是愿意呆在自己舒适区的，所以，如果你能离开自己的舒适区，把人生当做一场马拉松，你一直都大有机会。但，请给自己成长的时间，相信积累的力量。</li>
-</ul>
-</li>
-</ol>
-</li>
-</ol>
-<h4 id="回到现实"><a href="#回到现实" class="headerlink" title="回到现实"></a>回到现实</h4><p>&emsp; 无论道理理解的有多透彻，但人终究还是要活在现实里的，睡觉之前满腔热血，一觉醒来还懒床的人太多了，不差你一个。如何将所学致于实践，这才是拉开人与人之间差距的决定性因素，一提到实干，就不禁想到鸡汤…关于毅力、执行力这一类的书籍和方法论我个人都觉得不值一提，甚至全都是伪命题。我觉得任何一件事能不能做成（别拿与自身不切实际的事钻牛角尖），唯一的决定性因素就是：你到底有多想要。对，任何一件事的失败都可以归结于这一点：你不够想要它。如果这件事对你而言没得选，无可替代，优先级满星，你还需要毅力？还需要想办法提高执行力？怕是不让你做你都要拼命抵抗的吧，所以请为每一个目标赋予其重大到不得不做的意义。而仅次于此的因素，就是做什么，怎么做，关于这一点，前面列出的原因和方案中已经足够详细了。不做懒惰的勤奋者，就是要重视方法和效率，拒绝埋头蛮干。选对方向，用正确的方式，做正确的事，剩下的交给时间。</p>
-<p>&emsp; 以上纯属我个人关于如何摆脱焦虑的一些心得和怎样踏实的做好现在的一些思考，不对任何结论的对错及其结果负责，但也希望能为你提供一些可参考之处，当然我也欣然接受任何不同的价值观和看法，欢迎交流。</p>
-<h3 id="总结下我想说的话"><a href="#总结下我想说的话" class="headerlink" title="总结下我想说的话"></a>总结下我想说的话</h3><ol>
-<li>付费学习是件好事，前提是你并非出于缓解焦虑而付费，而是很清楚你想做什么。</li>
-<li>如果你真的决定要变得优秀，请不要着眼于钱，成长若是成真，钱只是顺便的东西。</li>
-<li>不要急躁，静下来，好好提升自己的学习能力，认知能力，才能更好的筛选有价值的东西。</li>
-<li>别怕你对自己的高要求会让你变得不合群，他们只是害怕你成长的太快而已，你也从未孤单过。</li>
-<li>如果你对自己没要求，就开开心的过好每一天，切莫怨天尤人，抱怨是最要不得的情绪，那只会体现自己的无能。</li>
-</ol>
-
-          
+          <!--/noindex-->
         
       
     </div>
@@ -984,7 +1855,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1131,7 +2002,9 @@
                     
                   
                   
-                  <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0Vuam95Q29kaW5nMDA3" title="GitHub &rarr; https://github.com/EnjoyCoding007">GitHub</span>
+                    
+                  
+                  <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0Vuam95Q29kaW5nMDA3" title="GitHub &rarr; https://github.com/EnjoyCoding007"><i class="fa fa-fw fa-github"></i>GitHub</span>
                 </span>
               
                 <span class="links-of-author-item">
@@ -1140,7 +2013,20 @@
                     
                   
                   
-                  <span class="exturl" data-url="bWFpbHRvOjQ5NzI2NTE2NWNqQGdtYWlsLmNvbQ==" title="E-Mail &rarr; mailto:497265165cj@gmail.com">E-Mail</span>
+                    
+                  
+                  <span class="exturl" data-url="bWFpbHRvOjQ5NzI2NTE2NWNqQGdtYWlsLmNvbQ==" title="E-Mail &rarr; mailto:497265165cj@gmail.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vdXNlci81YTM4NzYzODUxODgyNTE1OTQ1YWIyNjg=" title="我的掘金 &rarr; https://juejin.im/user/5a38763851882515945ab268"><i class="fa fa-fw fa-globe"></i>我的掘金</span>
                 </span>
               
             </div>
@@ -1757,6 +2643,14 @@
 
   
   
+    
+      
+    
+      
+    
+      
+    
+      
     
       
     
