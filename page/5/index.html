@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/page-logo.jpg?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/page-logo.jpg?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/page-logo.jpg?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/page-logo.jpg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+<meta name="keywords" content="iOS OpenGL Metal">
+<meta property="og:type" content="website">
+<meta property="og:title" content="小可的编程之路">
+<meta property="og:url" content="https://enjoycoding007.github.io/page/5/index.html">
+<meta property="og:site_name" content="小可的编程之路">
+<meta property="og:description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="小可的编程之路">
+<meta name="twitter:description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://enjoycoding007.github.io/page/5/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>小可的编程之路 – 长期主义，着眼未来，指引当下。</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left 
+  page-home">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小可的编程之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <h1 class="site-subtitle" itemprop="description">长期主义，着眼未来，指引当下。</h1>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>作者</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">12</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">12</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">17</span></a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL0Vuam95Q29kaW5nMDA3" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></span>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/page-logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/" class="post-title-link" itemprop="url">非越狱下iOS代码注入&微信登录HOOK</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-10 20:49:56" itemprop="dateCreated datePublished" datetime="2019-02-10T20:49:56+08:00">2019-02-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-23 16:07:13" itemprop="dateModified" datetime="2019-04-23T16:07:13+08:00">2019-04-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/逆向/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/02/10/非越狱下iOS代码注入&微信登录HOOK/" class="leancloud_visitors" data-flag-title="非越狱下iOS代码注入&微信登录HOOK">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">2.1k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">2 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&emsp;在之前这篇<a href="https://enjoycoding007.github.io/2019/01/23/%E6%92%B8%E4%B8%80%E4%B8%AAiOS%E9%87%8D%E7%AD%BE%E5%90%8D%E8%84%9A%E6%9C%AC/">iOS应用脚本重签名</a>中，我们对脱壳的微信安装包进行重签名，并成功在真机上运行起来，完成了iOS逆向的准备工作。这一篇我们将通过演示如何HOOK微信登录事件并获取到用户密码，把iOS代码注入的几种方式串起来做个简单地概述。不管做逆向还是正向开发，这些都能为你提供一些在应用安全攻防方面的思路。<br>&emsp;当拿到别人的脱壳包，想要HOOK别人的方法做些小插件，首先需要程序执行你写的代码，你才有机会利用runtime的运行时机制去做自己的事情，关于方法混淆的注意事项请参考<span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vZW50cnkvNWExZmNlZGRmMjY1ZGE0MzMxMGQ5OTg1" title="https://juejin.im/entry/5a1fceddf265da43310d9985">这一篇<i class="fa fa-external-link"></i></span>。让程序执行我们写的代码就需要修改MachO文件，关于MachO我在<span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vcG9zdC81YzY3ZTdlZmU1MWQ0NTE2NGM3NTk5M2I=" title="https://juejin.im/post/5c67e7efe51d45164c75993b">这一篇<i class="fa fa-external-link"></i></span>里详细讲解了，这篇主要讲代码注入的事儿：  </p>
+<ol>
+<li><h3 id="Framework注入"><a href="#Framework注入" class="headerlink" title="Framework注入"></a>Framework注入</h3> 添加自己的Framework：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e075c1e8eafc8?w=2320&amp;h=1048&amp;f=png&amp;s=1057376" alt><br> 写好测试代码，在<span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vcG9zdC81YzQ2MDkwOGYyNjVkYTYxNjcyMDliODc=" title="https://juejin.im/post/5c460908f265da6167209b87">上一篇<i class="fa fa-external-link"></i></span>重签名脚本的基础上加一行修改MachO加载路径的代码：<code>yololib &quot;$TARGET_APP_PATH/$APP_BINARY&quot; &quot;Frameworks/SharonFramework.framework/SharonFramework&quot;</code>，Framework文件名为你自己刚刚添加的。直接Run！<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0762658096c8?w=2294&amp;h=842&amp;f=png&amp;s=274662" alt><br>大功告成。</li>
+<li><h3 id="Dylib注入"><a href="#Dylib注入" class="headerlink" title="Dylib注入"></a>Dylib注入</h3> 添加自己的Dylib：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e07d75b2604bf?w=2360&amp;h=1146&amp;f=png&amp;s=1189863" alt>&emsp;要注意的是这样添加的MacOS的Dylib需要将BuildSetting–&gt;Base SDK改为iOS，BuildSetting–&gt;CODE SIGN IDENTITY改为iPhone Developer即可在iPhone上运行。<br>另外，与Framework不同的是它需要手动添加关联库：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0849536db686?w=1964&amp;h=988&amp;f=png&amp;s=335435" alt><br>同样在重签名脚本中加一行修改MachO可执行文件路径的代码：<code>yololib &quot;$TARGET_APP_PATH/$APP_BINARY&quot; &quot;Frameworks/libSharonLibrary.dylib&quot;</code>，dylib文件名为你自己刚刚添加的。直接Run！<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e08c6363b234e?w=2606&amp;h=940&amp;f=png&amp;s=716314" alt></li>
+</ol>
+<p>&emsp;至此我们已经完成了代码注入的第一步，让别人的应用在运行时执行我们写的代码，这个过程中你可能会碰到签名不成功等各种各样的奇葩问题，不要慌，静下心分析，实在不行你可以留言^_^ ~，接下来我们要尝试HOOK微信的登录按钮事件。</p>
+<p>&emsp;同步几个共识：</p>
+<ul>
+<li>+load 方法的调用发生在类或分类被 runtime 加载（编译后的可执行文件被装载到内存中）时，只调用1次。</li>
+<li>子类的 +load 方法会在它的所有父类的 +load 方法之后执行，而分类的 +load 方法会在它的主类的 +load 方法之后执行。</li>
+<li>如果子类没有实现 +load 方法，那么当它被加载时 runtime 是不会去调用父类的 +load 方法的。同理，当一个类和它的分类都实现了 +load 方法时，两个方法都会被调用。</li>
+<li>不同的类之间的 +load 方法的调用顺序是不确定的。</li>
+<li>基于+load方法的上述特点，它是实现方法混淆的最佳入口。</li>
+</ul>
+<h3 id="通过viewDebug-头文件分析目标Method"><a href="#通过viewDebug-头文件分析目标Method" class="headerlink" title="通过viewDebug+头文件分析目标Method"></a>通过viewDebug+头文件分析目标Method</h3><p><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0996ece0134e?w=3252&amp;h=1652&amp;f=png&amp;s=2018571" alt><br>如上图所示，我们很快定位到登录按钮的target为WCAccountLoginControlLogic，action为onFirstViewLogin，我们在通过头文件分析一下，class-dump怎么用相信你Google一下就搞得定，这里就不赘述啦，拿到微信的所有头文件丢到sublime里全局搜索：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e09d0d2330657?w=2630&amp;h=832&amp;f=png&amp;s=186284" alt>果然，找到了目标文件，点击进入头文件查看Method列表：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e09ef308cca22?w=2686&amp;h=1300&amp;f=png&amp;s=482886" alt>验证了我们的分析是正确的。<br>用同样的方式我们定位账号密码输入页登录按钮的target为WCAccountMainLoginViewController，action为onNext：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0ac7c81e0b1a?w=3316&amp;h=1492&amp;f=png&amp;s=805760" alt><br>我们将通过HOOK登录按钮点击事件获取密码输入框里的内容。</p>
+<h3 id="MethodSwizzling的几种姿势"><a href="#MethodSwizzling的几种姿势" class="headerlink" title="MethodSwizzling的几种姿势"></a>MethodSwizzling的几种姿势</h3><ol>
+<li><h3 id="class-replaceMethod"><a href="#class-replaceMethod" class="headerlink" title="class_replaceMethod"></a>class_replaceMethod</h3><p><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0ba6c8276ea2?w=2626&amp;h=1054&amp;f=png&amp;s=1272408" alt>class_replaceMethod本身会尝试调用class_addMethod和method_setImplementation，所以直接调用class_replaceMethod就可以了。  </p>
+</li>
+<li><h3 id="class-getInstanceMethod-amp-method-setImplementation"><a href="#class-getInstanceMethod-amp-method-setImplementation" class="headerlink" title="class_getInstanceMethod &amp; method_setImplementation"></a>class_getInstanceMethod &amp; method_setImplementation</h3></li>
+</ol>
+<p><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0babfde1e81a?w=2718&amp;h=1190&amp;f=png&amp;s=1609041" alt></p>
+<ol start="3">
+<li><h3 id="method-exchangeImplementations"><a href="#method-exchangeImplementations" class="headerlink" title="method_exchangeImplementations"></a>method_exchangeImplementations</h3> 心细的同学一定会发现，在这个场景下，如果直接写个OC方法然后用method_exchangeImplementations交换新旧方法的实现有问题：<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0cf5a85338cc?w=2756&amp;h=1164&amp;f=png&amp;s=1544883" alt><br>因为my_next中的self是WCAccountMainLoginViewController，调用my_next会找不到方法。解决方案是手动为WCAccountMainLoginViewController添加my_next方法。<br><img src="https://user-gold-cdn.xitu.io/2019/2/12/168e0def57b466ad?w=2742&amp;h=1118&amp;f=png&amp;s=1315641" alt><br>&emsp;由此我们也发现，method_exchangeImplementations在分类或子类中对主/父类重载的方法进行交换时更方便些，不会出现上述问题。所以在逆向中一般不直接使用method_exchangeImplementations，更倾向于前两种方式。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  
+  
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/01/31/走出区块链认知的误区/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小可长江">
+      <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
+      <meta itemprop="image" content="/images/page-logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小可的编程之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/01/31/走出区块链认知的误区/" class="post-title-link" itemprop="url">走出区块链认知的误区</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-31 20:49:56" itemprop="dateCreated datePublished" datetime="2019-01-31T20:49:56+08:00">2019-01-31</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-23 16:08:45" itemprop="dateModified" datetime="2019-04-23T16:08:45+08:00">2019-04-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/区块链/" itemprop="url" rel="index"><span itemprop="name">区块链</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/区块链/基本概念/" itemprop="url" rel="index"><span itemprop="name">基本概念</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/01/31/走出区块链认知的误区/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/01/31/走出区块链认知的误区/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/01/31/走出区块链认知的误区/" class="leancloud_visitors" data-flag-title="走出区块链认知的误区">
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">4.6k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">4 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>&emsp;新事物往往不是凭空而来，发展和演化也很少一蹴而就。认识新事物，首先要弄清楚它的来龙去脉，知其出身，方能知其所以然。此文章为<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3llYXN5L2Jsb2NrY2hhaW5fZ3VpZGUvYmxvYi9tYXN0ZXIvU1VNTUFSWS5tZA==" title="https://github.com/yeasy/blockchain_guide/blob/master/SUMMARY.md">《区块链技术指南》<i class="fa fa-external-link"></i></span>的读后笔记&amp;摘要。</p>
+<h3 id="账本科技的演化"><a href="#账本科技的演化" class="headerlink" title="账本科技的演化"></a>账本科技的演化</h3><p>&emsp;区块链（Blockchain）的概念首次被人们关注，源于2009年初上线的比特币（Bitcoin）开源项目。从记账科技的演化角度来看，区块链实际上是记账问题发展到分布式场景下的天然结果。账本科技的演化过程大致可以分为四个阶段：简单账本、复式账本、数字化账本、分布式账本。简单账本很好理解，就是数据没有备份，容易出错且很难发现是否被篡改过。复式账本,简单理解就是，将每笔交易分别在来源方和目标方进行记录，且多方之间的账本总额应该时刻保持相等，这样就解决了单个账本的账本可信问题。数字化账本的记账方法相对于复式账本本身并没有太多创新，但由于数字媒介的出现，使得账本的规模、处理的速度、账本的复杂度都有了天翻地覆的提升，这是现在的电子商务、互联网金融的技术基础。复式账本虽然记录了交易的来龙去脉，不易出错，但本质上仍然是中心化模式，多方交易情况下如果某个或部分账本数据出现不一致，对账十分困难，分布式账本：由交易多方共同维护同一个共享的分布式账本，打通交易在不同阶段的来龙去脉，同时凭借分布式技术进一步提高记账的规模、效率、可靠性以及合规性。但在分布式场景下，如何避免参与方恶意篡改或者破坏记录？该由谁来决定每笔交易记录是否写入到账本中？这些问题一直都还在探索最佳实践。</p>
+<h3 id="分布式账本与区块链"><a href="#分布式账本与区块链" class="headerlink" title="分布式账本与区块链"></a>分布式账本与区块链</h3><p>&emsp;为了防止有参与者对交易记录进行篡改，需要引入一定的验证机制。很自然地，我们想到了数字摘要技术，一个多方参与且都有权限读写的账本，每次当有新的交易记录被追加到账本上时，参与各方可以使用Hash算法对完整的交易历史计算数字摘要，获取当前交易历史的“指纹”。此后任意时刻，每个参与方都可以对交易历史重新计算数字摘要，一旦发现指纹不匹配，则说明交易记录被篡改过。同时，通过追踪指纹改变位置，可以定位到被篡改的交易记录：<br><img src="https://user-gold-cdn.xitu.io/2019/1/30/1689ede936928ce4?w=3360&amp;h=1976&amp;f=png&amp;s=398386" alt><br>&emsp;上述方案，在实际应用中可以解决记录防篡改问题，但仍然存在较大缺陷。由于每次追加新的交易记录时需要从头对所有的历史数据计算数字摘要，当已存在大量交易历史时，数字摘要计算成本将变得很高，随着新交易的放生交易耗费将越来越大，系统扩展性很差。<br>为了解决可扩展性的问题，需要进一步改进为方案二：主要到每次摘要已经确保了从头开始到摘要位置的完整历史，当新的交易发生后，实际上需要进行额外验证的只是新的交易，即增量部分。因此，计算摘要的过程可以改进为对旧的摘要值再加上新的交易内容进行验证。这样既解决了防篡改问题，又解决了可扩展性问题：<br>&emsp;实际上，你可能已经注意到，方案二的账本结构正是一个区块链结构：<br><img src="https://user-gold-cdn.xitu.io/2019/1/30/1689edec41229a91?w=3360&amp;h=1976&amp;f=png&amp;s=400395" alt><br>&emsp;可见，从分布式记账的基本问题出发，可以自然推导出区块链结构，这也说明了在分布式场景下的记账问题中，区块链是一个简洁有效的天然答案。当然，区块链结构也并非解决分布式记账问题的唯一答案，实际上，除了简单的线性队列结构，也有人提出采用树或者图结构。</p>
+<h3 id="比特币的意义和价值"><a href="#比特币的意义和价值" class="headerlink" title="比特币的意义和价值"></a>比特币的意义和价值</h3><p>&emsp;直到今天，关于比特币的话题仍充满了不少争议。但大部分人应该都会认可，比特币是数字货币历史上，甚至整个金融历史上一次了不起的社会学实验。<br>&emsp;比特币首次真正从实践意义上实现了安全可靠的非中心化数字货币机制，这也是它受到无数金融科技从业者热捧的根本原因。作为一种概念货币，比特币主要是希望解决已有货币系统面临的几个核心问题：</p>
+<ol>
+<li>被掌控在单一机构手中，容易被攻击。</li>
+<li>自身的价值无法保证，容易出现波动。</li>
+<li>无法匿名化交易，不够隐私。<br>&emsp;要实现一套数字货币机制，最关键的还是要建立一套完善的交易记录系统，以及形成一套合理的货币发行机制。这个交易记录系统要能准确、公正地记录发生过的每一笔交易，并且无法被恶意篡改。对比已有的银行系统，可以看出，现有的银行机制作为金融交易的第三方中介机构，有代价地提供了交易记录服务。如果参与交易的多方都完全相信银行的记录（数据库），就不存在信任问题。可是如果是更大范围（甚至跨多家银行）进行流通的货币呢？哪家银行的系统能提供完全可靠不中断的服务呢？唯一可能的方案是一套分布式账本。这个账本可以被所有用户自由访问，而且任何个体都无法对所记录的数据进行恶意篡改和控制。为了实现这样一个前所未有的账本系统，比特币网络巧妙地设计了区块链结构，提供了可靠、无法被篡改的数字货币账本功能。<br>&emsp;比特币网络中，货币的发行是通过比特币协议来规定的。货币总量受到控制，发行速度随时间自动进行调整。既然总量一定，那么单个比特币的价值会随着越来越多的经济实体认可比特币而水涨船高。发行速度的自动调整则避免出现通胀或者滞涨的情况。<br>&emsp;另一方面，也要冷静地看到，作为社会学实验，比特币已经获得了某种成功，特别是基于区块链技术，已经出现了许多颇有价值的商业场景和创新技术。但这绝不意味着比特币自身必然能够进入到未来的商业体系中。比特币自身价值的波动十分剧烈；同时由于账目公开可查，通过分析仍有较大概率追踪到实际使用者；另外，比特币系统在不少管理环节上仍然依赖中心化的机制。</li>
+</ol>
+<h3 id="更有价值的区块链技术"><a href="#更有价值的区块链技术" class="headerlink" title="更有价值的区块链技术"></a>更有价值的区块链技术</h3><p>&emsp;如果说比特币是影响力巨大的社会学实验，那么从比特币核心设计中提炼出来的区块链技术，则让大家看到了塑造更高效、更安全的未来商业网络的可能。<br>&emsp;2014 年开始，比特币背后的区块链技术开始逐渐受到大家关注，并进一步引发了分布式记账本（Distributed Ledger）技术的革新浪潮。<br>&emsp;实际上，人们很早就意识到，记账相关的技术，对于资产（包括有形资产和无形资产）的管理（包括所有权和流通）十分关键；而多中心化的分布式记账本技术，对于当前开放、多维的商业模式意义重大。区块链的思想和结构，正是实现这种分布式记账本系统的一种极具可行潜力的技术。<br>&emsp;区块链技术现在已经从比特币项目脱颖而出，在包括金融、贸易、征信、物联网、共享经济等诸多领域崭露头角。现在，除非特别指出是“比特币区块链”，否则当人们提到“区块链技术”时，往往已与比特币没有什么必然联系了。<br>&emsp;商业行为的典型过程为：交易多方通过协商确定商业合约，通过执行合约完成交易。区块链擅长的正是如何在多方之间达成合约，并确保合约的顺利执行。根据类别和应用场景不同，区块链所体现的特点和价值也不同。从技术角度，一般认为，区块链具有如下特点：</p>
+<ol>
+<li>分布式容错性：分布式账本网络极其鲁棒，能够容忍部分节点的异常状态；</li>
+<li>不可篡改性：共识提交后的数据会一直存在，不可被销毁或修改；</li>
+<li>隐私保护性：密码学保证了数据隐私，即便数据泄露，也无法解析。</li>
+</ol>
+<p>随之带来的业务特性将可能包括：</p>
+<ol>
+<li>可信任性：区块链技术可以提供天然可信的分布式账本平台，不需要额外第三方中介机构参与；</li>
+<li>降低成本：跟传统技术相比，区块链技术可能通过自动化合约执行带来更快的交易，同时降低维护成本；</li>
+<li>增强安全：区块链技术将有利于安全、可靠的审计管理和账目清算，减少犯罪风险。</li>
+</ol>
+<p>&emsp;区块链并非凭空诞生的新技术，更是多种技术演化到一定程度后的产物，因此，其商业应用场景也跟促生其出现的环境息息相关。对于基于数字方式的交易行为，区块链技术能潜在地降低交易成本、加快交易速度，同时能提高安全性。我认为，能否最终提高生产力，将是一项技术能否被实践接受的关键。</p>
+<h3 id="区块链的定义与原理"><a href="#区块链的定义与原理" class="headerlink" title="区块链的定义与原理"></a>区块链的定义与原理</h3><p>讨论区块链的定义可以从狭义和广义两个层面来看待。<br>&emsp;狭义上，区块链是一种以区块为基本单位的链式数据结构，区块中利用数字摘要对之前的交易历史进行校验，适合分布式记账场景下防篡改和可扩展性的需求。<br>&emsp;广义上，区块链还指代基于区块链结构实现的分布式记账技术，包括分布式共识、隐私与安全保护、点对点通信技术、网络协议、智能合约等。<br>&emsp;区块链的基本原理理解起来并不复杂。首先来看三个基本概念：</p>
+<ul>
+<li><p>交易（Transaction）：一次对账本的操作，导致账本状态的一次改变，如添加一条转账记录；</p>
+</li>
+<li><p>区块（Block）：记录一段时间内发生的所有交易和状态结果等，是对当前账本状态的一次共识；</p>
+</li>
+<li><p>链（Chain）：由区块按照发生顺序串联而成，是整个账本状态变化的日志记录。</p>
+</li>
+</ul>
+<p>&emsp;如果把区块链系统作为一个状态机，则每次交易意味着一次状态改变；生成的区块，就是参与者对其中交易导致状态改变结果的共识。区块链的目标是实现一个分布的数据记录账本，这个账本只允许添加、不允许删除。账本底层的基本结构是一个线性的链表。链表由一个个“区块”串联组成（如下图所示），后继区块中记录前导区块的哈希（Hash）值。某个区块（以及块里的交易）是否合法，可通过计算哈希值的方式进行快速检验。网络中节点可以提议添加一个新的区块，但必须经过共识机制来对区块达成确认。</p>
+<h3 id="认识上的误区"><a href="#认识上的误区" class="headerlink" title="认识上的误区"></a>认识上的误区</h3><p>目前，区块链自身仍是一种相对年轻的技术，不少人对它的认识还存在一些不足。下面总结了在探讨区块链技术时候一些常见的误区：</p>
+<ul>
+<li><p>区块链核心在于比特币？虽说区块链的基本思想出现在比特币设计中，但发展到今日，加密货币和区块链已经俨然成为了两个不太相关的阵营。前者侧重从金融角度发掘比特币等代币的实验性意义；后者则从技术层面探讨和研究分布式账本科技可能带来的商业价值，试图拓展到更多的场景。</p>
+</li>
+<li><p>区块链是一种数据库技术 虽然区块链也可以用来存储数据，但它要解决的核心问题是多方的互信协作问题。单纯从存储数据角度，区块链效率可能不高，一般也不推荐把大量原始数据直接放到区块链系统上。当然，现有区块链系统中大量使用了数据库技术。也有企业尝试将区块链技术引入到分布式数据库领域，解决非中心化的管理，如 BigchainDB。</p>
+</li>
+<li><p>Token 就是数字货币？ 早在区块链概念出现之前，Token（令牌）就大量应用在计算机系统中，作为带有某种权限的证明，它可以协助系统应用进行快速协作。因此，在区块链系统中使用 Token 可能在某些应用场景（如游戏积分）下提供管理便利。而数字货币则强调经济价值，跟其在系统中的原生功能无必然联系。</p>
+</li>
+<li><p>区块链是万能的，是颠覆性的？ 作为融合多项已有技术而出现的事物，区块链跟现有技术体系是一脉相承的。它在解决多方合作和可信处理上向前多走了一步，但并不意味着它解决了所有问题，更不会快速颠覆大量的商业模式。很长一段时间里，区块链最适用的场景仍需不断摸索，区块链也会跟已有系统共存使用。</p>
+</li>
+<li><p>区块链必然是非中心化的？非中心化的一定优于中心化设计？讨论技术的优劣必须要有场景前提，区块链也是如此。并不存在某种区块链技术能在任意场景下都优于其它方案，这也是为何目前公开链和联盟链在技术选型上存在较大差异。中心化设计具有设计简单，管理完善，性能可控的特点，但往往容错性能比较差；非中心化（多中心化）的设计可以提高容错性能，利用多方共识来降低篡改风险，但意味着设计较复杂，要付出性能代价。实际上，根据实际场景的需求，现有大部分区块链技术都介于绝对的中心化和绝对的非中心化之间，以取得不同指标上的平衡。例如公开链为了提高性能通过选择部分信任的节点来作为代表。</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/page-logo.jpg" alt="小可长江">
+            
+              <p class="site-author-name" itemprop="name">小可长江</p>
+              <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                  <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0Vuam95Q29kaW5nMDA3" title="GitHub &rarr; https://github.com/EnjoyCoding007">GitHub</span>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                  <span class="exturl" data-url="bWFpbHRvOjQ5NzI2NTE2NWNqQGdtYWlsLmNvbQ==" title="E-Mail &rarr; mailto:497265165cj@gmail.com">E-Mail</span>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小可长江</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">64k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">58 分钟</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-reading-progress@1/reading_progress.min.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+  <script src="/js/exturl.js?v=7.1.0"></script>
+
+
+  
+  
+  
+    
+  
+
+  
+    
+      
+    
+  
+
+  
+  
+  
+    <script src="https://cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+    <script>
+      
+        window.addEventListener('load', () => {
+      
+        quicklink({
+          timeout: 3000,
+          priority: true,
+          ignores: [uri => uri.includes('#'),uri => uri == 'https://enjoycoding007.github.io/page/5/',]
+        });
+      
+        });
+      
+    </script>
+  
+
+
+  
+  
+
+  
+
+<script src="https://cdn.jsdelivr.net/npm/leancloud-storage@3/dist/av-min.js"></script>
+
+
+
+  
+
+<script src="https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: true,
+    appId: '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+    appKey: 'ocXsQhA59N7eqjHBK30hdedU',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
+
+
+
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/algolia-search.js?v=7.1.0"></script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    
+      
+    
+      
+    
+  
+
+  
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.js"></script>
+  <script>
+    
+      pbOptions = {};
+      
+        pbOptions.iconStyle = "box";
+      
+        pbOptions.boxForm = "horizontal";
+      
+        pbOptions.position = "bottomCenter";
+      
+        pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+        flOptions.iconStyle = "box";
+      
+        flOptions.boxForm = "horizontal";
+      
+        flOptions.position = "middleRight";
+      
+        flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
+
+  
+
+  
+
+  
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script>
+  <script>
+  
+    bookmark.loadBookmark();
+  
+  </script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

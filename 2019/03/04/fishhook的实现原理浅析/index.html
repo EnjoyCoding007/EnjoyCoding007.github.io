@@ -14,13 +14,19 @@
   
 
 
-<html class="theme-next muse use-motion" lang>
+<html class="theme-next pisces use-motion" lang="zh-CN">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.css">
 
 
 
@@ -49,16 +55,16 @@
 <link rel="stylesheet" href="/css/main.css?v=7.1.0">
 
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/page-logo.jpg?v=7.1.0">
 
 
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/page-logo.jpg?v=7.1.0">
 
 
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/page-logo.jpg?v=7.1.0">
 
 
-  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+  <link rel="mask-icon" href="/images/page-logo.jpg?v=7.1.0" color="#222">
 
 
 
@@ -70,7 +76,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Pisces',
     version: '7.1.0',
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
     back2top: true,
@@ -97,13 +103,13 @@
 
 
   <meta name="description" content="打开姿势很重要&amp;emsp;早些时候，iOS中一提到“黑魔法”、HOOK，很多人第一时间想到的就是 AOP RunTime MethodSwizzling 这些不明觉厉的东西，它们的基本用法其实都不难，真正难的是如何在合适的地方用好它们。   &amp;emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很">
-<meta name="keywords" content="iOS OpenGL Metal">
+<meta name="keywords" content="逆向,fishhook">
 <meta property="og:type" content="article">
 <meta property="og:title" content="fishhook的实现原理浅析">
-<meta property="og:url" content="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/04/fishhook的实现原理浅析/index.html">
+<meta property="og:url" content="https://enjoycoding007.github.io/2019/03/04/fishhook的实现原理浅析/index.html">
 <meta property="og:site_name" content="小可的编程之路">
 <meta property="og:description" content="打开姿势很重要&amp;emsp;早些时候，iOS中一提到“黑魔法”、HOOK，很多人第一时间想到的就是 AOP RunTime MethodSwizzling 这些不明觉厉的东西，它们的基本用法其实都不难，真正难的是如何在合适的地方用好它们。   &amp;emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很">
-<meta property="og:locale" content="default">
+<meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947b64d99d9f8c?w=2190&h=94&f=png&s=49031">
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/3/16942fad623530bf?w=1940&h=76&f=png&s=29877">
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16947bdfdc4adf78?w=1598&h=358&f=png&s=105901">
@@ -121,7 +127,7 @@
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16948517a9d15528?w=2184&h=1232&f=png&s=778503">
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/169484c4a38ad17e?w=2156&h=1316&f=png&s=751016">
 <meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/3/4/16948458a00d9911?w=2148&h=1324&f=png&s=1032207">
-<meta property="og:updated_time" content="2019-04-22T14:22:12.185Z">
+<meta property="og:updated_time" content="2019-04-23T08:10:40.217Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="fishhook的实现原理浅析">
 <meta name="twitter:description" content="打开姿势很重要&amp;emsp;早些时候，iOS中一提到“黑魔法”、HOOK，很多人第一时间想到的就是 AOP RunTime MethodSwizzling 这些不明觉厉的东西，它们的基本用法其实都不难，真正难的是如何在合适的地方用好它们。   &amp;emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很">
@@ -133,7 +139,7 @@
 
   
   
-  <link rel="canonical" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/04/fishhook的实现原理浅析/">
+  <link rel="canonical" href="https://enjoycoding007.github.io/2019/03/04/fishhook的实现原理浅析/">
 
 
 
@@ -184,7 +190,7 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
   
@@ -208,14 +214,14 @@
     </div>
     
       
-        <p class="site-subtitle">长期主义，着眼未来，指引当下。</p>
+        <h1 class="site-subtitle" itemprop="description">长期主义，着眼未来，指引当下。</h1>
       
     
     
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="Toggle navigation bar">
+    <button aria-label="切换导航栏">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -242,8 +248,67 @@
     
 
     
+      
+    
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>作者</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签<span class="badge">12</span></a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类<span class="badge">12</span></a>
 
   </li>
         
@@ -259,21 +324,55 @@
     
 
     
+      
+    
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档<span class="badge">17</span></a>
 
   </li>
 
       
       
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
     </ul>
   
 
   
-    
 
   
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
 
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
   
 </nav>
 
@@ -287,11 +386,21 @@
     </header>
 
     
+  
+  
+
+  
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL0Vuam95Q29kaW5nMDA3" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></span>
+
 
 
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
+          
+            
+
           
           <div id="content" class="content">
             
@@ -306,6 +415,8 @@
   
 
   
+    <div class="reading-progress-bar"></div>
+  
 
   
   
@@ -314,12 +425,12 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://juejin.im/user/5a38763851882515945ab268/posts/2019/03/04/fishhook的实现原理浅析/">
+    <link itemprop="mainEntityOfPage" href="https://enjoycoding007.github.io/2019/03/04/fishhook的实现原理浅析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小可长江">
       <meta itemprop="description" content="做一个对社会有价值的人，社会自然不会亏待你。">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/page-logo.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -331,11 +442,11 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">fishhook的实现原理浅析
+          <h2 class="post-title" itemprop="name headline">fishhook的实现原理浅析
 
               
             
-          </h1>
+          </h2>
         
 
         <div class="post-meta">
@@ -350,14 +461,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
 
               
                 
               
 
-              <time title="Created: 2019-03-04 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-04T20:49:56+08:00">2019-03-04</time>
+              <time title="创建时间：2019-03-04 20:49:56" itemprop="dateCreated datePublished" datetime="2019-03-04T20:49:56+08:00">2019-03-04</time>
             
 
             
@@ -372,17 +483,55 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 
-                  <span class="post-meta-item-text">Edited on</span>
+                  <span class="post-meta-item-text">更新于</span>
                 
-                <time title="Modified: 2019-04-22 22:22:12" itemprop="dateModified" datetime="2019-04-22T22:22:12+08:00">2019-04-22</time>
+                <time title="修改时间：2019-04-23 16:10:40" itemprop="dateModified" datetime="2019-04-23T16:10:40+08:00">2019-04-23</time>
               
             
           </span>
 
           
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/iOS/逆向/" itemprop="url" rel="index"><span itemprop="name">逆向</span></a></span>
+
+                
+                
+              
+            </span>
+          
 
           
             
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/03/04/fishhook的实现原理浅析/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/03/04/fishhook的实现原理浅析/" itemprop="commentCount"></span>
+                </a>
+              </span>
             
           
 
@@ -394,21 +543,42 @@
                 <i class="fa fa-eye"></i>
               </span>
               
-                <span class="post-meta-item-text">Views: </span>
+                <span class="post-meta-item-text">阅读次数：</span>
               
                 <span class="leancloud-visitors-count"></span>
             </span>
           
 
           
-            <span class="post-meta-divider">|</span>
-            <span class="post-meta-item-icon">
-            <i class="fa fa-eye"></i>
-             Views:  
-            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
-            </span>
-          
 
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">3.6k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">3 分钟</span>
+              
+            </div>
           
 
           
@@ -427,13 +597,13 @@
 
       
         <h2 id="打开姿势很重要"><a href="#打开姿势很重要" class="headerlink" title="打开姿势很重要"></a>打开姿势很重要</h2><p>&emsp;早些时候，iOS中一提到“黑魔法”、HOOK，很多人第一时间想到的就是 AOP RunTime MethodSwizzling 这些不明觉厉的东西，它们的基本用法其实都不难，真正难的是如何在合适的地方用好它们。  </p>
-<p>&emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很多时候只会适得其反，详细误区请参考<a href="https://juejin.im/entry/5a1fceddf265da43310d9985">iOS界的毒瘤-MethodSwizzling</a>。</p>
-<p>&emsp;关于 MethodSwizzling 的用法在之前的文章中也有过讲解，请参考<a href="https://juejin.im/post/5c616552f265da2dd53fa4e7#heading-3">MethodSwizzling的几种姿势</a>。 该方式更多的用于性能监测、 crash 的兼容和上报、反破解防护等一些工具的开发中，而在逆向中，在面对有相应安全防护措施的应用时，其用武之地比较有限。  </p>
-<p>&emsp;无独有偶，“黑魔法”可不只有 RunTime ，今天我们来聊聊在逆向中常用的另一种HOOK方式：<a href="https://github.com/facebook/fishhook" target="_blank" rel="noopener">fishhook</a>。  </p>
-<h2 id="fishhook-背后的故事"><a href="#fishhook-背后的故事" class="headerlink" title="fishhook 背后的故事"></a>fishhook 背后的故事</h2><h3 id="（一）实现原理"><a href="#（一）实现原理" class="headerlink" title="（一）实现原理"></a>（一）实现原理</h3><p>&emsp;<a href="https://github.com/facebook/fishhook" target="_blank" rel="noopener">fishhook</a> 是 FaceBook 开源的可以动态修改 MachO 符号表的工具。fishhook 的强大之处在于它可以 HOOK 系统的静态 C 函数。  </p>
+<p>&emsp;任何事物都有两面性，越强大其可能带来的隐患也越具有毁灭性。苹果提供的运行时机制固然大有用处，但如果在项目中滥用（更不是用来当做面试提升逼格的），很多时候只会适得其反，详细误区请参考<span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vZW50cnkvNWExZmNlZGRmMjY1ZGE0MzMxMGQ5OTg1" title="https://juejin.im/entry/5a1fceddf265da43310d9985">iOS界的毒瘤-MethodSwizzling<i class="fa fa-external-link"></i></span>。</p>
+<p>&emsp;关于 MethodSwizzling 的用法在之前的文章中也有过讲解，请参考<span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vcG9zdC81YzYxNjU1MmYyNjVkYTJkZDUzZmE0ZTcjaGVhZGluZy0z" title="https://juejin.im/post/5c616552f265da2dd53fa4e7#heading-3">MethodSwizzling的几种姿势<i class="fa fa-external-link"></i></span>。 该方式更多的用于性能监测、 crash 的兼容和上报、反破解防护等一些工具的开发中，而在逆向中，在面对有相应安全防护措施的应用时，其用武之地比较有限。  </p>
+<p>&emsp;无独有偶，“黑魔法”可不只有 RunTime ，今天我们来聊聊在逆向中常用的另一种HOOK方式：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2ZhY2Vib29rL2Zpc2hob29r" title="https://github.com/facebook/fishhook">fishhook<i class="fa fa-external-link"></i></span>。  </p>
+<h2 id="fishhook-背后的故事"><a href="#fishhook-背后的故事" class="headerlink" title="fishhook 背后的故事"></a>fishhook 背后的故事</h2><h3 id="（一）实现原理"><a href="#（一）实现原理" class="headerlink" title="（一）实现原理"></a>（一）实现原理</h3><p>&emsp;<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2ZhY2Vib29rL2Zpc2hob29r" title="https://github.com/facebook/fishhook">fishhook<i class="fa fa-external-link"></i></span> 是 FaceBook 开源的可以动态修改 MachO 符号表的工具。fishhook 的强大之处在于它可以 HOOK 系统的静态 C 函数。  </p>
 <p>&emsp;大家都知道 OC 的方法之所以可以 HOOK 是因为它的运行时特性，OC 的方法调用在底层都是 msg_send（id,SEL）的形式，这为我们提供了交换方法实现（IMP）的机会，但 C 函数在编译链接时就确定了函数指针的地址偏移量（Offset），这个偏移量在编译好的可执行文件中是固定的，而可执行文件每次被重新装载到内存中时被系统分配的起始地址（在 lldb 中用命令<code>image List</code>获取）是不断变化的。运行中的静态函数指针地址其实就等于上述 Offset + Mach0 文件在内存中的首地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947b64d99d9f8c?w=2190&amp;h=94&amp;f=png&amp;s=49031" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/3/16942fad623530bf?w=1940&amp;h=76&amp;f=png&amp;s=29877" alt></p>
-<p>&emsp;既然 C 函数的指针地址是相对固定且不可修改的，那么 fishhook 又是怎么实现 对 C 函数的 HOOK 呢？<strong>其实内部/自定义的 C 函数 fishhook 也 HOOK 不了，它只能HOOK Mach-O 外部（共享缓存库中）的函数</strong>。fishhook 利用了 MachO 的动态绑定机制（不清楚的同学看这里：<a href="https://juejin.im/post/5c67e7efe51d45164c75993b">MachO 文件结构详解</a>、<a href="https://juejin.im/post/5c727262e51d457139116208">dyld背后的故事&amp;源码分析
-</a>）：苹果的共享缓存库不会被编译进我们的 MachO 文件，而是在动态链接时才去重新绑定。苹果采用了<a href="https://en.wikipedia.org/wiki/Position-independent_code" target="_blank" rel="noopener">PIC</a>（Position-independent code）技术成功让 C 的底层也能有动态的表现：</p>
+<p>&emsp;既然 C 函数的指针地址是相对固定且不可修改的，那么 fishhook 又是怎么实现 对 C 函数的 HOOK 呢？<strong>其实内部/自定义的 C 函数 fishhook 也 HOOK 不了，它只能HOOK Mach-O 外部（共享缓存库中）的函数</strong>。fishhook 利用了 MachO 的动态绑定机制（不清楚的同学看这里：<span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vcG9zdC81YzY3ZTdlZmU1MWQ0NTE2NGM3NTk5M2I=" title="https://juejin.im/post/5c67e7efe51d45164c75993b">MachO 文件结构详解<i class="fa fa-external-link"></i></span>、<span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vcG9zdC81YzcyNzI2MmU1MWQ0NTcxMzkxMTYyMDg=" title="https://juejin.im/post/5c727262e51d457139116208">dyld背后的故事&amp;源码分析
+<i class="fa fa-external-link"></i></span>）：苹果的共享缓存库不会被编译进我们的 MachO 文件，而是在动态链接时才去重新绑定。苹果采用了<span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvUG9zaXRpb24taW5kZXBlbmRlbnRfY29kZQ==" title="https://en.wikipedia.org/wiki/Position-independent_code">PIC<i class="fa fa-external-link"></i></span>（Position-independent code）技术成功让 C 的底层也能有动态的表现：</p>
 <ul>
 <li>编译时在 Mach-O 文件 _DATA 段的符号表中为每一个被引用的系统 C 函数建立一个指针（8字节的数据，放的全是0），这个指针用于动态绑定时重定位到共享库中的函数实现。</li>
 <li>在运行时当系统 C 函数被第一次调用时会动态绑定一次，然后将 Mach-O 中的 _DATA 段符号表中对应的指针，指向外部函数（其在共享库中的实际内存地址）。  </li>
@@ -459,13 +629,13 @@
 <p>我们运行起来之后点击屏幕进入上图所示断点，查看符号表中原本指向系统 NSLog 的指针指向：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16947f8a82a1d9a9?w=2304&amp;h=494&amp;f=png&amp;s=226668" alt><br>此时该指针的指向被修改为我们自定义的函数 myNslog 了，而将系统重定位的外部函数地址保存到了另一个自定义函数指针 sys_nslog 中：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169482b537e87b2d?w=2806&amp;h=962&amp;f=png&amp;s=555777" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169482c7f96c4e78?w=2792&amp;h=496&amp;f=png&amp;s=368451" alt><br>以上，我们通过断点分析汇编信息，验证了 fishhook 实现 HOOK 系统外部函数的思路。接下来我们结合 fishhook 的官方说明看它是如何根据字符串（方法名）找到对应指针在符号表中的偏移值的。</p>
 <h3 id="（三）fishhook-是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？"><a href="#（三）fishhook-是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？" class="headerlink" title="（三）fishhook 是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？"></a>（三）fishhook 是如何根据字符串对应在符号表中的指针，找到其在共享库的函数实现的？</h3><p>fishhook 官方给了这张图：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/1694835612995c46?w=1528&amp;h=1808&amp;f=png&amp;s=375686" alt><br>这张图主要在描述如何由一个字符串（比如 “NSLog”），跟着它在 MachO 文件的懒加载表中对应的指针，一步步的找到该指针指向的函数实现地址，大致步骤如下：</p>
 <ol>
-<li>在 Lazy Symbol Pointers 中该字符串的顺序就是其在 Dynamic Symbols Table -&gt; Indirect Symbols 表中的位置（这里是第一个）<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169485350abfa446?w=2132&amp;h=832&amp;f=png&amp;s=623817" alt><br>在实际计算地址中用到了 Load Commands 中对应头信息的 Reserved1 的 value （section基地址+  偏移量 value = 其在 Indirect Symbols 中对应的 offset）:下篇<a href="https://juejin.im/post/5c810294f265da2db91297f1">源码分析</a>有详细说明。<br><img src="https://user-gold-cdn.xitu.io/2019/3/13/169773b4e83c6422?w=1072&amp;h=289&amp;f=png&amp;s=93955" alt></li>
+<li>在 Lazy Symbol Pointers 中该字符串的顺序就是其在 Dynamic Symbols Table -&gt; Indirect Symbols 表中的位置（这里是第一个）<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169485350abfa446?w=2132&amp;h=832&amp;f=png&amp;s=623817" alt><br>在实际计算地址中用到了 Load Commands 中对应头信息的 Reserved1 的 value （section基地址+  偏移量 value = 其在 Indirect Symbols 中对应的 offset）:下篇<span class="exturl" data-url="aHR0cHM6Ly9qdWVqaW4uaW0vcG9zdC81YzgxMDI5NGYyNjVkYTJkYjkxMjk3ZjE=" title="https://juejin.im/post/5c810294f265da2db91297f1">源码分析<i class="fa fa-external-link"></i></span>有详细说明。<br><img src="https://user-gold-cdn.xitu.io/2019/3/13/169773b4e83c6422?w=1072&amp;h=289&amp;f=png&amp;s=93955" alt></li>
 <li>Dynamic Symbols Table -&gt; Indirect Symbols 表中的第一个对应的 Data 值（0x7A=122）就是其在Symbols Table -&gt; Symbols 中的索引。<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16948517a9d15528?w=2184&amp;h=1232&amp;f=png&amp;s=778503" alt></li>
 <li>在 Symbols Table -&gt; Symbols 中索引为 122 的位置对应的 Data = 0x9B：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/169484c4a38ad17e?w=2156&amp;h=1316&amp;f=png&amp;s=751016" alt></li>
 <li>上表中的 Data（0x9B） + String Table的起始地址（0x4F04）就是目标函数实现的地址：<br><img src="https://user-gold-cdn.xitu.io/2019/3/4/16948458a00d9911?w=2148&amp;h=1324&amp;f=png&amp;s=1032207" alt></li>
 </ol>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>&emsp;今天我们结合 iOS 的共享缓存库中采用的 PIC 技术，介绍了 fishhook 对系统外部函数实现 HOOK 基本原理和具体过程，并通过反汇编命令一一验证了 iOS 的动态绑定过程和 fishhook 的重新绑定机制，最后把 fishhook 在符号表中根据符号指针寻找函数实现的步骤做了演示。 愿你有所收获！ 水平有限，请多指教~</p>
-<p>&emsp;鉴于篇幅过长会影响大家的阅读体验，fishhook 的源码分析与应用场景以及安全防护的分享，<a href="https://enjoycoding007.github.io/2019/03/08/fishhook%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF&amp;%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_blank" rel="noopener">我们这里继续</a></p>
+<p>&emsp;鉴于篇幅过长会影响大家的阅读体验，fishhook 的源码分析与应用场景以及安全防护的分享，<a href="https://enjoycoding007.github.io/2019/03/08/fishhook%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF&amp;%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">我们这里继续</a></p>
 
       
     </div>
@@ -477,18 +647,86 @@
     
 
     
+      <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center;">
+  <img id="wechat_subscriber_qcode" src="/images/wechatpublic.jpg" alt="小可长江 wechat" style="width: 200px; max-width: 100%;">
+  <div>subscribe to my blog by scanning my public wechat account</div>
+</div>
+
+    
 
     
       
     
+    
+      <div>
+        <div id="reward-container">
+  <div></div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.jpg" alt="小可长江 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+      
+      
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpg" alt="小可长江 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+  </div>
+</div>
+
+      </div>
     
 
     
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/逆向/" rel="tag"># 逆向</a>
+          
+            <a href="/tags/fishhook/" rel="tag"># fishhook</a>
+          
+        </div>
+      
 
       
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+            
+              <div id="needsharebutton-postbottom">
+                <span class="btn">
+                  <i class="fa fa-share-alt" aria-hidden="true"></i>
+                </span>
+              </div>
+            
+            
+          </div>
+        
+        </div>
       
       
 
@@ -531,6 +769,10 @@
           
 
   
+    <div class="comments" id="comments">
+    </div>
+
+  
 
 
 
@@ -554,10 +796,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
+            文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
+            本站概览
           </li>
         </ul>
       
@@ -565,6 +807,8 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/page-logo.jpg" alt="小可长江">
             
               <p class="site-author-name" itemprop="name">小可长江</p>
               <div class="site-description motion-element" itemprop="description">做一个对社会有价值的人，社会自然不会亏待你。</div>
@@ -578,13 +822,91 @@
                   <a href="/archives/">
                 
                     <span class="site-state-item-count">17</span>
-                    <span class="site-state-item-name">posts</span>
+                    <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
               
 
               
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
 
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
               
             </nav>
           
@@ -593,6 +915,28 @@
 
           
 
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                  <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0Vuam95Q29kaW5nMDA3" title="GitHub &rarr; https://github.com/EnjoyCoding007">GitHub</span>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                  <span class="exturl" data-url="bWFpbHRvOjQ5NzI2NTE2NWNqQGdtYWlsLmNvbQ==" title="E-Mail &rarr; mailto:497265165cj@gmail.com">E-Mail</span>
+                </span>
+              
+            </div>
           
 
           
@@ -647,20 +991,32 @@
   <span class="author" itemprop="copyrightHolder">小可长江</span>
 
   
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">64k</span>
+  
 
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">58 分钟</span>
   
 </div>
 
 
-  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.0</div>
 
 
 
@@ -673,7 +1029,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-user"></i>
     </span>
-    <span class="site-uv" title="Total Visitors">
+    <span class="site-uv" title="总访客量">
       <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
     </span>
   
@@ -686,7 +1042,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-eye"></i>
     </span>
-    <span class="site-pv" title="Total Views">
+    <span class="site-pv" title="总访问量">
       <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
     </span>
   
@@ -713,6 +1069,12 @@
       </div>
     
 
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
     
 
     
@@ -751,6 +1113,8 @@
 
 
 
+  
+
 
 
   
@@ -761,6 +1125,9 @@
 
   
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-reading-progress@1/reading_progress.min.js"></script>
 
 
   
@@ -776,7 +1143,9 @@
   
 
 
-  <script src="/js/schemes/muse.js?v=7.1.0"></script>
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
 
 
 
@@ -795,99 +1164,487 @@
   
 
   
+  <script src="/js/exturl.js?v=7.1.0"></script>
 
+
+  
+  
+  
+    
   
 
   
 
-
+  
+  
   
 
 
   
+  
+
+  
+
+<script src="https://cdn.jsdelivr.net/npm/leancloud-storage@3/dist/av-min.js"></script>
+
+
+
+  
+
+<script src="https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: true,
+    notify: true,
+    appId: '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
+    appKey: 'ocXsQhA59N7eqjHBK30hdedU',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: true,
+    lang: 'zh-cn' || 'zh-cn'
+  });
+</script>
 
 
 
 
   
+
+
   
   <script>
-    
-    function addCount(Counter) {
-      var $visitors = $('.leancloud_visitors');
-      var url = $visitors.attr('id').trim();
-      var title = $visitors.attr('data-flag-title').trim();
-
-      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
-        .done(function({ results }) {
-          if (results.length > 0) {
-            var counter = results[0];
-            
-              var $element = $(document.getElementById(url));
-              $element.find('.leancloud-visitors-count').text(counter.time + 1);
-            
-            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
-            
-              .fail(function ({ responseJSON }) {
-                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
-              })
-          } else {
-            
-              var $element = $(document.getElementById(url));
-              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
-              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
-            
-          }
-        })
-        .fail(function ({ responseJSON }) {
-          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
-        });
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
     }
-    
+    var path = "/" + search_path;
+    // monitor main search box;
 
-    $(function() {
-      $.get('https://app-router.leancloud.cn/2/route?appId=' + '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz')
-        .done(function({ api_server }) {
-          var Counter = function(method, url, data) {
-            return $.ajax({
-              method: method,
-              url: 'https://' + api_server + '/1.1' + url,
-              headers: {
-                'X-LC-Id': '7BCrBnFdyGz9W7jIklP7YQDK-gzGzoHsz',
-                'X-LC-Key': 'ocXsQhA59N7eqjHBK30hdedU',
-                'Content-Type': 'application/json',
-              },
-              data: data
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
             });
-          };
-          
-            addCount(Counter);
-          
-        });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
     });
   </script>
 
 
 
+
   
+  
+  
+    
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
+
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.js"></script>
+  
+
+  <script src="/js/algolia-search.js?v=7.1.0"></script>
+
+
 
   
 
   
 
   
+  
+
+  
+  
+
+  
+
 
   
 
   
 
   
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.js"></script>
+  <script>
+    
+      pbOptions = {};
+      
+        pbOptions.iconStyle = "box";
+      
+        pbOptions.boxForm = "horizontal";
+      
+        pbOptions.position = "bottomCenter";
+      
+        pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+        flOptions.iconStyle = "box";
+      
+        flOptions.boxForm = "horizontal";
+      
+        flOptions.position = "middleRight";
+      
+        flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
 
   
 
   
 
   
+  
+  
+    
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script>
+  <script>
+  
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
 
   
 
@@ -896,6 +1653,4 @@
   
 
 </body>
-<!-- 页面点击小红心 -->
-<script type="text/javascript" src="/js/src/clicklove.js"></script>
 </html>
