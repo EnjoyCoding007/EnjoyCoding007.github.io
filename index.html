@@ -331,26 +331,20 @@
   
     <div class="site-search">
       
-  
-  <div class="algolia-popup popup search-popup">
-    <div class="algolia-search">
-      <div class="algolia-search-input-icon">
-        <i class="fa fa-search"></i>
-      </div>
-      <div class="algolia-search-input" id="algolia-search-input"></div>
-    </div>
-
-    <div class="algolia-results">
-      <div id="algolia-stats"></div>
-      <div id="algolia-hits"></div>
-      <div id="algolia-pagination" class="algolia-pagination"></div>
-    </div>
-
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
     <span class="popup-btn-close">
       <i class="fa fa-times-circle"></i>
     </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
   </div>
-
+  <div id="local-search-result"></div>
+</div>
 
 
 
@@ -467,7 +461,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-04-23 16:06:48" itemprop="dateModified" datetime="2019-04-23T16:06:48+08:00">2019-04-23</time>
+                <time title="修改时间：2019-04-23 17:43:04" itemprop="dateModified" datetime="2019-04-23T17:43:04+08:00">2019-04-23</time>
               
             
           </span>
@@ -582,7 +576,7 @@
           
             <h2 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h2><p>&emsp; 《<span class="exturl" data-url="aHR0cHM6Ly93d3cudHRrbWoubmV0L2EvNjUyNg==" title="https://www.ttkmj.net/a/6526">权力的游戏<i class="fa fa-external-link"></i></span>》第八季已经开播了，作为最受观众喜爱的美剧之一，它大尺度的画面、充满悬念的剧情总是能轻易的俘获你的注意力。</p>
 <p>&emsp;  “There are a thousand Hamlets in a thousand people’s eyes.” </p>
-<p>&emsp;  追同样的剧，但每个人被吸引的点却千差万别。裸露的肉体，血腥的杀戮，钱权的争夺……它吸引我的，远不止是这些画面与剧情，而是它能将人性的险恶与光辉都刻画的淋漓尽致。<br>&emsp;  该剧中充满了违背道德与伦理的人设，他们或出于最原始的求生欲，做出不惜一切手段保全自我的选择，或出于对正义与誓言的坚持，无悔的将自己的生命交给历史的巨轮碾压。关于那些选择的对错与否，与我们而言意义并不大。<br>&emsp;  很多时候，我们都已经习惯了用“正派”与“反派”来划分他们。如果你能细细品味他们的人生境遇，以及每个人在各种境遇下的状态和心理历程，再看他们的选择和对环境的判断，很可能会改变你对一个角色的认知，你对人性的理解也会深刻不少。于我来看，其实他们都无绝对的好与坏，这取决于你评判的出发点是某个当事人，还是某个家族的命运，亦或是某个部落的存亡，甚至是全人类的发展……详细的思辨这里就不展开了。  </p>
+<p>&emsp; 追同样的剧，但每个人被吸引的点却千差万别。裸露的肉体，血腥的杀戮，钱权的争夺……它吸引我的，远不止是这些画面与剧情，而是它能将人性的险恶与光辉都刻画的淋漓尽致。<br>&emsp; 该剧中充满了违背道德与伦理的人设，他们或出于最原始的求生欲，做出不惜一切手段保全自我的选择，或出于对正义与誓言的坚持，无悔的将自己的生命交给历史的巨轮碾压。关于那些选择的对错与否，与我们而言意义并不大。<br>&emsp; 很多时候，我们都已经习惯了用“正派”与“反派”来划分他们。如果你能细细品味他们的人生境遇，以及每个人在各种境遇下的状态和心理历程，再看他们的选择和对环境的判断，很可能会改变你对一个角色的认知，你对人性的理解也会深刻不少。于我来看，其实他们都无绝对的好与坏，这取决于你评判的出发点是某个当事人，还是某个家族的命运，亦或是某个部落的存亡，甚至是全人类的发展……详细的思辨这里就不展开了。  </p>
 <p>&emsp; 咳咳…扯远了，言归正传，今天起新增一个专题：《iOS 视觉》。此前我们一直在围绕着 “iOS 逆向”这个专题在展开，最近出于工作&amp;未来的需要，要着手从0学习 iOS 视觉相关的知识了。当然，逆向相关的更新也会持续。</p>
 <h2 id="目录一览"><a href="#目录一览" class="headerlink" title="目录一览"></a>目录一览</h2><p>&emsp; 为了你有一个系统清晰的整体感，也为有一个统一便捷的入口，我会持续的在此篇更新《iOS 视觉》学习心得的链接至以下目录：</p>
 <h3 id="一：OpenGL-概述"><a href="#一：OpenGL-概述" class="headerlink" title="一：OpenGL 概述"></a>一：OpenGL 概述</h3><ol>
@@ -1351,7 +1345,7 @@
     var isfetched = false;
     var isXml = true;
     // Search DB path;
-    var search_path = "search.xml";
+    var search_path = "./public/public/search.xml";
     if (search_path.length === 0) {
       search_path = "search.xml";
     } else if (/json$/i.test(search_path)) {
@@ -1667,23 +1661,6 @@
   </script>
 
 
-
-
-  
-  
-  
-    
-  
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.min.css">
-
-  
-  
-    
-  
-  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2/dist/instantsearch.js"></script>
-  
-
-  <script src="/js/algolia-search.js?v=7.1.0"></script>
 
 
 
